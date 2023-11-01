@@ -5,6 +5,7 @@ import com.madirex.funkosspringrest.dto.funko.CreateFunkoDTO;
 import com.madirex.funkosspringrest.dto.funko.GetFunkoDTO;
 import com.madirex.funkosspringrest.dto.funko.PatchFunkoDTO;
 import com.madirex.funkosspringrest.dto.funko.UpdateFunkoDTO;
+import com.madirex.funkosspringrest.exceptions.funko.FunkoNotValidUUIDException;
 import com.madirex.funkosspringrest.models.Category;
 import com.madirex.funkosspringrest.services.funko.FunkoServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,6 @@ import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -27,8 +27,10 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -65,8 +67,7 @@ class FunkoControllerImplTest {
     String endpoint = "/api/funkos";
 
     @Test
-    @Order(1)
-    void getAllTest() throws Exception {
+    void testGetAll() throws Exception {
         var funkoList = List.of(funko, funko2);
         Mockito.when(service.getAllFunko()).thenReturn(funkoList);
         MockHttpServletResponse response = mockMvc.perform(get(endpoint)
@@ -84,8 +85,7 @@ class FunkoControllerImplTest {
     }
 
     @Test
-    @Order(2)
-    void getFilteredByCategoryTest() throws Exception {
+    void testGetFilteredByCategory() throws Exception {
         var category = "Superhéroes";
         var funkoList = List.of(funko, funko2);
         Mockito.when(service.getAllFunkoFilterByCategory(service.getAllFunko(), category)).thenReturn(funkoList);
@@ -102,8 +102,7 @@ class FunkoControllerImplTest {
     }
 
     @Test
-    @Order(3)
-    void findByIdTest() throws Exception {
+    void testFindById() throws Exception {
         Mockito.when(service.getFunkoById(funko.getId().toString())).thenReturn(funko);
         MockHttpServletResponse response = mockMvc.perform(
                         get(endpoint + "/{id}", funko.getId().toString())
@@ -120,7 +119,17 @@ class FunkoControllerImplTest {
     }
 
     @Test
-    @Order(5)
+    void testFindByIdNotValidUUID() throws Exception {
+        Mockito.when(service.getFunkoById("()")).thenThrow(new FunkoNotValidUUIDException(""));
+        MockHttpServletResponse response = mockMvc.perform(
+                        get(endpoint + "/{id}", "()")
+                                .accept(MediaType.APPLICATION_JSON))
+                .andReturn()
+                .getResponse();
+        assertEquals(400, response.getStatus());
+    }
+
+    @Test
     void testDeleteFunko() throws Exception {
         String funkoIdToDelete = UUID.randomUUID().toString();
         service.deleteFunko(funkoIdToDelete);
@@ -129,7 +138,17 @@ class FunkoControllerImplTest {
     }
 
     @Test
-    @Order(6)
+    void testDeleteNotValidUUID() throws Exception {
+        doThrow(new FunkoNotValidUUIDException("")).when(service).deleteFunko("()");
+        MockHttpServletResponse response = mockMvc.perform(
+                        delete(endpoint + "/{id}", "()")
+                                .accept(MediaType.APPLICATION_JSON))
+                .andReturn()
+                .getResponse();
+        assertEquals(400, response.getStatus());
+    }
+
+    @Test
     void testPostFunko() throws Exception {
         CreateFunkoDTO newFunko = CreateFunkoDTO.builder()
                 .name("Nuevo Funko")
@@ -152,16 +171,17 @@ class FunkoControllerImplTest {
 
         Mockito.when(service.postFunko(newFunko)).thenReturn(createdFunko);
         mockMvc.perform(MockMvcRequestBuilders.post(endpoint)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(newFunko)));
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(newFunko)))
+                .andExpect(status().isCreated());
+
     }
 
     @Test
-    @Order(7)
     void testPutFunko() throws Exception {
         String funkId = UUID.randomUUID().toString();
 
-        UpdateFunkoDTO patchedFunko = UpdateFunkoDTO.builder()
+        UpdateFunkoDTO updatedFunko = UpdateFunkoDTO.builder()
                 .price(14.99)
                 .quantity(7)
                 .name("test")
@@ -169,27 +189,43 @@ class FunkoControllerImplTest {
                 .categoryId(1L)
                 .build();
 
-        GetFunkoDTO patchedFunkoResponse = GetFunkoDTO.builder()
+        GetFunkoDTO updatedFunkoResponse = GetFunkoDTO.builder()
                 .id(UUID.fromString(funkId))
                 .name("Nombre existente del Funko")
-                .price(patchedFunko.getPrice())
-                .quantity(patchedFunko.getQuantity())
+                .price(updatedFunko.getPrice())
+                .quantity(updatedFunko.getQuantity())
                 .image("Imagen existente del Funko")
                 .category(Category.builder().id(1L).type(Category.Type.MOVIE).active(true).build())
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
 
-        Mockito.when(service.putFunko(eq(funkId), eq(patchedFunko))).thenReturn(patchedFunkoResponse);
+        Mockito.when(service.putFunko(eq(funkId), eq(updatedFunko))).thenReturn(updatedFunkoResponse);
 
         mockMvc.perform(MockMvcRequestBuilders.put(endpoint + "/" + funkId)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(patchedFunko)))
+                        .content(mapper.writeValueAsString(updatedFunko)))
                 .andExpect(status().isOk());
     }
 
     @Test
-    @Order(8)
+    void testPutNotValidUUID() throws Exception {
+        doThrow(new FunkoNotValidUUIDException("")).when(service).putFunko("a()a", UpdateFunkoDTO.builder()
+                .price(14.99)
+                .quantity(7)
+                .name("test")
+                .image("Imagen")
+                .categoryId(1L)
+                .build());
+        MockHttpServletResponse response = mockMvc.perform(
+                        put(endpoint + "/{id}", "a()a")
+                                .accept(MediaType.APPLICATION_JSON))
+                .andReturn()
+                .getResponse();
+        assertEquals(400, response.getStatus());
+    }
+
+    @Test
     void testPatchFunko() throws Exception {
         String funkId = UUID.randomUUID().toString();
 
@@ -218,7 +254,6 @@ class FunkoControllerImplTest {
     }
 
     @Test
-    @Order(9)
     void testValidationExceptionHandling() throws Exception {
         CreateFunkoDTO invalidFunko = CreateFunkoDTO.builder()
                 .name("")

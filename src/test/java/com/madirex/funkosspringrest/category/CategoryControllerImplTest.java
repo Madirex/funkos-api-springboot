@@ -182,7 +182,6 @@ class CategoryControllerImplTest {
     @Test
     @Order(7)
     void testDeleteCategoryFunkoExistsException() throws Exception {
-        Long categoryIdToDelete = 1L;
         doThrow(new DeleteCategoryException("Error al eliminar la categoría"))
                 .when(service).deleteCategory(anyLong());
         var myLocalEndpoint = endpoint + "/1";

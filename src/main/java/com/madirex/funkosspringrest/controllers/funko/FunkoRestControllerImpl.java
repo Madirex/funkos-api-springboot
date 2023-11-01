@@ -70,7 +70,7 @@ public class FunkoRestControllerImpl implements FunkoRestController {
         try {
             return ResponseEntity.ok(service.getFunkoById(id));
         } catch (FunkoNotValidUUIDException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El UUID del Funko no es válido: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El UUID del Funko no es válido: " + e.getMessage());
         }
     }
 
@@ -80,7 +80,7 @@ public class FunkoRestControllerImpl implements FunkoRestController {
      * @param funko Objeto CreateFunkoDTO con los campos a crear
      * @return ResponseEntity con el código de estado
      */
-    @PostMapping()
+    @PostMapping
     @Override
     public ResponseEntity<GetFunkoDTO> postFunko(@Valid @RequestBody CreateFunkoDTO funko) {
         try {
@@ -107,7 +107,7 @@ public class FunkoRestControllerImpl implements FunkoRestController {
         try {
             return ResponseEntity.ok(service.putFunko(id, funko));
         } catch (FunkoNotValidUUIDException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El UUID del Funko no es válido: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El UUID del Funko no es válido: " + e.getMessage());
         } catch (CategoryNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "La categoría no se encuentra: " + e.getMessage());
         } catch (CategoryNotValidIDException e) {
@@ -128,7 +128,7 @@ public class FunkoRestControllerImpl implements FunkoRestController {
         try {
             return ResponseEntity.ok(service.patchFunko(id, funko));
         } catch (FunkoNotValidUUIDException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El UUID del Funko no es válido: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El UUID del Funko no es válido: " + e.getMessage());
         } catch (CategoryNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "La categoría no se encuentra: " + e.getMessage());
         } catch (CategoryNotValidIDException e) {
@@ -148,7 +148,7 @@ public class FunkoRestControllerImpl implements FunkoRestController {
         try {
             service.deleteFunko(id);
         } catch (FunkoNotValidUUIDException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El UUID del Funko no es válido: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El UUID del Funko no es válido: " + e.getMessage());
         }
         return ResponseEntity.noContent().build();
     }
