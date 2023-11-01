@@ -1,1 +1,1 @@
-# funkos-api
+# funkos-spring-rest
