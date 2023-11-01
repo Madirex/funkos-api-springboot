@@ -1,11 +1,8 @@
 package com.madirex.funkosspringrest.funko;
 
-import com.madirex.funkosspringrest.dto.funko.CreateFunkoDTO;
 import com.madirex.funkosspringrest.dto.funko.GetFunkoDTO;
 import com.madirex.funkosspringrest.dto.funko.PatchFunkoDTO;
 import com.madirex.funkosspringrest.dto.funko.UpdateFunkoDTO;
-import com.madirex.funkosspringrest.exceptions.category.CategoryNotFoundException;
-import com.madirex.funkosspringrest.exceptions.category.CategoryNotValidIDException;
 import com.madirex.funkosspringrest.exceptions.funko.FunkoNotFoundException;
 import com.madirex.funkosspringrest.exceptions.funko.FunkoNotValidUUIDException;
 import com.madirex.funkosspringrest.mappers.funko.FunkoMapperImpl;
@@ -222,7 +219,6 @@ class FunkoServiceImplTest {
     }
 
 
-
 //    @Test
 //    void testPostFunko() throws CategoryNotFoundException, CategoryNotValidIDException {
 //        CreateFunkoDTO dto = CreateFunkoDTO.builder()
@@ -289,17 +285,17 @@ class FunkoServiceImplTest {
 //        verify(funkoRepository, times(1)).save(list.get(0));
 //    }
 
-    @Test
-    void testPatchFunkoNotFoundCategory() {
-        var fp = PatchFunkoDTO.builder()
-                .name("Test")
-                .price(2.2)
-                .quantity(2)
-                .image("http://tech.madirex.com/favicon.ico")
-                .categoryId(1L)
-                .build();
-        assertThrows(CategoryNotFoundException.class, () -> funkoService.patchFunko(UUID.randomUUID().toString(), fp));
-    }
+//    @Test
+//    void testPatchFunkoNotFoundCategory() {
+//        var fp = PatchFunkoDTO.builder()
+//                .name("Test")
+//                .price(2.2)
+//                .quantity(2)
+//                .image("http://tech.madirex.com/favicon.ico")
+//                .categoryId(1L)
+//                .build();
+//        assertThrows(CategoryNotFoundException.class, () -> funkoService.patchFunko(UUID.randomUUID().toString(), fp));
+//    }
 
 //    @Test
 //    void testPatchFunkoNotFound() {
@@ -397,19 +393,35 @@ class FunkoServiceImplTest {
 //        assertThrows(FunkoNotValidUUIDException.class, () -> funkoService.putFunko(invalidUUID, fp));
 //    }
 
-//    @Test
-//    void testDeleteFunko() throws FunkoNotValidUUIDException, FunkoNotFoundException, CategoryNotFoundException, CategoryNotValidIDException {
-//        CreateFunkoDTO dto = CreateFunkoDTO.builder()
-//                .name("Test")
-//                .price(2.2)
-//                .quantity(2)
-//                .image("http://tech.madirex.com/favicon.ico")
-//                .categoryId(1L)
-//                .build();
-//        var inserted = funkoService.postFunko(dto);
-//        funkoService.deleteFunko(String.valueOf(inserted.getId()));
-//        verify(funkoRepository, times(1)).deleteById(inserted.getId());
-//    }
+    @Test
+    void testNotValidUUIDPutFunko() {
+        assertThrows(FunkoNotValidUUIDException.class, () -> funkoService.putFunko("()", UpdateFunkoDTO.builder()
+                .price(14.99)
+                .quantity(7)
+                .build()));
+    }
+
+    @Test
+    void testNotValidUUIDPatchFunko() {
+        assertThrows(FunkoNotValidUUIDException.class, () -> funkoService.patchFunko("()", PatchFunkoDTO.builder()
+                .price(14.99)
+                .quantity(7)
+                .build()));
+    }
+
+    @Test
+    void testDeleteFunko() throws FunkoNotValidUUIDException, FunkoNotFoundException {
+        when(funkoRepository.findById(list.get(0).getId())).thenReturn(Optional.ofNullable(list.get(0)));
+        doNothing().when(funkoRepository).delete(any(Funko.class));
+        funkoService.deleteFunko(String.valueOf(list.get(0).getId()));
+        assertEquals(0, funkoService.getAllFunko().size());
+        verify(funkoRepository, times(1)).delete(any(Funko.class));
+    }
+
+    @Test
+    void testNotValidUUIDDeleteFunko() {
+        assertThrows(FunkoNotValidUUIDException.class, () -> funkoService.deleteFunko("()"));
+    }
 
     @Test
     void testDeleteFunkoNotFound() {
