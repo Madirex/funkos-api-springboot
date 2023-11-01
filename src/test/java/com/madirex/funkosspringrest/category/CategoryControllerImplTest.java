@@ -4,8 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.madirex.funkosspringrest.dto.category.CreateCategoryDTO;
 import com.madirex.funkosspringrest.dto.category.PatchCategoryDTO;
 import com.madirex.funkosspringrest.dto.category.UpdateCategoryDTO;
+import com.madirex.funkosspringrest.exceptions.category.DeleteCategoryException;
 import com.madirex.funkosspringrest.models.Category;
 import com.madirex.funkosspringrest.services.category.CategoryServiceImpl;
+import com.madirex.funkosspringrest.services.funko.FunkoServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +26,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -39,6 +43,9 @@ class CategoryControllerImplTest {
     MockMvc mockMvc;
     @MockBean
     CategoryServiceImpl service;
+    @MockBean
+    FunkoServiceImpl funkoService;
+
     Category category = Category.builder()
             .id(1L)
             .type(Category.Type.MOVIE)
@@ -74,7 +81,7 @@ class CategoryControllerImplTest {
     }
 
     @Test
-    @Order(3)
+    @Order(2)
     void findByIdTest() throws Exception {
         Mockito.when(service.getCategoryById(category.getId())).thenReturn(category);
         MockHttpServletResponse response = mockMvc.perform(
@@ -90,16 +97,7 @@ class CategoryControllerImplTest {
     }
 
     @Test
-    @Order(5)
-    void testDeleteCategory() throws Exception {
-        Long categoryIdToDelete = 1L;
-        service.deleteCategory(categoryIdToDelete);
-        mockMvc.perform(delete(endpoint + "/" + categoryIdToDelete))
-                .andExpect(status().isNoContent());
-    }
-
-    @Test
-    @Order(6)
+    @Order(3)
     void testPostCategory() throws Exception {
         CreateCategoryDTO newCategory = CreateCategoryDTO.builder()
                 .type(Category.Type.MOVIE)
@@ -121,7 +119,7 @@ class CategoryControllerImplTest {
     }
 
     @Test
-    @Order(7)
+    @Order(4)
     void testPutCategory() throws Exception {
         Long funkId = 1L;
 
@@ -147,7 +145,7 @@ class CategoryControllerImplTest {
     }
 
     @Test
-    @Order(8)
+    @Order(5)
     void testPatchCategory() throws Exception {
         Long funkId = 1L;
 
@@ -172,4 +170,27 @@ class CategoryControllerImplTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    @Order(6)
+    void testDeleteCategory() throws Exception {
+        Long categoryIdToDelete = 1L;
+        service.deleteCategory(categoryIdToDelete);
+        mockMvc.perform(delete(endpoint + "/" + categoryIdToDelete))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    @Order(7)
+    void testDeleteCategoryFunkoExistsException() throws Exception {
+        Long categoryIdToDelete = 1L;
+        doThrow(new DeleteCategoryException("Error al eliminar la categoría"))
+                .when(service).deleteCategory(anyLong());
+        var myLocalEndpoint = endpoint + "/1";
+        MockHttpServletResponse response = mockMvc.perform(
+                        delete(myLocalEndpoint)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+        assertEquals(400, response.getStatus());
+    }
 }

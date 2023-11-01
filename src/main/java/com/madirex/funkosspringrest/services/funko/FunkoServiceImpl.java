@@ -160,10 +160,7 @@ public class FunkoServiceImpl implements FunkoService {
     public GetFunkoDTO patchFunko(String id, PatchFunkoDTO funko) throws FunkoNotValidUUIDException, FunkoNotFoundException, CategoryNotFoundException, CategoryNotValidIDException {
         try {
             if (funko.getCategoryId() != null) {
-                var category = categoryService.getCategoryById(funko.getCategoryId());
-                if (category == null) {
-                    throw new CategoryNotFoundException(CATEGORY_ID_NOT_FOUND_MSG);
-                }
+                categoryService.getCategoryById(funko.getCategoryId());
             }
         } catch (Exception ex) {
             throw new CategoryNotFoundException(CATEGORY_ID_NOT_FOUND_MSG);

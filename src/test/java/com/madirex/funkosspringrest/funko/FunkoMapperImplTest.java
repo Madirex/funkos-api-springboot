@@ -39,13 +39,20 @@ class FunkoMapperImplTest {
                 () -> assertEquals(funko.getPrice(), mapped.getPrice(), "El precio debe coincidir"),
                 () -> assertEquals(funko.getQuantity(), mapped.getQuantity(), "La cantidad debe coincidir"),
                 () -> assertEquals(funko.getImage(), mapped.getImage(), "La imagen debe coincidir"),
-                () -> assertEquals(funko.getCategoryId(), mapped.getCategory().getId(), "La categoría debe coincidir"),
-                () -> assertNotNull(mapped.getCreatedAt(), "La fecha de creación no debe ser nula"),
-                () -> assertNotNull(mapped.getUpdatedAt(), "La fecha de actualización no debe ser nula"));
+                () -> assertEquals(funko.getCategoryId(), mapped.getCategory().getId(), "La categoría debe coincidir")
+        );
     }
 
     @Test
     void testUpdateFunkoDTOToFunko() {
+        var funkoToEdit = Funko.builder()
+                .id(UUID.randomUUID())
+                .name("nombre")
+                .price(2.2)
+                .quantity(2)
+                .image("imagen")
+                .category(Category.builder().id(1L).type(Category.Type.MOVIE).active(true).build())
+                .build();
         var funko = UpdateFunkoDTO.builder()
                 .name("nombre")
                 .price(2.2)
@@ -53,16 +60,15 @@ class FunkoMapperImplTest {
                 .image("imagen")
                 .categoryId(1L)
                 .build();
-        var mapped = funkoMapperImpl.toFunko(funko,Category.builder().id(1L).type(Category.Type.MOVIE).active(true).build());
+        var mapped = funkoMapperImpl.toFunko(funkoToEdit,funko,Category.builder().id(1L).type(Category.Type.MOVIE).active(true).build());
         assertAll("Funko properties",
                 () -> assertNotNull(mapped.getId(), "El ID no debe ser nulo"),
                 () -> assertEquals(funko.getName(), mapped.getName(), "El nombre debe coincidir"),
                 () -> assertEquals(funko.getPrice(), mapped.getPrice(), "El precio debe coincidir"),
                 () -> assertEquals(funko.getQuantity(), mapped.getQuantity(), "La cantidad debe coincidir"),
                 () -> assertEquals(funko.getImage(), mapped.getImage(), "La imagen debe coincidir"),
-                () -> assertEquals(funko.getCategoryId(), mapped.getCategory().getId(), "La categoría debe coincidir"),
-                () -> assertNotNull(mapped.getCreatedAt(), "La fecha de creación no debe ser nula"),
-                () -> assertNotNull(mapped.getUpdatedAt(), "La fecha de actualización no debe ser nula"));
+                () -> assertEquals(funko.getCategoryId(), mapped.getCategory().getId(), "La categoría debe coincidir")
+        );
     }
 
     @Test

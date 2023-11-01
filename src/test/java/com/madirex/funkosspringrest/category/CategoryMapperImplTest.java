@@ -7,7 +7,8 @@ import com.madirex.funkosspringrest.models.Category;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CategoryMapperImplTest {
     private CategoryMapperImpl categoryMapperImpl;
@@ -32,6 +33,10 @@ class CategoryMapperImplTest {
 
     @Test
     void testUpdateCategoryDTOToCategory() {
+        var existingCategory = Category.builder()
+                .type(Category.Type.MOVIE)
+                .active(true)
+                .build();
         var category = UpdateCategoryDTO.builder()
                 .type(Category.Type.MOVIE)
                 .active(true)
