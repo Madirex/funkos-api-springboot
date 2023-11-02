@@ -13,10 +13,12 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
@@ -179,5 +181,16 @@ public class FunkoRestControllerImpl implements FunkoRestController {
         HttpStatusCode httpStatus = ex.getStatusCode();
         String mensaje = ex.getReason();
         return new ResponseEntity<>(mensaje, httpStatus);
+    }
+
+    @PatchMapping(value = "/image/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<GetFunkoDTO> newFunkoImg(
+            @PathVariable String id,
+            @RequestPart("file") MultipartFile file) {
+        if (!file.isEmpty()) {
+            return ResponseEntity.ok(service.updateImage(id, file, true));
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No se ha enviado una imagen para el Funko");
+        }
     }
 }
