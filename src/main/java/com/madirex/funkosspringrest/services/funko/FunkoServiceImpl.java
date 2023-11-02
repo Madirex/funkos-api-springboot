@@ -13,6 +13,7 @@ import com.madirex.funkosspringrest.models.Category;
 import com.madirex.funkosspringrest.models.Funko;
 import com.madirex.funkosspringrest.repositories.FunkoRepository;
 import com.madirex.funkosspringrest.services.category.CategoryService;
+import com.madirex.funkosspringrest.services.storage.StorageService;
 import com.madirex.funkosspringrest.utils.Util;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,8 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -39,6 +42,7 @@ public class FunkoServiceImpl implements FunkoService {
 
     private final FunkoRepository funkoRepository;
     private final FunkoMapperImpl funkoMapperImpl;
+    private final StorageService storageService;
     private final CategoryService categoryService;
 
     /**
@@ -46,12 +50,14 @@ public class FunkoServiceImpl implements FunkoService {
      *
      * @param funkoRepository FunkoRepositoryImpl
      * @param funkoMapperImpl FunkoMapper
+     * @param storageService  StorageService
      * @param categoryService CategoryService
      */
     @Autowired
-    public FunkoServiceImpl(FunkoRepository funkoRepository, FunkoMapperImpl funkoMapperImpl, CategoryService categoryService) {
+    public FunkoServiceImpl(FunkoRepository funkoRepository, FunkoMapperImpl funkoMapperImpl, StorageService storageService, CategoryService categoryService) {
         this.funkoRepository = funkoRepository;
         this.funkoMapperImpl = funkoMapperImpl;
+        this.storageService = storageService;
         this.categoryService = categoryService;
     }
 
@@ -191,5 +197,21 @@ public class FunkoServiceImpl implements FunkoService {
         } catch (IllegalArgumentException e) {
             throw new FunkoNotValidUUIDException(NOT_VALID_FORMAT_UUID_MSG);
         }
+    }
+
+    @Override
+    @CachePut(key = "#result.id")
+    @Transactional
+    public GetFunkoDTO updateImage(String id, MultipartFile image, Boolean withUrl) throws FunkoNotFoundException, FunkoNotValidUUIDException, CategoryNotFoundException, CategoryNotValidIDException {
+        var actualFunko = funkoRepository.findById(UUID.fromString(id)).orElseThrow(() ->
+                new FunkoNotFoundException(id));
+        if (actualFunko.getImage() != null && !actualFunko.getImage().equals(Funko.IMAGE_DEFAULT)) {
+            storageService.delete(actualFunko.getImage());
+        }
+        String imageStored = storageService.store(image);
+        String imageUrl = Boolean.FALSE.equals(withUrl) ? imageStored : storageService.getUrl(imageStored);
+        return patchFunko(id, PatchFunkoDTO.builder()
+                .image(imageUrl)
+                .build());
     }
 }

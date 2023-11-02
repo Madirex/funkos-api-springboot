@@ -8,6 +8,8 @@ import com.madirex.funkosspringrest.exceptions.category.CategoryNotFoundExceptio
 import com.madirex.funkosspringrest.exceptions.category.CategoryNotValidIDException;
 import com.madirex.funkosspringrest.exceptions.funko.FunkoNotFoundException;
 import com.madirex.funkosspringrest.exceptions.funko.FunkoNotValidUUIDException;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -26,4 +28,6 @@ public interface FunkoService {
     GetFunkoDTO patchFunko(String id, PatchFunkoDTO funko) throws FunkoNotValidUUIDException, FunkoNotFoundException, CategoryNotFoundException, CategoryNotValidIDException;
 
     void deleteFunko(String id) throws FunkoNotFoundException, FunkoNotValidUUIDException;
+
+    GetFunkoDTO updateImage(String id, MultipartFile image, Boolean withUrl) throws FunkoNotFoundException, FunkoNotValidUUIDException, CategoryNotFoundException, CategoryNotValidIDException;
 }
