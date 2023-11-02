@@ -152,8 +152,10 @@ public class FunkoServiceImpl implements FunkoService {
      * @param id    UUID del Funko a actualizar
      * @param funko Funko con los datos a actualizar
      * @return Funko actualizado
-     * @throws FunkoNotValidUUIDException Si el UUID no tiene un formato válido
-     * @throws FunkoNotFoundException     Si no se ha encontrado el Funko con el UUID indicado
+     * @throws FunkoNotValidUUIDException  Si el UUID no tiene un formato válido
+     * @throws FunkoNotFoundException      Si no se ha encontrado el Funko con el UUID indicado
+     * @throws CategoryNotFoundException   Si no se ha encontrado la categoría con el ID indicado
+     * @throws CategoryNotValidIDException Si el ID no tiene un formato válido
      */
     @CachePut(key = "#result.id")
     @Override

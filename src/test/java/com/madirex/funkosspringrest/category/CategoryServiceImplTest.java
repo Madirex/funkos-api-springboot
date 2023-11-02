@@ -109,7 +109,7 @@ class CategoryServiceImplTest {
     }
 
     @Test
-    void testPutCategory() throws CategoryNotFoundException, CategoryNotValidIDException {
+    void testPutCategory() throws CategoryNotFoundException {
         var update = UpdateCategoryDTO.builder()
                 .type(Category.Type.MOVIE)
                 .active(true)

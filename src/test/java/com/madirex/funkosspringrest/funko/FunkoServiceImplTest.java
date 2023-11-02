@@ -246,6 +246,53 @@ class FunkoServiceImplTest {
     }
 
     @Test
+    void testPutFunko() throws CategoryNotFoundException, CategoryNotValidIDException, FunkoNotValidUUIDException, FunkoNotFoundException {
+        var update = UpdateFunkoDTO.builder()
+                .name("nombre").price(2.2).quantity(2).image("imagen").categoryId(1L).build();
+        var category = Category.builder().id(1L).type(Category.Type.MOVIE).active(true).createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now()).build();
+        when(funkoRepository.findById(list.get(0).getId())).thenReturn(Optional.of(list.get(0)));
+        when(categoryService.getCategoryById(1L)).thenReturn(category);
+        when(funkoMapperImpl.toFunko(list.get(0), update, category)).thenReturn(list.get(0));
+        when(funkoRepository.save(list.get(0))).thenReturn(list.get(0));
+        when(funkoMapperImpl.toGetFunkoDTO(list.get(0)))
+                .thenReturn(GetFunkoDTO.builder().name("nombre").price(2.2).quantity(2).image("imagen")
+                        .category(category).build());
+        GetFunkoDTO updated2 = funkoService.putFunko(list.get(0).getId().toString(), update);
+        assertNotNull(updated2);
+        assertAll("Funko properties",
+                () -> assertEquals(update.getName(), updated2.getName(), "El nombre debe coincidir"),
+                () -> assertEquals(update.getPrice(), updated2.getPrice(), "El precio debe coincidir"),
+                () -> assertEquals(update.getQuantity(), updated2.getQuantity(), "La cantidad debe coincidir"),
+                () -> assertEquals(update.getImage(), updated2.getImage(), "La imagen debe coincidir")
+        );
+        verify(funkoRepository, times(1)).save(any(Funko.class));
+    }
+
+    @Test
+    void testPatchFunko() throws CategoryNotFoundException, CategoryNotValidIDException, FunkoNotValidUUIDException, FunkoNotFoundException {
+        var update = PatchFunkoDTO.builder()
+                .name("nombre").price(2.2).quantity(2).image("imagen").categoryId(1L).build();
+        var category = Category.builder().id(1L).type(Category.Type.MOVIE).active(true).createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now()).build();
+        when(funkoRepository.findById(list.get(0).getId())).thenReturn(Optional.of(list.get(0)));
+        when(categoryService.getCategoryById(1L)).thenReturn(category);
+        when(funkoRepository.save(list.get(0))).thenReturn(list.get(0));
+        when(funkoMapperImpl.toGetFunkoDTO(list.get(0)))
+                .thenReturn(GetFunkoDTO.builder().name("nombre").price(2.2).quantity(2).image("imagen")
+                        .category(category).build());
+        GetFunkoDTO updated2 = funkoService.patchFunko(list.get(0).getId().toString(), update);
+        assertNotNull(updated2);
+        assertAll("Funko properties",
+                () -> assertEquals(update.getName(), updated2.getName(), "El nombre debe coincidir"),
+                () -> assertEquals(update.getPrice(), updated2.getPrice(), "El precio debe coincidir"),
+                () -> assertEquals(update.getQuantity(), updated2.getQuantity(), "La cantidad debe coincidir"),
+                () -> assertEquals(update.getImage(), updated2.getImage(), "La imagen debe coincidir")
+        );
+        verify(funkoRepository, times(1)).save(any(Funko.class));
+    }
+
+    @Test
     void testNotValidUUIDPutFunko() {
         assertThrows(FunkoNotValidUUIDException.class, () -> funkoService.putFunko("()", UpdateFunkoDTO.builder()
                 .price(14.99)
