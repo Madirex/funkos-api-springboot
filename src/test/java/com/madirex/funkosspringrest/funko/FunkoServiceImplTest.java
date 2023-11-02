@@ -6,6 +6,7 @@ import com.madirex.funkosspringrest.dto.funko.PatchFunkoDTO;
 import com.madirex.funkosspringrest.dto.funko.UpdateFunkoDTO;
 import com.madirex.funkosspringrest.exceptions.category.CategoryNotFoundException;
 import com.madirex.funkosspringrest.exceptions.category.CategoryNotValidIDException;
+import com.madirex.funkosspringrest.exceptions.category.DeleteCategoryException;
 import com.madirex.funkosspringrest.exceptions.funko.FunkoNotFoundException;
 import com.madirex.funkosspringrest.exceptions.funko.FunkoNotValidUUIDException;
 import com.madirex.funkosspringrest.mappers.funko.FunkoMapperImpl;
@@ -270,13 +271,20 @@ class FunkoServiceImplTest {
     }
 
     @Test
+    void testPutFunkoNotFound() {
+        var update = UpdateFunkoDTO.builder()
+                .name("nombre").price(2.2).quantity(2).image("imagen").categoryId(1L).build();
+        when(funkoRepository.findById(list.get(0).getId())).thenReturn(Optional.empty());
+        assertThrows(FunkoNotFoundException.class, () -> funkoService.putFunko(list.get(0).getId().toString(), update));
+    }
+
+    @Test
     void testPatchFunko() throws CategoryNotFoundException, CategoryNotValidIDException, FunkoNotValidUUIDException, FunkoNotFoundException {
         var update = PatchFunkoDTO.builder()
                 .name("nombre").price(2.2).quantity(2).image("imagen").categoryId(1L).build();
         var category = Category.builder().id(1L).type(Category.Type.MOVIE).active(true).createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now()).build();
         when(funkoRepository.findById(list.get(0).getId())).thenReturn(Optional.of(list.get(0)));
-        when(categoryService.getCategoryById(1L)).thenReturn(category);
         when(funkoRepository.save(list.get(0))).thenReturn(list.get(0));
         when(funkoMapperImpl.toGetFunkoDTO(list.get(0)))
                 .thenReturn(GetFunkoDTO.builder().name("nombre").price(2.2).quantity(2).image("imagen")
@@ -290,6 +298,14 @@ class FunkoServiceImplTest {
                 () -> assertEquals(update.getImage(), updated2.getImage(), "La imagen debe coincidir")
         );
         verify(funkoRepository, times(1)).save(any(Funko.class));
+    }
+
+    @Test
+    void testPatchFunkoNotFound() {
+        var update = PatchFunkoDTO.builder()
+                .name("nombre").price(2.2).quantity(2).image("imagen").categoryId(1L).build();
+        when(funkoRepository.findById(list.get(0).getId())).thenReturn(Optional.empty());
+        assertThrows(FunkoNotFoundException.class, () -> funkoService.patchFunko(list.get(0).getId().toString(), update));
     }
 
     @Test

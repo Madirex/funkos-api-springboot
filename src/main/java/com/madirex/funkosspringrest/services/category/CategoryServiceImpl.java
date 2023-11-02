@@ -62,7 +62,6 @@ public class CategoryServiceImpl implements CategoryService {
      *
      * @param id ID del Category a obtener
      * @return Category con el ID indicado
-     * @throws CategoryNotValidIDException Si el ID no tiene un formato válido
      * @throws CategoryNotFoundException   Si no se ha encontrado el Category con el ID indicado
      */
     @Cacheable(key = "#result.id")

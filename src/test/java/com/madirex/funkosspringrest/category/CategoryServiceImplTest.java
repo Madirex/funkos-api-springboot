@@ -8,7 +8,9 @@ import com.madirex.funkosspringrest.exceptions.category.CategoryNotValidIDExcept
 import com.madirex.funkosspringrest.exceptions.category.DeleteCategoryException;
 import com.madirex.funkosspringrest.mappers.category.CategoryMapperImpl;
 import com.madirex.funkosspringrest.models.Category;
+import com.madirex.funkosspringrest.models.Funko;
 import com.madirex.funkosspringrest.repositories.CategoryRepository;
+import com.madirex.funkosspringrest.repositories.FunkoRepository;
 import com.madirex.funkosspringrest.services.category.CategoryServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -30,6 +33,9 @@ class CategoryServiceImplTest {
     List<Category> list;
     @Mock
     private CategoryRepository categoryRepository;
+
+    @Mock
+    private FunkoRepository funkoRepository;
 
     @Mock
     private CategoryMapperImpl categoryMapperImpl;
@@ -152,11 +158,19 @@ class CategoryServiceImplTest {
 
     @Test
     void testDeleteCategory() throws CategoryNotFoundException, DeleteCategoryException {
-        when(categoryRepository.findById(1L)).thenReturn(Optional.ofNullable(list.get(0)));
-        doNothing().when(categoryRepository).delete(any(Category.class));
+        var update = PatchCategoryDTO.builder()
+                .type(Category.Type.MOVIE)
+                .build();
+        when(categoryRepository.findById(list.get(0).getId())).thenReturn(Optional.of(list.get(0)));
+        when(categoryRepository.save(list.get(0))).thenReturn(list.get(0));
+        var inserted = categoryService.patchCategory(list.get(0).getId(), update);
         categoryService.deleteCategory(1L);
-        assertEquals(0, categoryService.getAllCategory().size());
-        verify(categoryRepository, times(1)).delete(any(Category.class));
+        assertNotNull(inserted);
+        assertAll("Category properties",
+                () -> assertEquals(inserted.getType(), update.getType(), "El tipo debe coincidir"),
+                () -> assertEquals(inserted.getActive(), list.get(0).getActive(), "El estado debe coincidir"),
+                () -> assertDoesNotThrow(() -> categoryService.deleteCategory(1L))
+        );
     }
 
     @Test

@@ -132,15 +132,11 @@ public class FunkoServiceImpl implements FunkoService {
             UUID uuid = UUID.fromString(id);
             Funko existingFunko = funkoRepository.findById(UUID.fromString(id))
                     .orElseThrow(() -> new FunkoNotFoundException("Funko no encontrado"));
-            if (funko.getCategoryId() != null) {
-                Category category = categoryService.getCategoryById(funko.getCategoryId());
-                Funko f = funkoMapperImpl.toFunko(existingFunko, funko, category);
-                f.setId(uuid);
-                var modified = funkoRepository.save(f);
-                return funkoMapperImpl.toGetFunkoDTO(modified);
-            } else {
-                throw new CategoryNotFoundException("No se ha proporcionado ningún ID.");
-            }
+            Category category = categoryService.getCategoryById(funko.getCategoryId());
+            Funko f = funkoMapperImpl.toFunko(existingFunko, funko, category);
+            f.setId(uuid);
+            var modified = funkoRepository.save(f);
+            return funkoMapperImpl.toGetFunkoDTO(modified);
         } catch (IllegalArgumentException e) {
             throw new FunkoNotValidUUIDException(NOT_VALID_FORMAT_UUID_MSG);
         }
@@ -160,13 +156,6 @@ public class FunkoServiceImpl implements FunkoService {
     @CachePut(key = "#result.id")
     @Override
     public GetFunkoDTO patchFunko(String id, PatchFunkoDTO funko) throws FunkoNotValidUUIDException, FunkoNotFoundException, CategoryNotFoundException, CategoryNotValidIDException {
-        try {
-            if (funko.getCategoryId() != null) {
-                categoryService.getCategoryById(funko.getCategoryId());
-            }
-        } catch (Exception ex) {
-            throw new CategoryNotFoundException(CATEGORY_ID_NOT_FOUND_MSG);
-        }
         try {
             UUID uuid = UUID.fromString(id);
             var opt = funkoRepository.findById(uuid);
