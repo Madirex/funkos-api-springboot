@@ -4,6 +4,7 @@ import com.madirex.funkosspringrest.models.Category;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -19,6 +20,7 @@ public class GetFunkoDTO {
     private String name;
     private Double price;
     private Integer quantity;
+    @Setter
     private String image;
     private Category category;
     private LocalDateTime createdAt;

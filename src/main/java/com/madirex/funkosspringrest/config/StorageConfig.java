@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 public class StorageConfig {
     @Autowired
     private StorageService storageService;
-    
+
     @Value("${upload.delete}")
     private String deleteAll;
 
