@@ -203,15 +203,20 @@ public class FunkoServiceImpl implements FunkoService {
     @CachePut(key = "#result.id")
     @Transactional
     public GetFunkoDTO updateImage(String id, MultipartFile image, Boolean withUrl) throws FunkoNotFoundException, FunkoNotValidUUIDException, CategoryNotFoundException, CategoryNotValidIDException {
-        var actualFunko = funkoRepository.findById(UUID.fromString(id)).orElseThrow(() ->
-                new FunkoNotFoundException(id));
-        if (actualFunko.getImage() != null && !actualFunko.getImage().equals(Funko.IMAGE_DEFAULT)) {
-            storageService.delete(actualFunko.getImage());
+        try {
+            UUID uuid = UUID.fromString(id);
+            var actualFunko = funkoRepository.findById(uuid).orElseThrow(() ->
+                    new FunkoNotFoundException(id));
+            if (actualFunko.getImage() != null && !actualFunko.getImage().equals(Funko.IMAGE_DEFAULT)) {
+                storageService.delete(actualFunko.getImage());
+            }
+            String imageStored = storageService.store(image);
+            String imageUrl = Boolean.FALSE.equals(withUrl) ? imageStored : storageService.getUrl(imageStored);
+            return patchFunko(id, PatchFunkoDTO.builder()
+                    .image(imageUrl)
+                    .build());
+        } catch (IllegalArgumentException e) {
+            throw new FunkoNotValidUUIDException(NOT_VALID_FORMAT_UUID_MSG);
         }
-        String imageStored = storageService.store(image);
-        String imageUrl = Boolean.FALSE.equals(withUrl) ? imageStored : storageService.getUrl(imageStored);
-        return patchFunko(id, PatchFunkoDTO.builder()
-                .image(imageUrl)
-                .build());
     }
 }

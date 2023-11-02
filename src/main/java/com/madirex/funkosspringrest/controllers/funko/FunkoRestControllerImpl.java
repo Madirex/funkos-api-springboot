@@ -186,7 +186,7 @@ public class FunkoRestControllerImpl implements FunkoRestController {
     @PatchMapping(value = "/image/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<GetFunkoDTO> newFunkoImg(
             @PathVariable String id,
-            @RequestPart("file") MultipartFile file) {
+            @RequestPart("file") MultipartFile file) throws FunkoNotValidUUIDException, CategoryNotFoundException, FunkoNotFoundException, CategoryNotValidIDException {
         if (!file.isEmpty()) {
             return ResponseEntity.ok(service.updateImage(id, file, true));
         } else {
