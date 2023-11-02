@@ -103,11 +103,9 @@ public class FunkoRestControllerImpl implements FunkoRestController {
      */
     @PutMapping("/{id}")
     @Override
-    public ResponseEntity<GetFunkoDTO> putFunko(@Valid @PathVariable String id, @Valid @RequestBody UpdateFunkoDTO funko) throws FunkoNotFoundException {
+    public ResponseEntity<GetFunkoDTO> putFunko(@Valid @PathVariable String id, @Valid @RequestBody UpdateFunkoDTO funko) throws FunkoNotFoundException, FunkoNotValidUUIDException {
         try {
             return ResponseEntity.ok(service.putFunko(id, funko));
-        } catch (FunkoNotValidUUIDException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El UUID del Funko no es válido: " + e.getMessage());
         } catch (CategoryNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "La categoría no se encuentra: " + e.getMessage());
         } catch (CategoryNotValidIDException e) {
@@ -124,11 +122,9 @@ public class FunkoRestControllerImpl implements FunkoRestController {
      */
     @PatchMapping("/{id}")
     @Override
-    public ResponseEntity<GetFunkoDTO> patchFunko(@Valid @PathVariable String id, @Valid @RequestBody PatchFunkoDTO funko) throws FunkoNotFoundException {
+    public ResponseEntity<GetFunkoDTO> patchFunko(@Valid @PathVariable String id, @Valid @RequestBody PatchFunkoDTO funko) throws FunkoNotFoundException, FunkoNotValidUUIDException {
         try {
             return ResponseEntity.ok(service.patchFunko(id, funko));
-        } catch (FunkoNotValidUUIDException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El UUID del Funko no es válido: " + e.getMessage());
         } catch (CategoryNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "La categoría no se encuentra: " + e.getMessage());
         } catch (CategoryNotValidIDException e) {
