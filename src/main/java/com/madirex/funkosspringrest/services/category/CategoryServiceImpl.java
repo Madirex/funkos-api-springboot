@@ -67,13 +67,9 @@ public class CategoryServiceImpl implements CategoryService {
      */
     @Cacheable(key = "#result.id")
     @Override
-    public Category getCategoryById(Long id) throws CategoryNotValidIDException, CategoryNotFoundException {
-        try {
-            return categoryRepository.findById(id).orElseThrow(() ->
-                    new CategoryNotFoundException(FUNKO_NOT_FOUND_MSG));
-        } catch (IllegalArgumentException e) {
-            throw new CategoryNotValidIDException(NOT_VALID_FORMAT_ID_MSG);
-        }
+    public Category getCategoryById(Long id) throws CategoryNotFoundException {
+        return categoryRepository.findById(id).orElseThrow(() ->
+                new CategoryNotFoundException(FUNKO_NOT_FOUND_MSG));
     }
 
     /**
@@ -82,24 +78,19 @@ public class CategoryServiceImpl implements CategoryService {
      * @param id    ID del Category a actualizar
      * @param funko Category con los datos a actualizar
      * @return Category actualizado
-     * @throws CategoryNotValidIDException Si el ID no tiene un formato válido
-     * @throws CategoryNotFoundException   Si no se ha encontrado el Category con el ID indicado
+     * @throws CategoryNotFoundException Si no se ha encontrado el Category con el ID indicado
      */
     @CachePut(key = "#result.id")
     @Override
-    public Category patchCategory(Long id, PatchCategoryDTO funko) throws CategoryNotValidIDException, CategoryNotFoundException {
-        try {
-            var opt = categoryRepository.findById(id);
-            if (opt.isPresent()) {
-                BeanUtils.copyProperties(funko, opt.get(), Util.getNullPropertyNames(funko));
-                opt.get().setId(id);
-                opt.get().setUpdatedAt(LocalDateTime.now());
-                return categoryRepository.save(opt.get());
-            }
-            throw new CategoryNotFoundException(FUNKO_NOT_FOUND_MSG);
-        } catch (IllegalArgumentException e) {
-            throw new CategoryNotValidIDException(NOT_VALID_FORMAT_ID_MSG);
+    public Category patchCategory(Long id, PatchCategoryDTO funko) throws CategoryNotFoundException {
+        var opt = categoryRepository.findById(id);
+        if (opt.isPresent()) {
+            BeanUtils.copyProperties(funko, opt.get(), Util.getNullPropertyNames(funko));
+            opt.get().setId(id);
+            opt.get().setUpdatedAt(LocalDateTime.now());
+            return categoryRepository.save(opt.get());
         }
+        throw new CategoryNotFoundException(FUNKO_NOT_FOUND_MSG);
     }
 
     /**
@@ -120,21 +111,16 @@ public class CategoryServiceImpl implements CategoryService {
      * @param id    ID del Category a actualizar
      * @param funko UpdateCategoryDTO con los datos a actualizar
      * @return Category actualizado
-     * @throws CategoryNotValidIDException Si el ID no tiene un formato válido
-     * @throws CategoryNotFoundException   Si no se ha encontrado el Category con el ID indicado
+     * @throws CategoryNotFoundException Si no se ha encontrado el Category con el ID indicado
      */
     @CachePut(key = "#result.id")
     @Override
-    public Category putCategory(Long id, UpdateCategoryDTO funko) throws CategoryNotValidIDException, CategoryNotFoundException {
-        try {
-            Category existingCategory = categoryRepository.findById(id)
-                    .orElseThrow(() -> new CategoryNotFoundException("Categoría no encontrada"));
-            Category f = categoryMapperImpl.toCategory(existingCategory, funko);
-            f.setId(id);
-            return categoryRepository.save(f);
-        } catch (IllegalArgumentException e) {
-            throw new CategoryNotValidIDException(NOT_VALID_FORMAT_ID_MSG);
-        }
+    public Category putCategory(Long id, UpdateCategoryDTO funko) throws CategoryNotFoundException {
+        Category existingCategory = categoryRepository.findById(id)
+                .orElseThrow(() -> new CategoryNotFoundException("Categoría no encontrada"));
+        Category f = categoryMapperImpl.toCategory(existingCategory, funko);
+        f.setId(id);
+        return categoryRepository.save(f);
     }
 
     /**
