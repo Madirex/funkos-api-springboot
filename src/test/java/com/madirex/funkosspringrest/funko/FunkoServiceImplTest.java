@@ -1,8 +1,11 @@
 package com.madirex.funkosspringrest.funko;
 
+import com.madirex.funkosspringrest.dto.funko.CreateFunkoDTO;
 import com.madirex.funkosspringrest.dto.funko.GetFunkoDTO;
 import com.madirex.funkosspringrest.dto.funko.PatchFunkoDTO;
 import com.madirex.funkosspringrest.dto.funko.UpdateFunkoDTO;
+import com.madirex.funkosspringrest.exceptions.category.CategoryNotFoundException;
+import com.madirex.funkosspringrest.exceptions.category.CategoryNotValidIDException;
 import com.madirex.funkosspringrest.exceptions.funko.FunkoNotFoundException;
 import com.madirex.funkosspringrest.exceptions.funko.FunkoNotValidUUIDException;
 import com.madirex.funkosspringrest.mappers.funko.FunkoMapperImpl;
@@ -391,6 +394,34 @@ class FunkoServiceImplTest {
 //                .build();
 //        String invalidUUID = "UUID NO VÁLIDA";
 //        assertThrows(FunkoNotValidUUIDException.class, () -> funkoService.putFunko(invalidUUID, fp));
+//    }
+
+//    @Test
+//    void testPostFunko() throws CategoryNotFoundException, CategoryNotValidIDException {
+//        var insert = CreateFunkoDTO.builder()
+//                .name("Test")
+//                .price(2.2)
+//                .quantity(2)
+//                .image("http://tech.madirex.com/favicon.ico")
+//                .categoryId(1L)
+//                .build();
+//        when(funkoMapperImpl.toFunko(insert,
+//                Category.builder()
+//                        .id(1L)
+//                        .type(Category.Type.MOVIE)
+//                        .active(true)
+//                        .build()
+//        )).thenReturn(list.get(0));
+//        when(funkoRepository.save(list.get(0))).thenReturn(list.get(0));
+//        var inserted = funkoService.postFunko(insert);
+//        assertNotNull(inserted);
+//        assertAll("Funko properties",
+//                () -> assertEquals(inserted.getName(), insert.getName(), "El nombre debe coincidir"),
+//                () -> assertEquals(inserted.getPrice(), insert.getPrice(), "El precio debe coincidir"),
+//                () -> assertEquals(inserted.getQuantity(), insert.getQuantity(), "La cantidad debe coincidir"),
+//                () -> assertEquals(inserted.getImage(), insert.getImage(), "La imagen debe coincidir")
+//        );
+//        verify(funkoRepository, times(1)).save(any(Funko.class));
 //    }
 
     @Test

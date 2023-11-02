@@ -1,6 +1,8 @@
 package com.madirex.funkosspringrest.category;
 
+import com.madirex.funkosspringrest.dto.category.CreateCategoryDTO;
 import com.madirex.funkosspringrest.dto.category.PatchCategoryDTO;
+import com.madirex.funkosspringrest.dto.category.UpdateCategoryDTO;
 import com.madirex.funkosspringrest.exceptions.category.CategoryNotFoundException;
 import com.madirex.funkosspringrest.exceptions.category.CategoryNotValidIDException;
 import com.madirex.funkosspringrest.exceptions.category.DeleteCategoryException;
@@ -89,6 +91,56 @@ class CategoryServiceImplTest {
         verify(categoryRepository, times(1)).findById(1L);
     }
 
+    @Test
+    void testPostCategory() {
+        var insert = CreateCategoryDTO.builder()
+                .type(Category.Type.MOVIE)
+                .active(true)
+                .build();
+        when(categoryMapperImpl.toCategory(insert)).thenReturn(list.get(0));
+        when(categoryRepository.save(list.get(0))).thenReturn(list.get(0));
+        var inserted = categoryService.postCategory(insert);
+        assertNotNull(inserted);
+        assertAll("Category properties",
+                () -> assertEquals(inserted.getType(), insert.getType(), "El tipo debe coincidir"),
+                () -> assertEquals(inserted.getActive(), insert.getActive(), "El estado debe coincidir")
+        );
+        verify(categoryRepository, times(1)).save(any(Category.class));
+    }
+
+    @Test
+    void testPutCategory() throws CategoryNotFoundException, CategoryNotValidIDException {
+        var update = UpdateCategoryDTO.builder()
+                .type(Category.Type.MOVIE)
+                .active(true)
+                .build();
+        when(categoryRepository.findById(list.get(0).getId())).thenReturn(Optional.of(list.get(0)));
+        when(categoryMapperImpl.toCategory(list.get(0), update)).thenReturn(list.get(0));
+        when(categoryRepository.save(list.get(0))).thenReturn(list.get(0));
+        var inserted = categoryService.putCategory(list.get(0).getId(), update);
+        assertNotNull(inserted);
+        assertAll("Category properties",
+                () -> assertEquals(inserted.getType(), update.getType(), "El tipo debe coincidir"),
+                () -> assertEquals(inserted.getActive(), update.getActive(), "El estado debe coincidir")
+        );
+        verify(categoryRepository, times(1)).save(any(Category.class));
+    }
+
+    @Test
+    void testPatchCategory() throws CategoryNotFoundException, CategoryNotValidIDException {
+        var update = PatchCategoryDTO.builder()
+                .type(Category.Type.MOVIE)
+                .build();
+        when(categoryRepository.findById(list.get(0).getId())).thenReturn(Optional.of(list.get(0)));
+        when(categoryRepository.save(list.get(0))).thenReturn(list.get(0));
+        var inserted = categoryService.patchCategory(list.get(0).getId(), update);
+        assertNotNull(inserted);
+        assertAll("Category properties",
+                () -> assertEquals(inserted.getType(), update.getType(), "El tipo debe coincidir"),
+                () -> assertEquals(inserted.getActive(), list.get(0).getActive(), "El estado debe coincidir")
+        );
+        verify(categoryRepository, times(1)).save(any(Category.class));
+    }
 
     @Test
     void testPatchCategoryNotFoundCategory() {
