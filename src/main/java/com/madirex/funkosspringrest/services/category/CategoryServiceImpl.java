@@ -136,10 +136,6 @@ public class CategoryServiceImpl implements CategoryService {
         if (opt.isEmpty()) {
             throw new CategoryNotFoundException(FUNKO_NOT_FOUND_MSG);
         }
-        try {
-            categoryRepository.delete(opt.get());
-        } catch (Exception ex) {
-            throw new DeleteCategoryException(ex.getMessage());
-        }
+        patchCategory(id, PatchCategoryDTO.builder().active(false).build());
     }
 }
