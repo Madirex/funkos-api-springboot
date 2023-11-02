@@ -221,208 +221,29 @@ class FunkoServiceImplTest {
         assertThrows(FunkoNotValidUUIDException.class, () -> funkoService.getFunkoById(invalidUUID));
     }
 
-
-//    @Test
-//    void testPostFunko() throws CategoryNotFoundException, CategoryNotValidIDException {
-//        CreateFunkoDTO dto = CreateFunkoDTO.builder()
-//                .name("Test")
-//                .price(2.2)
-//                .quantity(2)
-//                .image("http://tech.madirex.com/favicon.ico")
-//                .categoryId(1L)
-//                .build();
-//
-//        GetFunkoDTO getFunko = GetFunkoDTO.builder()
-//                .id(UUID.randomUUID())
-//                .name("Test")
-//                .price(2.2)
-//                .quantity(2)
-//                .image("http://tech.madirex.com/favicon.ico")
-//                .category(Category.builder().id(1L).type(Category.Type.MOVIE).active(true).build())
-//                .createdAt(LocalDateTime.now())
-//                .updatedAt(LocalDateTime.now())
-//                .build();
-//        when(funkoRepository.save(any(Funko.class))).thenReturn(list.get(0));
-//        when(funkoMapperImpl.toGetFunkoDTO(list.get(0))).thenReturn(getFunko);
-//        var funko = funkoService.postFunko(dto);
-//        assertAll("Funko properties",
-//                () -> assertEquals(list.get(0).getName(), funko.getName(), "El nombre debe coincidir"),
-//                () -> assertEquals(list.get(0).getPrice(), funko.getPrice(), "El precio debe coincidir"),
-//                () -> assertEquals(list.get(0).getQuantity(), funko.getQuantity(), "La cantidad debe coincidir"),
-//                () -> assertEquals(list.get(0).getImage(), funko.getImage(), "La imagen debe coincidir"),
-//                () -> assertEquals(list.get(0).getCategory(), funko.getCategory(), "La categoría debe coincidir")
-//        );
-//        verify(funkoRepository, times(1)).save(list.get(0));
-//    }
-
-//    @Test
-//    void testPatchFunko() throws FunkoNotValidUUIDException, FunkoNotFoundException, CategoryNotFoundException, CategoryNotValidIDException {
-//        PatchFunkoDTO dto = PatchFunkoDTO.builder()
-//                .name("Test")
-//                .price(2.2)
-//                .quantity(2)
-//                .image("http://tech.madirex.com/favicon.ico")
-//                .categoryId(1L)
-//                .build();
-//        GetFunkoDTO getFunko = GetFunkoDTO.builder()
-//                .id(UUID.randomUUID())
-//                .name("Test")
-//                .price(2.2)
-//                .quantity(2)
-//                .image("http://tech.madirex.com/favicon.ico")
-//                .category(Category.builder().id(1L).type(Category.Type.MOVIE).active(true).build())
-//                .createdAt(LocalDateTime.now())
-//                .updatedAt(LocalDateTime.now())
-//                .build();
-//        when(funkoRepository.save(list.get(0))).thenReturn(list.get(0));
-//        when(funkoRepository.findById(list.get(0).getId())).thenReturn(Optional.of(list.get(0)));
-//        when(funkoMapperImpl.toGetFunkoDTO(list.get(0))).thenReturn(getFunko);
-//        var funko = funkoService.patchFunko(list.get(0).getId().toString(), dto);
-//        assertAll("Funko properties",
-//                () -> assertEquals(list.get(0).getName(), funko.getName(), "El nombre debe coincidir"),
-//                () -> assertEquals(list.get(0).getPrice(), funko.getPrice(), "El precio debe coincidir"),
-//                () -> assertEquals(list.get(0).getQuantity(), funko.getQuantity(), "La cantidad debe coincidir"),
-//                () -> assertEquals(list.get(0).getImage(), funko.getImage(), "La imagen debe coincidir"),
-//                () -> assertEquals(list.get(0).getCategory(), funko.getCategory(), "La categoría debe coincidir")
-//        );
-//        verify(funkoRepository, times(1)).save(list.get(0));
-//    }
-
-//    @Test
-//    void testPatchFunkoNotFoundCategory() {
-//        var fp = PatchFunkoDTO.builder()
-//                .name("Test")
-//                .price(2.2)
-//                .quantity(2)
-//                .image("http://tech.madirex.com/favicon.ico")
-//                .categoryId(1L)
-//                .build();
-//        assertThrows(CategoryNotFoundException.class, () -> funkoService.patchFunko(UUID.randomUUID().toString(), fp));
-//    }
-
-//    @Test
-//    void testPatchFunkoNotFound() {
-//        var fp = PatchFunkoDTO.builder()
-//                .name("Test")
-//                .price(2.2)
-//                .quantity(2)
-//                .image("http://tech.madirex.com/favicon.ico")
-//                .categoryId(1L)
-//                .build();
-//        assertThrows(FunkoNotFoundException.class, () -> funkoService.patchFunko(UUID.randomUUID().toString(), fp));
-//    }
-
-//    @Test
-//    void testPatchFunkoNotValidUUID() {
-//        var fp = PatchFunkoDTO.builder()
-//                .name("Test")
-//                .price(2.2)
-//                .quantity(2)
-//                .image("http://tech.madirex.com/favicon.ico")
-//                .categoryId(1L)
-//                .build();
-//        String invalidUUID = "UUID NO VÁLIDA";
-//        assertThrows(FunkoNotValidUUIDException.class, () -> funkoService.patchFunko(invalidUUID, fp));
-//    }
-
-//    @Test
-//    void testPutFunko() throws FunkoNotValidUUIDException, FunkoNotFoundException, CategoryNotFoundException, CategoryNotValidIDException {
-//        UpdateFunkoDTO dto = UpdateFunkoDTO.builder()
-//                .name("Test")
-//                .price(2.2)
-//                .quantity(2)
-//                .image("http://tech.madirex.com/favicon.ico")
-//                .categoryId(1L)
-//                .build();
-//        GetFunkoDTO getFunko = GetFunkoDTO.builder()
-//                .id(UUID.randomUUID())
-//                .name("Test")
-//                .price(2.2)
-//                .quantity(2)
-//                .image("http://tech.madirex.com/favicon.ico")
-//                .category(Category.builder().id(1L).type(Category.Type.MOVIE).active(true).build())
-//                .createdAt(LocalDateTime.now())
-//                .updatedAt(LocalDateTime.now())
-//                .build();
-//        when(funkoRepository.save(list.get(0))).thenReturn(list.get(0));
-//        when(funkoRepository.save(list.get(0))).thenReturn(list.get(0));
-//        when(funkoMapperImpl.toGetFunkoDTO(list.get(0))).thenReturn(getFunko);
-//        var funko = funkoService.putFunko(list.get(0).getId().toString(), dto);
-//        assertAll("Funko properties",
-//                () -> assertEquals(list.get(0).getName(), funko.getName(), "El nombre debe coincidir"),
-//                () -> assertEquals(list.get(0).getPrice(), funko.getPrice(), "El precio debe coincidir"),
-//                () -> assertEquals(list.get(0).getQuantity(), funko.getQuantity(), "La cantidad debe coincidir"),
-//                () -> assertEquals(list.get(0).getImage(), funko.getImage(), "La imagen debe coincidir"),
-//                () -> assertEquals(list.get(0).getCategory(), funko.getCategory(), "La categoría debe coincidir")
-//        );
-//        verify(funkoRepository, times(1)).save(list.get(0));
-//    }
-
-//    @Test
-//    void testPutFunkoNotFoundCategory() {
-//
-//        var fp = UpdateFunkoDTO.builder()
-//                .name("Test")
-//                .price(2.2)
-//                .quantity(2)
-//                .image("http://tech.madirex.com/favicon.ico")
-//                .categoryId(1L)
-//                .build();
-//        assertThrows(CategoryNotFoundException.class, () -> funkoService.putFunko(UUID.randomUUID().toString(), fp));
-//    }
-
-//    @Test
-//    void testPutFunkoNotFound() {
-//        var fp = UpdateFunkoDTO.builder()
-//                .name("Test")
-//                .price(2.2)
-//                .quantity(2)
-//                .image("http://tech.madirex.com/favicon.ico")
-//                .categoryId(1L)
-//                .build();
-//        assertThrows(FunkoNotFoundException.class, () -> funkoService.putFunko(UUID.randomUUID().toString(), fp));
-//    }
-
-//    @Test
-//    void testPutFunkoNotValidUUID() {
-//        var fp = UpdateFunkoDTO.builder()
-//                .name("Test")
-//                .price(2.2)
-//                .quantity(2)
-//                .image("http://tech.madirex.com/favicon.ico")
-//                .categoryId(1L)
-//                .build();
-//        String invalidUUID = "UUID NO VÁLIDA";
-//        assertThrows(FunkoNotValidUUIDException.class, () -> funkoService.putFunko(invalidUUID, fp));
-//    }
-
-//    @Test
-//    void testPostFunko() throws CategoryNotFoundException, CategoryNotValidIDException {
-//        var insert = CreateFunkoDTO.builder()
-//                .name("Test")
-//                .price(2.2)
-//                .quantity(2)
-//                .image("http://tech.madirex.com/favicon.ico")
-//                .categoryId(1L)
-//                .build();
-//        when(funkoMapperImpl.toFunko(insert,
-//                Category.builder()
-//                        .id(1L)
-//                        .type(Category.Type.MOVIE)
-//                        .active(true)
-//                        .build()
-//        )).thenReturn(list.get(0));
-//        when(funkoRepository.save(list.get(0))).thenReturn(list.get(0));
-//        var inserted = funkoService.postFunko(insert);
-//        assertNotNull(inserted);
-//        assertAll("Funko properties",
-//                () -> assertEquals(inserted.getName(), insert.getName(), "El nombre debe coincidir"),
-//                () -> assertEquals(inserted.getPrice(), insert.getPrice(), "El precio debe coincidir"),
-//                () -> assertEquals(inserted.getQuantity(), insert.getQuantity(), "La cantidad debe coincidir"),
-//                () -> assertEquals(inserted.getImage(), insert.getImage(), "La imagen debe coincidir")
-//        );
-//        verify(funkoRepository, times(1)).save(any(Funko.class));
-//    }
+    @Test
+    void testPostFunko() throws CategoryNotFoundException, CategoryNotValidIDException {
+        var insert = CreateFunkoDTO.builder()
+                .name("nombre").price(2.2).quantity(2).image("imagen").categoryId(1L).build();
+        var category = Category.builder().id(1L).type(Category.Type.MOVIE).active(true).createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now()).build();
+        var inserted = Funko.builder().name("nombre").price(2.2).quantity(2).image("imagen").category(category).build();
+        when(categoryService.getCategoryById(1L)).thenReturn(category);
+        when(funkoMapperImpl.toFunko(insert, category)).thenReturn(inserted);
+        when(funkoRepository.save(inserted)).thenReturn(inserted);
+        when(funkoMapperImpl.toGetFunkoDTO(inserted))
+                .thenReturn(GetFunkoDTO.builder().name("nombre").price(2.2).quantity(2).image("imagen")
+                        .category(category).build());
+        GetFunkoDTO inserted2 = funkoService.postFunko(insert);
+        assertNotNull(inserted2);
+        assertAll("Funko properties",
+                () -> assertEquals(insert.getName(), inserted2.getName(), "El nombre debe coincidir"),
+                () -> assertEquals(insert.getPrice(), inserted2.getPrice(), "El precio debe coincidir"),
+                () -> assertEquals(insert.getQuantity(), inserted2.getQuantity(), "La cantidad debe coincidir"),
+                () -> assertEquals(insert.getImage(), inserted2.getImage(), "La imagen debe coincidir")
+        );
+        verify(funkoRepository, times(1)).save(any(Funko.class));
+    }
 
     @Test
     void testNotValidUUIDPutFunko() {
