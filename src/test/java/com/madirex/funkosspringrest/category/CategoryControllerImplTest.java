@@ -21,6 +21,7 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -64,7 +65,6 @@ class CategoryControllerImplTest {
     String endpoint = "/api/category";
 
     @Test
-    @Order(1)
     void getAllTest() throws Exception {
         var categoryList = List.of(category, category2);
         Mockito.when(service.getAllCategory()).thenReturn(categoryList);
@@ -81,7 +81,6 @@ class CategoryControllerImplTest {
     }
 
     @Test
-    @Order(2)
     void findByIdTest() throws Exception {
         Mockito.when(service.getCategoryById(category.getId())).thenReturn(category);
         MockHttpServletResponse response = mockMvc.perform(
@@ -97,7 +96,6 @@ class CategoryControllerImplTest {
     }
 
     @Test
-    @Order(3)
     void testPostCategory() throws Exception {
         CreateCategoryDTO newCategory = CreateCategoryDTO.builder()
                 .type(Category.Type.MOVIE)
@@ -115,11 +113,11 @@ class CategoryControllerImplTest {
         Mockito.when(service.postCategory(newCategory)).thenReturn(createdCategory);
         mockMvc.perform(MockMvcRequestBuilders.post(endpoint)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(newCategory)));
+                .content(mapper.writeValueAsString(newCategory)))
+                .andExpect(status().isCreated());
     }
 
     @Test
-    @Order(4)
     void testPutCategory() throws Exception {
         Long funkId = 1L;
 
@@ -145,7 +143,6 @@ class CategoryControllerImplTest {
     }
 
     @Test
-    @Order(5)
     void testPatchCategory() throws Exception {
         Long funkId = 1L;
 
@@ -171,7 +168,6 @@ class CategoryControllerImplTest {
     }
 
     @Test
-    @Order(6)
     void testDeleteCategory() throws Exception {
         Long categoryIdToDelete = 1L;
         service.deleteCategory(categoryIdToDelete);
@@ -180,7 +176,6 @@ class CategoryControllerImplTest {
     }
 
     @Test
-    @Order(7)
     void testDeleteCategoryFunkoExistsException() throws Exception {
         doThrow(new DeleteCategoryException("Error al eliminar la categoría"))
                 .when(service).deleteCategory(anyLong());
@@ -192,4 +187,5 @@ class CategoryControllerImplTest {
                 .andReturn().getResponse();
         assertEquals(400, response.getStatus());
     }
+
 }

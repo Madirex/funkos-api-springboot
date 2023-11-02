@@ -122,22 +122,4 @@ public class CategoryRestControllerImpl implements CategoryRestController {
                     .body("No se ha eliminado el Category. Revisa que no existan Funkos asociados a él.");
         }
     }
-
-    /**
-     * Método para manejar las excepciones de validación
-     *
-     * @param ex Excepción
-     * @return Mapa con los errores
-     */
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-        return errors;
-    }
 }
