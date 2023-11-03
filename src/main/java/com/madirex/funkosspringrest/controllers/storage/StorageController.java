@@ -28,6 +28,7 @@ public class StorageController {
      * Obtiene un fichero del sistema de almacenamiento
      *
      * @param filename Nombre del fichero a obtener
+     * @param request  Objeto de petición
      * @return Fichero
      */
     @GetMapping(value = "{filename:.+}")
