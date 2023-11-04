@@ -1,5 +1,7 @@
 package com.madirex.funkosspringrest.funko;
 
+import com.madirex.funkosspringrest.config.websockets.WebSocketConfig;
+import com.madirex.funkosspringrest.config.websockets.WebSocketHandler;
 import com.madirex.funkosspringrest.dto.funko.CreateFunkoDTO;
 import com.madirex.funkosspringrest.dto.funko.GetFunkoDTO;
 import com.madirex.funkosspringrest.dto.funko.PatchFunkoDTO;
@@ -9,6 +11,7 @@ import com.madirex.funkosspringrest.exceptions.category.CategoryNotValidIDExcept
 import com.madirex.funkosspringrest.exceptions.funko.FunkoNotFoundException;
 import com.madirex.funkosspringrest.exceptions.funko.FunkoNotValidUUIDException;
 import com.madirex.funkosspringrest.mappers.funko.FunkoMapperImpl;
+import com.madirex.funkosspringrest.mappers.notification.FunkoNotificationMapper;
 import com.madirex.funkosspringrest.models.Category;
 import com.madirex.funkosspringrest.models.Funko;
 import com.madirex.funkosspringrest.repositories.FunkoRepository;
@@ -23,6 +26,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,11 +51,21 @@ class FunkoServiceImplTest {
     @Mock
     private StorageService storageService;
 
+    @Mock
+    private WebSocketConfig webSocketConfig;
+
+    @Mock
+    private WebSocketHandler webSocketHandlerMock;
+
+    @Mock
+    private FunkoNotificationMapper funkoNotificationMapper;
+
     @InjectMocks
     private FunkoServiceImpl funkoService;
 
     @BeforeEach
     void setUp() {
+        funkoService.setWebSocketService(webSocketHandlerMock);
         list = new ArrayList<>();
         list.add(Funko.builder()
                 .id(UUID.randomUUID())
@@ -228,7 +242,7 @@ class FunkoServiceImplTest {
     }
 
     @Test
-    void testPostFunko() throws CategoryNotFoundException, CategoryNotValidIDException {
+    void testPostFunko() throws CategoryNotFoundException, CategoryNotValidIDException, IOException {
         var insert = CreateFunkoDTO.builder()
                 .name("nombre").price(2.2).quantity(2).image("imagen").categoryId(1L).build();
         var category = Category.builder().id(1L).type(Category.Type.MOVIE).active(true).createdAt(LocalDateTime.now())
@@ -240,6 +254,7 @@ class FunkoServiceImplTest {
         when(funkoMapperImpl.toGetFunkoDTO(inserted))
                 .thenReturn(GetFunkoDTO.builder().name("nombre").price(2.2).quantity(2).image("imagen")
                         .category(category).build());
+        doNothing().when(webSocketHandlerMock).sendMessage(any());
         GetFunkoDTO inserted2 = funkoService.postFunko(insert);
         assertNotNull(inserted2);
         assertAll("Funko properties",
@@ -252,7 +267,7 @@ class FunkoServiceImplTest {
     }
 
     @Test
-    void testPutFunko() throws CategoryNotFoundException, CategoryNotValidIDException, FunkoNotValidUUIDException, FunkoNotFoundException {
+    void testPutFunko() throws CategoryNotFoundException, CategoryNotValidIDException, FunkoNotValidUUIDException, FunkoNotFoundException, IOException {
         var update = UpdateFunkoDTO.builder()
                 .name("nombre").price(2.2).quantity(2).image("imagen").categoryId(1L).build();
         var category = Category.builder().id(1L).type(Category.Type.MOVIE).active(true).createdAt(LocalDateTime.now())
@@ -264,6 +279,7 @@ class FunkoServiceImplTest {
         when(funkoMapperImpl.toGetFunkoDTO(list.get(0)))
                 .thenReturn(GetFunkoDTO.builder().name("nombre").price(2.2).quantity(2).image("imagen")
                         .category(category).build());
+        doNothing().when(webSocketHandlerMock).sendMessage(any());
         GetFunkoDTO updated2 = funkoService.putFunko(list.get(0).getId().toString(), update);
         assertNotNull(updated2);
         assertAll("Funko properties",
@@ -284,7 +300,7 @@ class FunkoServiceImplTest {
     }
 
     @Test
-    void testPatchFunko() throws CategoryNotFoundException, CategoryNotValidIDException, FunkoNotValidUUIDException, FunkoNotFoundException {
+    void testPatchFunko() throws CategoryNotFoundException, CategoryNotValidIDException, FunkoNotValidUUIDException, FunkoNotFoundException, IOException {
         var update = PatchFunkoDTO.builder()
                 .name("nombre").price(2.2).quantity(2).image("imagen").categoryId(1L).build();
         var category = Category.builder().id(1L).type(Category.Type.MOVIE).active(true).createdAt(LocalDateTime.now())
@@ -294,6 +310,7 @@ class FunkoServiceImplTest {
         when(funkoMapperImpl.toGetFunkoDTO(list.get(0)))
                 .thenReturn(GetFunkoDTO.builder().name("nombre").price(2.2).quantity(2).image("imagen")
                         .category(category).build());
+        doNothing().when(webSocketHandlerMock).sendMessage(any());
         GetFunkoDTO updated2 = funkoService.patchFunko(list.get(0).getId().toString(), update);
         assertNotNull(updated2);
         assertAll("Funko properties",
@@ -330,8 +347,9 @@ class FunkoServiceImplTest {
     }
 
     @Test
-    void testDeleteFunko() throws FunkoNotValidUUIDException, FunkoNotFoundException {
+    void testDeleteFunko() throws FunkoNotValidUUIDException, FunkoNotFoundException, IOException {
         when(funkoRepository.findById(list.get(0).getId())).thenReturn(Optional.ofNullable(list.get(0)));
+        doNothing().when(webSocketHandlerMock).sendMessage(any());
         doNothing().when(funkoRepository).delete(any(Funko.class));
         funkoService.deleteFunko(String.valueOf(list.get(0).getId()));
         assertEquals(0, funkoService.getAllFunko().size());
@@ -385,9 +403,9 @@ class FunkoServiceImplTest {
         //check
         GetFunkoDTO resultFunkoDTO = funkoService.updateImage(existingFunkoId, multipartFile, false);
         assertAll(
-            () -> assertNotNull(updated2),
-            () -> assertNotNull(resultFunkoDTO),
-            () -> assertEquals(expectedFunkoDTO.getImage(), resultFunkoDTO.getImage())
+                () -> assertNotNull(updated2),
+                () -> assertNotNull(resultFunkoDTO),
+                () -> assertEquals(expectedFunkoDTO.getImage(), resultFunkoDTO.getImage())
         );
         verify(funkoRepository, times(3)).findById(list.get(0).getId());
         verify(funkoRepository, times(2)).save(list.get(0));
@@ -395,7 +413,7 @@ class FunkoServiceImplTest {
     }
 
     @Test
-    void testUpdateImageFunkoNotFound(){
+    void testUpdateImageFunkoNotFound() {
         UUID fakeUuid = UUID.randomUUID();
         MultipartFile multipartFile = mock(MultipartFile.class);
         when(funkoRepository.findById(fakeUuid)).thenThrow(new FunkoNotFoundException(fakeUuid.toString()));
@@ -404,7 +422,7 @@ class FunkoServiceImplTest {
     }
 
     @Test
-    void testUpdateImageFunkoNotValidUUID(){
+    void testUpdateImageFunkoNotValidUUID() {
         MultipartFile multipartFile = mock(MultipartFile.class);
         assertThrows(FunkoNotValidUUIDException.class,
                 () -> funkoService.updateImage("()", multipartFile, false));

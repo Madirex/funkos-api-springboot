@@ -22,6 +22,7 @@ import com.madirex.funkosspringrest.repositories.FunkoRepository;
 import com.madirex.funkosspringrest.services.category.CategoryService;
 import com.madirex.funkosspringrest.services.storage.StorageService;
 import com.madirex.funkosspringrest.utils.Util;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +53,7 @@ public class FunkoServiceImpl implements FunkoService {
     private final FunkoRepository funkoRepository;
     private final FunkoMapperImpl funkoMapperImpl;
     private final WebSocketConfig webSocketConfig;
+    @Setter
     private WebSocketHandler webSocketService;
     private final StorageService storageService;
     private final CategoryService categoryService;
