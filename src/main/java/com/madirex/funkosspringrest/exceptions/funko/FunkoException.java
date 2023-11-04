@@ -3,7 +3,7 @@ package com.madirex.funkosspringrest.exceptions.funko;
 /**
  * Class FunkoException
  */
-public abstract class FunkoException extends Exception {
+public abstract class FunkoException extends RuntimeException {
     /**
      * Constructor FunkoException
      *

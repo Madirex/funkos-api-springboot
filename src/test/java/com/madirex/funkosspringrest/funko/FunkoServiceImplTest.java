@@ -6,7 +6,6 @@ import com.madirex.funkosspringrest.dto.funko.PatchFunkoDTO;
 import com.madirex.funkosspringrest.dto.funko.UpdateFunkoDTO;
 import com.madirex.funkosspringrest.exceptions.category.CategoryNotFoundException;
 import com.madirex.funkosspringrest.exceptions.category.CategoryNotValidIDException;
-import com.madirex.funkosspringrest.exceptions.category.DeleteCategoryException;
 import com.madirex.funkosspringrest.exceptions.funko.FunkoNotFoundException;
 import com.madirex.funkosspringrest.exceptions.funko.FunkoNotValidUUIDException;
 import com.madirex.funkosspringrest.mappers.funko.FunkoMapperImpl;
@@ -15,12 +14,14 @@ import com.madirex.funkosspringrest.models.Funko;
 import com.madirex.funkosspringrest.repositories.FunkoRepository;
 import com.madirex.funkosspringrest.services.category.CategoryService;
 import com.madirex.funkosspringrest.services.funko.FunkoServiceImpl;
+import com.madirex.funkosspringrest.services.storage.StorageService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -42,6 +43,10 @@ class FunkoServiceImplTest {
 
     @Mock
     private CategoryService categoryService;
+
+    @Mock
+    private StorageService storageService;
+
     @InjectMocks
     private FunkoServiceImpl funkoService;
 
@@ -347,5 +352,61 @@ class FunkoServiceImplTest {
     void testDeleteFunkoNotValidUUID() {
         String invalidUUID = "UUID NO VÁLIDA";
         assertThrows(FunkoNotValidUUIDException.class, () -> funkoService.deleteFunko(invalidUUID));
+    }
+
+    @Test
+    void testUpdateImageSuccess() throws CategoryNotFoundException, CategoryNotValidIDException {
+        String existingFunkoId = list.get(0).getId().toString();
+        String imageUrl = "http://www.madirex.com/favicon.ico";
+        MultipartFile multipartFile = mock(MultipartFile.class);
+        GetFunkoDTO expectedFunkoDTO = GetFunkoDTO.builder()
+                .id(UUID.randomUUID())
+                .name("Test")
+                .price(2.2)
+                .quantity(2)
+                .image(imageUrl)
+                .category(Category.builder().id(1L).type(Category.Type.MOVIE).active(true).build())
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
+        expectedFunkoDTO.setImage(imageUrl);
+
+        when(funkoRepository.findById(list.get(0).getId()))
+                .thenReturn(Optional.of(list.get(0)));
+        when(storageService.store(multipartFile)).thenReturn(imageUrl);
+
+        //path
+        var update = PatchFunkoDTO.builder().image(imageUrl).build();
+        when(funkoRepository.findById(list.get(0).getId())).thenReturn(Optional.of(list.get(0)));
+        when(funkoRepository.save(list.get(0))).thenReturn(any());
+        when(funkoMapperImpl.toGetFunkoDTO(list.get(0))).thenReturn(expectedFunkoDTO);
+        GetFunkoDTO updated2 = funkoService.patchFunko(list.get(0).getId().toString(), update);
+
+        //check
+        GetFunkoDTO resultFunkoDTO = funkoService.updateImage(existingFunkoId, multipartFile, false);
+        assertAll(
+            () -> assertNotNull(updated2),
+            () -> assertNotNull(resultFunkoDTO),
+            () -> assertEquals(expectedFunkoDTO.getImage(), resultFunkoDTO.getImage())
+        );
+        verify(funkoRepository, times(3)).findById(list.get(0).getId());
+        verify(funkoRepository, times(2)).save(list.get(0));
+        verify(storageService, times(1)).store(multipartFile);
+    }
+
+    @Test
+    void testUpdateImageFunkoNotFound(){
+        UUID fakeUuid = UUID.randomUUID();
+        MultipartFile multipartFile = mock(MultipartFile.class);
+        when(funkoRepository.findById(fakeUuid)).thenThrow(new FunkoNotFoundException(fakeUuid.toString()));
+        assertThrows(FunkoNotFoundException.class, () -> funkoService.updateImage(fakeUuid.toString(),
+                multipartFile, false));
+    }
+
+    @Test
+    void testUpdateImageFunkoNotValidUUID(){
+        MultipartFile multipartFile = mock(MultipartFile.class);
+        assertThrows(FunkoNotValidUUIDException.class,
+                () -> funkoService.updateImage("()", multipartFile, false));
     }
 }

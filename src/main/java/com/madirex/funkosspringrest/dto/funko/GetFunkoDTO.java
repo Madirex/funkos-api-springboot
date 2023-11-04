@@ -1,10 +1,7 @@
 package com.madirex.funkosspringrest.dto.funko;
 
 import com.madirex.funkosspringrest.models.Category;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -15,6 +12,7 @@ import java.util.UUID;
 @Getter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class GetFunkoDTO {
     private UUID id;
     private String name;

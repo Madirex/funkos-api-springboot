@@ -205,8 +205,7 @@ public class FunkoServiceImpl implements FunkoService {
     public GetFunkoDTO updateImage(String id, MultipartFile image, Boolean withUrl) throws FunkoNotFoundException, FunkoNotValidUUIDException, CategoryNotFoundException, CategoryNotValidIDException {
         try {
             UUID uuid = UUID.fromString(id);
-            var actualFunko = funkoRepository.findById(uuid).orElseThrow(() ->
-                    new FunkoNotFoundException(id));
+            var actualFunko = funkoRepository.findById(uuid).orElseThrow(() -> new FunkoNotFoundException(id));
             if (actualFunko.getImage() != null && !actualFunko.getImage().equals(Funko.IMAGE_DEFAULT)) {
                 storageService.delete(actualFunko.getImage());
             }
