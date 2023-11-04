@@ -1,20 +1,28 @@
 package com.madirex.funkosspringrest.services.funko;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.madirex.funkosspringrest.config.websockets.WebSocketConfig;
+import com.madirex.funkosspringrest.config.websockets.WebSocketHandler;
 import com.madirex.funkosspringrest.dto.funko.CreateFunkoDTO;
 import com.madirex.funkosspringrest.dto.funko.GetFunkoDTO;
 import com.madirex.funkosspringrest.dto.funko.PatchFunkoDTO;
 import com.madirex.funkosspringrest.dto.funko.UpdateFunkoDTO;
+import com.madirex.funkosspringrest.dto.notification.FunkoNotificationResponse;
 import com.madirex.funkosspringrest.exceptions.category.CategoryNotFoundException;
 import com.madirex.funkosspringrest.exceptions.category.CategoryNotValidIDException;
 import com.madirex.funkosspringrest.exceptions.funko.FunkoNotFoundException;
 import com.madirex.funkosspringrest.exceptions.funko.FunkoNotValidUUIDException;
 import com.madirex.funkosspringrest.mappers.funko.FunkoMapperImpl;
+import com.madirex.funkosspringrest.mappers.notification.FunkoNotificationMapper;
 import com.madirex.funkosspringrest.models.Category;
 import com.madirex.funkosspringrest.models.Funko;
+import com.madirex.funkosspringrest.models.Notification;
 import com.madirex.funkosspringrest.repositories.FunkoRepository;
 import com.madirex.funkosspringrest.services.category.CategoryService;
 import com.madirex.funkosspringrest.services.storage.StorageService;
 import com.madirex.funkosspringrest.utils.Util;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
@@ -32,6 +40,7 @@ import java.util.UUID;
 /**
  * Clase FunkoServiceImpl
  */
+@Slf4j
 @Service
 @CacheConfig(cacheNames = "funkos")
 public class FunkoServiceImpl implements FunkoService {
@@ -42,23 +51,35 @@ public class FunkoServiceImpl implements FunkoService {
 
     private final FunkoRepository funkoRepository;
     private final FunkoMapperImpl funkoMapperImpl;
+    private final WebSocketConfig webSocketConfig;
+    private WebSocketHandler webSocketService;
     private final StorageService storageService;
     private final CategoryService categoryService;
+    private final ObjectMapper mapper;
+    private final FunkoNotificationMapper funkoNotificationMapper;
+
 
     /**
      * Constructor FunkoServiceImpl
      *
-     * @param funkoRepository FunkoRepositoryImpl
-     * @param funkoMapperImpl FunkoMapper
-     * @param storageService  StorageService
-     * @param categoryService CategoryService
+     * @param funkoRepository         FunkoRepositoryImpl
+     * @param funkoMapperImpl         FunkoMapper
+     * @param webSocketConfig         WebSocketConfig
+     * @param storageService          StorageService
+     * @param categoryService         CategoryService
+     * @param funkoNotificationMapper FunkoNotificationMapper
      */
     @Autowired
-    public FunkoServiceImpl(FunkoRepository funkoRepository, FunkoMapperImpl funkoMapperImpl, StorageService storageService, CategoryService categoryService) {
+    public FunkoServiceImpl(FunkoRepository funkoRepository, FunkoMapperImpl funkoMapperImpl,
+                            WebSocketConfig webSocketConfig, StorageService storageService, CategoryService categoryService, FunkoNotificationMapper funkoNotificationMapper) {
         this.funkoRepository = funkoRepository;
         this.funkoMapperImpl = funkoMapperImpl;
+        this.webSocketConfig = webSocketConfig;
+        this.webSocketService = webSocketConfig.webSocketHandler();
         this.storageService = storageService;
         this.categoryService = categoryService;
+        this.funkoNotificationMapper = funkoNotificationMapper;
+        this.mapper = new ObjectMapper();
     }
 
     /**
@@ -120,7 +141,9 @@ public class FunkoServiceImpl implements FunkoService {
     public GetFunkoDTO postFunko(CreateFunkoDTO funko) throws CategoryNotFoundException, CategoryNotValidIDException {
         var category = categoryService.getCategoryById(funko.getCategoryId());
         var f = funkoRepository.save(funkoMapperImpl.toFunko(funko, category));
-        return funkoMapperImpl.toGetFunkoDTO(f);
+        var funkoDTO = funkoMapperImpl.toGetFunkoDTO(f);
+        onChange(Notification.Type.CREATE, funkoDTO);
+        return funkoDTO;
     }
 
     /**
@@ -142,7 +165,9 @@ public class FunkoServiceImpl implements FunkoService {
             Funko f = funkoMapperImpl.toFunko(existingFunko, funko, category);
             f.setId(uuid);
             var modified = funkoRepository.save(f);
-            return funkoMapperImpl.toGetFunkoDTO(modified);
+            var funkoDTO = funkoMapperImpl.toGetFunkoDTO(modified);
+            onChange(Notification.Type.UPDATE, funkoDTO);
+            return funkoDTO;
         } catch (IllegalArgumentException e) {
             throw new FunkoNotValidUUIDException(NOT_VALID_FORMAT_UUID_MSG);
         }
@@ -172,7 +197,9 @@ public class FunkoServiceImpl implements FunkoService {
             opt.get().setId(uuid);
             opt.get().setUpdatedAt(LocalDateTime.now());
             Funko modified = funkoRepository.save(opt.get());
-            return funkoMapperImpl.toGetFunkoDTO(modified);
+            var funkoDTO = funkoMapperImpl.toGetFunkoDTO(modified);
+            onChange(Notification.Type.UPDATE, funkoDTO);
+            return funkoDTO;
         } catch (IllegalArgumentException e) {
             throw new FunkoNotValidUUIDException(NOT_VALID_FORMAT_UUID_MSG);
         }
@@ -194,6 +221,7 @@ public class FunkoServiceImpl implements FunkoService {
                 throw new FunkoNotFoundException(FUNKO_NOT_FOUND_MSG);
             }
             funkoRepository.delete(opt.get());
+            onChange(Notification.Type.DELETE, funkoMapperImpl.toGetFunkoDTO(opt.get()));
         } catch (IllegalArgumentException e) {
             throw new FunkoNotValidUUIDException(NOT_VALID_FORMAT_UUID_MSG);
         }
@@ -216,6 +244,43 @@ public class FunkoServiceImpl implements FunkoService {
                     .build());
         } catch (IllegalArgumentException e) {
             throw new FunkoNotValidUUIDException(NOT_VALID_FORMAT_UUID_MSG);
+        }
+    }
+
+    /**
+     * Método para enviar una notificación a los clientes ws
+     *
+     * @param type Tipo de notificación
+     * @param data Datos de la notificación
+     */
+    void onChange(Notification.Type type, GetFunkoDTO data) {
+        log.debug("Servicio de productos onChange con tipo: " + type + " y datos: " + data);
+        if (webSocketService == null) {
+            log.warn("No se ha podido enviar la notificación a los clientes ws, no se ha encontrado el servicio");
+            webSocketService = this.webSocketConfig.webSocketHandler();
+        }
+
+        try {
+            Notification<FunkoNotificationResponse> notification = new Notification<>(
+                    "FUNKOS",
+                    type,
+                    funkoNotificationMapper.toFunkoNotificationDto(data),
+                    LocalDateTime.now().toString()
+            );
+
+            String json = mapper.writeValueAsString(notification);
+
+            log.info("Enviando mensaje a los clientes ws");
+            Thread senderThread = new Thread(() -> {
+                try {
+                    webSocketService.sendMessage(json);
+                } catch (Exception e) {
+                    log.error("Error al enviar el mensaje a través del servicio WebSocket", e);
+                }
+            });
+            senderThread.start();
+        } catch (JsonProcessingException e) {
+            log.error("Error al convertir la notificación a JSON", e);
         }
     }
 }
