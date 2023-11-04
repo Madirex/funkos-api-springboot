@@ -1,6 +1,7 @@
 package com.madirex.funkosspringrest.funko;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.madirex.funkosspringrest.dto.funko.CreateFunkoDTO;
 import com.madirex.funkosspringrest.dto.funko.GetFunkoDTO;
 import com.madirex.funkosspringrest.dto.funko.PatchFunkoDTO;
@@ -9,7 +10,6 @@ import com.madirex.funkosspringrest.exceptions.funko.FunkoNotValidUUIDException;
 import com.madirex.funkosspringrest.models.Category;
 import com.madirex.funkosspringrest.services.funko.FunkoServiceImpl;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -18,19 +18,19 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doThrow;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -66,10 +66,16 @@ class FunkoControllerImplTest {
             .build();
     String endpoint = "/api/funkos";
 
+    @Autowired
+    public FunkoControllerImplTest(FunkoServiceImpl service) {
+        this.service = service;
+        mapper.registerModule(new JavaTimeModule());
+    }
+
     @Test
     void testGetAll() throws Exception {
         var funkoList = List.of(funko, funko2);
-        Mockito.when(service.getAllFunko()).thenReturn(funkoList);
+        when(service.getAllFunko()).thenReturn(funkoList);
         MockHttpServletResponse response = mockMvc.perform(get(endpoint)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -88,7 +94,7 @@ class FunkoControllerImplTest {
     void testGetFilteredByCategory() throws Exception {
         var category = "Superhéroes";
         var funkoList = List.of(funko, funko2);
-        Mockito.when(service.getAllFunkoFilterByCategory(service.getAllFunko(), category)).thenReturn(funkoList);
+        when(service.getAllFunkoFilterByCategory(service.getAllFunko(), category)).thenReturn(funkoList);
         MockHttpServletResponse response = mockMvc.perform(get(endpoint)
                         .param("category", category)
                         .accept(MediaType.APPLICATION_JSON))
@@ -103,7 +109,7 @@ class FunkoControllerImplTest {
 
     @Test
     void testFindById() throws Exception {
-        Mockito.when(service.getFunkoById(funko.getId().toString())).thenReturn(funko);
+        when(service.getFunkoById(funko.getId().toString())).thenReturn(funko);
         MockHttpServletResponse response = mockMvc.perform(
                         get(endpoint + "/{id}", funko.getId().toString())
                                 .accept(MediaType.APPLICATION_JSON))
@@ -120,7 +126,7 @@ class FunkoControllerImplTest {
 
     @Test
     void testFindByIdNotValidUUID() throws Exception {
-        Mockito.when(service.getFunkoById("()")).thenThrow(new FunkoNotValidUUIDException(""));
+        when(service.getFunkoById("()")).thenThrow(new FunkoNotValidUUIDException(""));
         MockHttpServletResponse response = mockMvc.perform(
                         get(endpoint + "/{id}", "()")
                                 .accept(MediaType.APPLICATION_JSON))
@@ -169,7 +175,7 @@ class FunkoControllerImplTest {
                 .updatedAt(LocalDateTime.now())
                 .build();
 
-        Mockito.when(service.postFunko(newFunko)).thenReturn(createdFunko);
+        when(service.postFunko(newFunko)).thenReturn(createdFunko);
         mockMvc.perform(MockMvcRequestBuilders.post(endpoint)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(newFunko)))
@@ -200,7 +206,7 @@ class FunkoControllerImplTest {
                 .updatedAt(LocalDateTime.now())
                 .build();
 
-        Mockito.when(service.putFunko(eq(funkId), eq(updatedFunko))).thenReturn(updatedFunkoResponse);
+        when(service.putFunko(eq(funkId), eq(updatedFunko))).thenReturn(updatedFunkoResponse);
 
         mockMvc.perform(MockMvcRequestBuilders.put(endpoint + "/" + funkId)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -245,7 +251,7 @@ class FunkoControllerImplTest {
                 .updatedAt(LocalDateTime.now())
                 .build();
 
-        Mockito.when(service.patchFunko(eq(funkId), eq(patchedFunko))).thenReturn(patchedFunkoResponse);
+        when(service.patchFunko(eq(funkId), eq(patchedFunko))).thenReturn(patchedFunkoResponse);
 
         mockMvc.perform(MockMvcRequestBuilders.patch(endpoint + "/" + funkId)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -266,6 +272,59 @@ class FunkoControllerImplTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(invalidFunko)))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void updateFunkoImage() throws Exception {
+        var myLocalEndpoint = endpoint + "/image/" + funko.getId().toString();
+
+        when(service.updateImage(anyString(), any(MultipartFile.class), anyBoolean())).thenReturn(funko);
+
+        MockMultipartFile file = new MockMultipartFile(
+                "file",
+                "filename.jpg",
+                MediaType.IMAGE_JPEG_VALUE,
+                "contenido del archivo".getBytes()
+        );
+
+        MockHttpServletResponse response = mockMvc.perform(
+                multipart(myLocalEndpoint)
+                        .file(file)
+                        .with(req -> {
+                            req.setMethod("PATCH");
+                            return req;
+                        })
+        ).andReturn().getResponse();
+
+        var res = mapper.readValue(response.getContentAsString(), GetFunkoDTO.class);
+
+        assertAll(
+                () -> assertEquals(200, response.getStatus()),
+                () -> assertEquals(funko.getId(), res.getId())
+        );
+
+        verify(service, times(1)).updateImage(anyString(), any(MultipartFile.class), anyBoolean());
+    }
+
+    @Test
+    void testUpdateFunkoImageNoImageProvided() throws Exception {
+        var myLocalEndpoint = endpoint + "/image/" + funko.getId().toString();
+        when(service.updateImage(anyString(), any(MultipartFile.class), anyBoolean()))
+                .thenReturn(funko); // Esto no se va a invocar debido a la excepción
+
+        MockHttpServletResponse response = mockMvc.perform(
+                multipart(myLocalEndpoint)
+                        .file(new MockMultipartFile("file", "", "text/plain", new byte[0]))
+                        .with(requestPostProcessor -> {
+                            requestPostProcessor.setMethod("PATCH");
+                            return requestPostProcessor;
+                        })
+        ).andReturn().getResponse();
+
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
+        assertTrue(response.getContentAsString().contains("No se ha enviado una imagen para el Funko"));
+
+        verify(service, never()).updateImage(anyString(), any(MultipartFile.class), anyBoolean());
     }
 
 }
