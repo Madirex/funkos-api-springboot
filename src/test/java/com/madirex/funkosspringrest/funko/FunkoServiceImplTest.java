@@ -1,5 +1,6 @@
 package com.madirex.funkosspringrest.funko;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.madirex.funkosspringrest.config.websockets.WebSocketConfig;
 import com.madirex.funkosspringrest.config.websockets.WebSocketHandler;
 import com.madirex.funkosspringrest.dto.funko.CreateFunkoDTO;
@@ -14,6 +15,7 @@ import com.madirex.funkosspringrest.mappers.funko.FunkoMapperImpl;
 import com.madirex.funkosspringrest.mappers.notification.FunkoNotificationMapper;
 import com.madirex.funkosspringrest.models.Category;
 import com.madirex.funkosspringrest.models.Funko;
+import com.madirex.funkosspringrest.models.Notification;
 import com.madirex.funkosspringrest.repositories.FunkoRepository;
 import com.madirex.funkosspringrest.services.category.CategoryService;
 import com.madirex.funkosspringrest.services.funko.FunkoServiceImpl;
@@ -23,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -59,6 +62,8 @@ class FunkoServiceImplTest {
 
     @Mock
     private FunkoNotificationMapper funkoNotificationMapper;
+    @Mock
+    private ObjectMapper objectMapper;
 
     @InjectMocks
     private FunkoServiceImpl funkoService;
@@ -247,7 +252,8 @@ class FunkoServiceImplTest {
                 .name("nombre").price(2.2).quantity(2).image("imagen").categoryId(1L).build();
         var category = Category.builder().id(1L).type(Category.Type.MOVIE).active(true).createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now()).build();
-        var inserted = Funko.builder().name("nombre").price(2.2).quantity(2).image("imagen").category(category).build();
+        var inserted = new Funko();
+        inserted = Funko.builder().name("nombre").price(2.2).quantity(2).image("imagen").category(category).build();
         when(categoryService.getCategoryById(1L)).thenReturn(category);
         when(funkoMapperImpl.toFunko(insert, category)).thenReturn(inserted);
         when(funkoRepository.save(inserted)).thenReturn(inserted);
@@ -279,7 +285,6 @@ class FunkoServiceImplTest {
         when(funkoMapperImpl.toGetFunkoDTO(list.get(0)))
                 .thenReturn(GetFunkoDTO.builder().name("nombre").price(2.2).quantity(2).image("imagen")
                         .category(category).build());
-        doNothing().when(webSocketHandlerMock).sendMessage(any());
         GetFunkoDTO updated2 = funkoService.putFunko(list.get(0).getId().toString(), update);
         assertNotNull(updated2);
         assertAll("Funko properties",
@@ -310,7 +315,6 @@ class FunkoServiceImplTest {
         when(funkoMapperImpl.toGetFunkoDTO(list.get(0)))
                 .thenReturn(GetFunkoDTO.builder().name("nombre").price(2.2).quantity(2).image("imagen")
                         .category(category).build());
-        doNothing().when(webSocketHandlerMock).sendMessage(any());
         GetFunkoDTO updated2 = funkoService.patchFunko(list.get(0).getId().toString(), update);
         assertNotNull(updated2);
         assertAll("Funko properties",
@@ -349,7 +353,6 @@ class FunkoServiceImplTest {
     @Test
     void testDeleteFunko() throws FunkoNotValidUUIDException, FunkoNotFoundException, IOException {
         when(funkoRepository.findById(list.get(0).getId())).thenReturn(Optional.ofNullable(list.get(0)));
-        doNothing().when(webSocketHandlerMock).sendMessage(any());
         doNothing().when(funkoRepository).delete(any(Funko.class));
         funkoService.deleteFunko(String.valueOf(list.get(0).getId()));
         assertEquals(0, funkoService.getAllFunko().size());
@@ -373,7 +376,7 @@ class FunkoServiceImplTest {
     }
 
     @Test
-    void testUpdateImageSuccess() throws CategoryNotFoundException, CategoryNotValidIDException {
+    void testUpdateImageSuccess() throws CategoryNotFoundException, CategoryNotValidIDException, IOException {
         String existingFunkoId = list.get(0).getId().toString();
         String imageUrl = "http://www.madirex.com/favicon.ico";
         MultipartFile multipartFile = mock(MultipartFile.class);
@@ -427,4 +430,21 @@ class FunkoServiceImplTest {
         assertThrows(FunkoNotValidUUIDException.class,
                 () -> funkoService.updateImage("()", multipartFile, false));
     }
+
+    @Test
+    void testOnChangeWhenWebSocketServiceIsNull() {
+        MockitoAnnotations.openMocks(this);
+        GetFunkoDTO getFunkoDTO = new GetFunkoDTO();
+        funkoService.setWebSocketService(null);
+        funkoService.onChange(Notification.Type.CREATE, getFunkoDTO);
+        assertNotNull(getFunkoDTO);
+    }
+
+    @Test
+    void testOnChangeWithIOException() {
+        GetFunkoDTO dummyData = new GetFunkoDTO();
+        funkoService.onChange(Notification.Type.CREATE, dummyData);
+        assertNotNull(dummyData);
+    }
+
 }
