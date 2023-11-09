@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
+import java.io.IOException;
+
 @Configuration
 @Slf4j
 public class StorageConfig {
@@ -17,7 +19,7 @@ public class StorageConfig {
     private String deleteAll;
 
     @PostConstruct
-    public void init() {
+    public void init() throws IOException {
         if (deleteAll.equals("true")) {
             log.info("Borrando ficheros de almacenamiento...");
             storageService.deleteAll();
