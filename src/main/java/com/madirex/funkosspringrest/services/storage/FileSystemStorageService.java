@@ -34,29 +34,25 @@ public class FileSystemStorageService implements StorageService {
     }
 
     @Override
-    public String store(MultipartFile file) {
+    public String store(MultipartFile file) throws IOException {
         String filename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         String extension = StringUtils.getFilenameExtension(filename);
         String justFilename = filename.replace("." + extension, "");
         String storedFilename = System.currentTimeMillis() + "_" + justFilename + "." + extension;
 
-        try {
-            if (file.isEmpty()) {
-                throw new StorageBadRequest("Fichero vacío " + filename);
-            }
-            if (filename.contains("..")) {
-                throw new StorageBadRequest(
-                        "No se puede almacenar un fichero con una ruta relativa fuera del directorio actual "
-                                + filename);
-            }
-            try (InputStream inputStream = file.getInputStream()) {
-                log.info("Almacenando fichero " + filename + " como " + storedFilename);
-                Files.copy(inputStream, this.rootLocation.resolve(storedFilename),
-                        StandardCopyOption.REPLACE_EXISTING);
-                return storedFilename;
-            }
-        } catch (IOException e) {
-            throw new StorageInternal("Fallo al almacenar fichero " + filename + " " + e);
+        if (file.isEmpty()) {
+            throw new StorageBadRequest("Fichero vacío " + filename);
+        }
+        if (filename.contains("..")) {
+            throw new StorageBadRequest(
+                    "No se puede almacenar un fichero con una ruta relativa fuera del directorio actual "
+                            + filename);
+        }
+        try (InputStream inputStream = file.getInputStream()) {
+            log.info("Almacenando fichero " + filename + " como " + storedFilename);
+            Files.copy(inputStream, this.rootLocation.resolve(storedFilename),
+                    StandardCopyOption.REPLACE_EXISTING);
+            return storedFilename;
         }
     }
 
@@ -101,25 +97,17 @@ public class FileSystemStorageService implements StorageService {
     }
 
     @Override
-    public void init() {
+    public void init() throws IOException {
         log.info("Inicializando almacenamiento");
-        try {
-            Files.createDirectories(rootLocation);
-        } catch (IOException e) {
-            throw new StorageInternal("No se puede inicializar el almacenamiento " + e);
-        }
+        Files.createDirectories(rootLocation);
     }
 
     @Override
-    public void delete(String filename) {
+    public void delete(String filename) throws IOException {
         String justFilename = StringUtils.getFilename(filename);
-        try {
-            log.info("Eliminando fichero " + filename);
-            Path file = load(justFilename);
-            Files.deleteIfExists(file);
-        } catch (IOException e) {
-            throw new StorageInternal("No se puede eliminar el fichero " + filename + " " + e);
-        }
+        log.info("Eliminando fichero " + filename);
+        Path file = load(justFilename);
+        Files.deleteIfExists(file);
     }
 
     @Override
