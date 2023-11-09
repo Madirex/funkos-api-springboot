@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 
 @RestController
 @Slf4j
@@ -33,7 +34,7 @@ public class StorageController {
      */
     @GetMapping(value = "{filename:.+}")
     @ResponseBody
-    public ResponseEntity<Resource> serveFile(@PathVariable String filename, HttpServletRequest request) {
+    public ResponseEntity<Resource> serveFile(@PathVariable String filename, HttpServletRequest request) throws MalformedURLException {
         Resource file = storageService.loadAsResource(filename);
         String contentType = null;
         try {

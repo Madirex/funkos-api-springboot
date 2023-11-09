@@ -142,7 +142,7 @@ public class FunkoServiceImpl implements FunkoService {
      */
     @CachePut(key = "#result.id")
     @Override
-    public GetFunkoDTO postFunko(CreateFunkoDTO funko) throws CategoryNotFoundException, CategoryNotValidIDException {
+    public GetFunkoDTO postFunko(CreateFunkoDTO funko) throws CategoryNotFoundException, CategoryNotValidIDException, JsonProcessingException {
         var category = categoryService.getCategoryById(funko.getCategoryId());
         var f = funkoRepository.save(funkoMapperImpl.toFunko(funko, category));
         var funkoDTO = funkoMapperImpl.toGetFunkoDTO(f);
@@ -164,7 +164,7 @@ public class FunkoServiceImpl implements FunkoService {
     @CachePut(key = "#result.id")
     @Override
     public GetFunkoDTO putFunko(String id, UpdateFunkoDTO funko) throws FunkoNotValidUUIDException,
-            CategoryNotFoundException, CategoryNotValidIDException, FunkoNotFoundException {
+            CategoryNotFoundException, CategoryNotValidIDException, FunkoNotFoundException, JsonProcessingException {
         try {
             UUID uuid = UUID.fromString(id);
             Funko existingFunko = funkoRepository.findById(UUID.fromString(id))
@@ -194,7 +194,7 @@ public class FunkoServiceImpl implements FunkoService {
      */
     @CachePut(key = "#result.id")
     @Override
-    public GetFunkoDTO patchFunko(String id, PatchFunkoDTO funko) throws FunkoNotValidUUIDException, FunkoNotFoundException, CategoryNotFoundException, CategoryNotValidIDException {
+    public GetFunkoDTO patchFunko(String id, PatchFunkoDTO funko) throws FunkoNotValidUUIDException, FunkoNotFoundException, CategoryNotFoundException, CategoryNotValidIDException, JsonProcessingException {
         try {
             UUID uuid = UUID.fromString(id);
             var opt = funkoRepository.findById(uuid);
@@ -222,7 +222,7 @@ public class FunkoServiceImpl implements FunkoService {
      */
     @CacheEvict(key = "#id")
     @Override
-    public void deleteFunko(String id) throws FunkoNotFoundException, FunkoNotValidUUIDException {
+    public void deleteFunko(String id) throws FunkoNotFoundException, FunkoNotValidUUIDException, JsonProcessingException {
         try {
             UUID uuid = UUID.fromString(id);
             var opt = funkoRepository.findById(uuid);
@@ -275,34 +275,23 @@ public class FunkoServiceImpl implements FunkoService {
      * @param type Tipo de notificación
      * @param data Datos de la notificación
      */
-    public void onChange(Notification.Type type, GetFunkoDTO data) {
+    public void onChange(Notification.Type type, GetFunkoDTO data) throws JsonProcessingException {
         log.debug("Servicio de productos onChange con tipo: " + type + " y datos: " + data);
         if (webSocketService == null) {
             log.warn("No se ha podido enviar la notificación a los clientes ws, no se ha encontrado el servicio");
             webSocketService = this.webSocketConfig.webSocketHandler();
         }
+        Notification<FunkoNotificationResponse> notification = new Notification<>(
+                "FUNKOS",
+                type,
+                funkoNotificationMapper.toFunkoNotificationDto(data),
+                LocalDateTime.now().toString()
+        );
 
-        try {
-            Notification<FunkoNotificationResponse> notification = new Notification<>(
-                    "FUNKOS",
-                    type,
-                    funkoNotificationMapper.toFunkoNotificationDto(data),
-                    LocalDateTime.now().toString()
-            );
+        String json = mapper.writeValueAsString(notification);
 
-            String json = mapper.writeValueAsString(notification);
-
-            log.info("Enviando mensaje a los clientes ws");
-            Thread senderThread = new Thread(() -> {
-                try {
-                    webSocketService.sendMessage(json);
-                } catch (IOException e) {
-                    log.error("Error al enviar el mensaje a través del servicio WebSocket", e);
-                }
-            });
-            senderThread.start();
-        } catch (JsonProcessingException e) {
-            log.error("Error al convertir la notificación a JSON", e);
-        }
+        log.info("Enviando mensaje a los clientes ws");
+        Thread senderThread = new Thread(() -> webSocketService.sendMessage(json));
+        senderThread.start();
     }
 }

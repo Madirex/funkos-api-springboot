@@ -57,15 +57,18 @@ public class WebSocketHandler extends TextWebSocketHandler implements SubProtoco
      * Envía un mensaje a todos los clientes conectados
      *
      * @param message Mensaje a enviar
-     * @throws IOException Error al enviar el mensaje
      */
     @Override
-    public void sendMessage(String message) throws IOException {
+    public void sendMessage(String message) {
         log.info("Enviar mensaje de cambios en la entidad: " + entity + " : " + message);
         for (WebSocketSession session : sessions) {
             if (session.isOpen()) {
                 log.info("Servidor WS envía: " + message);
-                session.sendMessage(new TextMessage(message));
+                try {
+                    session.sendMessage(new TextMessage(message));
+                } catch (IOException e) {
+                    log.error("Error al enviar el mensaje a través del servicio WebSocket", e);
+                }
             }
         }
     }

@@ -75,18 +75,14 @@ public class FileSystemStorageService implements StorageService {
     }
 
     @Override
-    public Resource loadAsResource(String filename) {
+    public Resource loadAsResource(String filename) throws MalformedURLException {
         log.info("Cargando fichero " + filename);
-        try {
-            Path file = load(filename);
-            Resource resource = new UrlResource(file.toUri());
-            if (resource.exists() || resource.isReadable()) {
-                return resource;
-            } else {
-                throw new StorageNotFound("No se puede leer el fichero: " + filename);
-            }
-        } catch (MalformedURLException e) {
-            throw new StorageNotFound("No se puede leer el fichero: " + filename + " " + e);
+        Path file = load(filename);
+        Resource resource = new UrlResource(file.toUri());
+        if (resource.exists() || resource.isReadable()) {
+            return resource;
+        } else {
+            throw new StorageNotFound("No se puede leer el fichero: " + filename);
         }
     }
 

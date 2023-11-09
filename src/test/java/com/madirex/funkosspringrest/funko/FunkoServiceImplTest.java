@@ -1,5 +1,6 @@
 package com.madirex.funkosspringrest.funko;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.madirex.funkosspringrest.config.websockets.WebSocketConfig;
 import com.madirex.funkosspringrest.config.websockets.WebSocketHandler;
@@ -431,7 +432,7 @@ class FunkoServiceImplTest {
     }
 
     @Test
-    void testOnChangeWhenWebSocketServiceIsNull() {
+    void testOnChangeWhenWebSocketServiceIsNull() throws JsonProcessingException {
         MockitoAnnotations.openMocks(this);
         GetFunkoDTO getFunkoDTO = new GetFunkoDTO();
         funkoService.setWebSocketService(null);
@@ -440,7 +441,7 @@ class FunkoServiceImplTest {
     }
 
     @Test
-    void testOnChangeWithIOException() {
+    void testOnChangeWithIOException() throws JsonProcessingException {
         GetFunkoDTO dummyData = new GetFunkoDTO();
         funkoService.onChange(Notification.Type.CREATE, dummyData);
         assertNotNull(dummyData);
