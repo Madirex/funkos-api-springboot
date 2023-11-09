@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 /**
- * Class PatchFunkoDTO
+ * Class CreateFunkoDTO
  */
 @Getter
 @Builder

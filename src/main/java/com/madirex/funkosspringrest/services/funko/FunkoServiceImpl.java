@@ -34,6 +34,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -87,7 +88,8 @@ public class FunkoServiceImpl implements FunkoService {
     /**
      * Obtiene todos los Funkos filtrados por categoría
      *
-     * @param category Categoría por la que filtrar
+     * @param funkoList Lista de Funkos
+     * @param category  Categoría por la que filtrar
      * @return Lista de Funkos filtrados por categoría
      */
     @Cacheable
@@ -154,11 +156,15 @@ public class FunkoServiceImpl implements FunkoService {
      * @param id    UUID del Funko a actualizar
      * @param funko UpdateFunkoDTO con los datos a actualizar
      * @return Funko actualizado
-     * @throws FunkoNotValidUUIDException Si el UUID no tiene un formato válido
+     * @throws FunkoNotValidUUIDException  Si el UUID no tiene un formato válido
+     * @throws CategoryNotFoundException   Si no se ha encontrado la categoría con el ID indicado
+     * @throws CategoryNotValidIDException Si el ID no tiene un formato válido
+     * @throws FunkoNotFoundException      Si no se ha encontrado el Funko con el UUID indicado
      */
     @CachePut(key = "#result.id")
     @Override
-    public GetFunkoDTO putFunko(String id, UpdateFunkoDTO funko) throws FunkoNotValidUUIDException, CategoryNotFoundException, CategoryNotValidIDException, FunkoNotFoundException {
+    public GetFunkoDTO putFunko(String id, UpdateFunkoDTO funko) throws FunkoNotValidUUIDException,
+            CategoryNotFoundException, CategoryNotValidIDException, FunkoNotFoundException {
         try {
             UUID uuid = UUID.fromString(id);
             Funko existingFunko = funkoRepository.findById(UUID.fromString(id))
@@ -211,7 +217,8 @@ public class FunkoServiceImpl implements FunkoService {
      * Elimina un Funko
      *
      * @param id UUID del Funko a eliminar
-     * @throws FunkoNotFoundException Si no se ha encontrado el Funko con el UUID indicado
+     * @throws FunkoNotFoundException     Si no se ha encontrado el Funko con el UUID indicado
+     * @throws FunkoNotValidUUIDException Si el UUID no tiene un formato válido
      */
     @CacheEvict(key = "#id")
     @Override
@@ -229,10 +236,23 @@ public class FunkoServiceImpl implements FunkoService {
         }
     }
 
+    /**
+     * Actualiza la imagen de un Funko
+     *
+     * @param id      UUID del Funko a actualizar
+     * @param image   Imagen a actualizar
+     * @param withUrl Si se quiere devolver la URL de la imagen
+     * @return Funko actualizado
+     * @throws FunkoNotFoundException      Si no se ha encontrado el Funko con el UUID indicado
+     * @throws FunkoNotValidUUIDException  Si el UUID no tiene un formato válido
+     * @throws CategoryNotFoundException   Si no se ha encontrado la categoría con el ID indicado
+     * @throws CategoryNotValidIDException Si el ID no tiene un formato válido
+     */
     @Override
     @CachePut(key = "#result.id")
     @Transactional
-    public GetFunkoDTO updateImage(String id, MultipartFile image, Boolean withUrl) throws FunkoNotFoundException, FunkoNotValidUUIDException, CategoryNotFoundException, CategoryNotValidIDException {
+    public GetFunkoDTO updateImage(String id, MultipartFile image, Boolean withUrl) throws FunkoNotFoundException,
+            FunkoNotValidUUIDException, CategoryNotFoundException, CategoryNotValidIDException, IOException {
         try {
             UUID uuid = UUID.fromString(id);
             var actualFunko = funkoRepository.findById(uuid).orElseThrow(() -> new FunkoNotFoundException(id));
@@ -255,7 +275,7 @@ public class FunkoServiceImpl implements FunkoService {
      * @param type Tipo de notificación
      * @param data Datos de la notificación
      */
-    void onChange(Notification.Type type, GetFunkoDTO data) {
+    public void onChange(Notification.Type type, GetFunkoDTO data) {
         log.debug("Servicio de productos onChange con tipo: " + type + " y datos: " + data);
         if (webSocketService == null) {
             log.warn("No se ha podido enviar la notificación a los clientes ws, no se ha encontrado el servicio");
@@ -276,7 +296,7 @@ public class FunkoServiceImpl implements FunkoService {
             Thread senderThread = new Thread(() -> {
                 try {
                     webSocketService.sendMessage(json);
-                } catch (Exception e) {
+                } catch (IOException e) {
                     log.error("Error al enviar el mensaje a través del servicio WebSocket", e);
                 }
             });

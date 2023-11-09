@@ -20,7 +20,8 @@ public class FunkoMapperImpl implements FunkoMapper {
     /**
      * Mapea un CreateFunkoDTO en Funko
      *
-     * @param dto CreateFunkoDTO a mapear
+     * @param dto      CreateFunkoDTO a mapear
+     * @param category Category a mapear
      * @return Funko mapeado
      */
     public Funko toFunko(CreateFunkoDTO dto, Category category) {
@@ -38,7 +39,9 @@ public class FunkoMapperImpl implements FunkoMapper {
     /**
      * Mapea un UpdateFunkoDTO en Funko
      *
-     * @param dto UpdateFunkoDTO a mapear
+     * @param funko    Funko a mapear
+     * @param dto      UpdateFunkoDTO a mapear
+     * @param category Category a mapear
      * @return Funko mapeado
      */
     public Funko toFunko(Funko funko, UpdateFunkoDTO dto, Category category) {

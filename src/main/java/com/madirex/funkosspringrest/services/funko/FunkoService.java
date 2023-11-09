@@ -11,6 +11,7 @@ import com.madirex.funkosspringrest.exceptions.funko.FunkoNotValidUUIDException;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -29,5 +30,5 @@ public interface FunkoService {
 
     void deleteFunko(String id) throws FunkoNotFoundException, FunkoNotValidUUIDException;
 
-    GetFunkoDTO updateImage(String id, MultipartFile image, Boolean withUrl) throws FunkoNotFoundException, FunkoNotValidUUIDException, CategoryNotFoundException, CategoryNotValidIDException;
+    GetFunkoDTO updateImage(String id, MultipartFile image, Boolean withUrl) throws FunkoNotFoundException, FunkoNotValidUUIDException, CategoryNotFoundException, CategoryNotValidIDException, IOException;
 }

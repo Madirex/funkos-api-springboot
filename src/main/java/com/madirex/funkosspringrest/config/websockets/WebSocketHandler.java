@@ -105,6 +105,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements SubProtoco
      *
      * @return Lista de subprotocolos
      */
+    @NonNull
     @Override
     public List<String> getSubProtocols() {
         return List.of("subprotocol.demo.websocket");

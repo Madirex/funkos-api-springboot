@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -186,7 +187,7 @@ public class FunkoRestControllerImpl implements FunkoRestController {
     @PatchMapping(value = "/image/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<GetFunkoDTO> newFunkoImg(
             @PathVariable String id,
-            @RequestPart("file") MultipartFile file) throws FunkoNotValidUUIDException, CategoryNotFoundException, FunkoNotFoundException, CategoryNotValidIDException {
+            @RequestPart("file") MultipartFile file) throws FunkoNotValidUUIDException, CategoryNotFoundException, FunkoNotFoundException, CategoryNotValidIDException, IOException {
         if (!file.isEmpty()) {
             return ResponseEntity.ok(service.updateImage(id, file, true));
         } else {
