@@ -260,7 +260,6 @@ class FunkoServiceImplTest {
         when(funkoMapperImpl.toGetFunkoDTO(inserted))
                 .thenReturn(GetFunkoDTO.builder().name("nombre").price(2.2).quantity(2).image("imagen")
                         .category(category).build());
-        doNothing().when(webSocketHandlerMock).sendMessage(any());
         GetFunkoDTO inserted2 = funkoService.postFunko(insert);
         assertNotNull(inserted2);
         assertAll("Funko properties",
