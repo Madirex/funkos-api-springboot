@@ -21,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -34,11 +35,11 @@ public class FileSystemStorageService implements StorageService {
     }
 
     @Override
-    public String store(MultipartFile file) throws IOException {
+    public String store(MultipartFile file, List<String> fileTypes, String name) throws IOException {
         String filename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         String extension = StringUtils.getFilenameExtension(filename);
         String justFilename = filename.replace("." + extension, "");
-        String storedFilename = System.currentTimeMillis() + "_" + justFilename + "." + extension;
+        String storedFilename = name + "." + extension;
 
         if (file.isEmpty()) {
             throw new StorageBadRequest("Fichero vacío " + filename);
@@ -48,11 +49,39 @@ public class FileSystemStorageService implements StorageService {
                     "No se puede almacenar un fichero con una ruta relativa fuera del directorio actual "
                             + filename);
         }
+        if (fileTypes != null && !fileTypes.isEmpty() && (!fileTypes.contains(extension) ||
+                !fileTypes.contains(detectFileType(file.getBytes())))) {
+            throw new StorageBadRequest("Tipo de fichero no permitido " + filename);
+        }
         try (InputStream inputStream = file.getInputStream()) {
             log.info("Almacenando fichero " + filename + " como " + storedFilename);
             Files.copy(inputStream, this.rootLocation.resolve(storedFilename),
                     StandardCopyOption.REPLACE_EXISTING);
             return storedFilename;
+        }
+    }
+
+    private String detectFileType(byte[] bytes) {
+        if (bytes.length >= 2 && bytes[0] == (byte) 0xFF && bytes[1] == (byte) 0xD8) {
+            return "jpeg";
+        } else if (bytes.length >= 8 &&
+                bytes[0] == (byte) 0x89 &&
+                bytes[1] == (byte) 0x50 &&
+                bytes[2] == (byte) 0x4E &&
+                bytes[3] == (byte) 0x47 &&
+                bytes[4] == (byte) 0x0D &&
+                bytes[5] == (byte) 0x0A &&
+                bytes[6] == (byte) 0x1A &&
+                bytes[7] == (byte) 0x0A) {
+            return "png";
+        } else if (bytes.length >= 6 &&
+                bytes[0] == (byte) 0x47 &&
+                bytes[1] == (byte) 0x49 &&
+                bytes[2] == (byte) 0x46 &&
+                bytes[3] == (byte) 0x38) {
+            return "gif";
+        } else {
+            return "application/octet-stream";
         }
     }
 

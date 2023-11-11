@@ -34,11 +34,10 @@ public class StorageController {
      */
     @GetMapping(value = "{filename:.+}")
     @ResponseBody
-    public ResponseEntity<Resource> serveFile(@PathVariable String filename, HttpServletRequest request) throws MalformedURLException {
-        Resource file = storageService.loadAsResource(filename);
-        String contentType = null;
+    public ResponseEntity<Resource> serveFile(@PathVariable String filename, HttpServletRequest request) {
         try {
-            contentType = request.getServletContext().getMimeType(file.getFile().getAbsolutePath());
+            Resource file = storageService.loadAsResource(filename);
+            String contentType = request.getServletContext().getMimeType(file.getFile().getAbsolutePath());
             return ResponseEntity.ok()
                     .contentType(MediaType.parseMediaType(contentType))
                     .body(file);
