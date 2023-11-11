@@ -4,6 +4,7 @@ import com.madirex.funkosspringrest.controllers.storage.StorageController;
 import com.madirex.funkosspringrest.exceptions.storage.StorageBadRequest;
 import com.madirex.funkosspringrest.exceptions.storage.StorageInternal;
 import com.madirex.funkosspringrest.exceptions.storage.StorageNotFound;
+import com.madirex.funkosspringrest.utils.Util;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -38,7 +39,6 @@ public class FileSystemStorageService implements StorageService {
     public String store(MultipartFile file, List<String> fileTypes, String name) throws IOException {
         String filename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         String extension = StringUtils.getFilenameExtension(filename);
-        String justFilename = filename.replace("." + extension, "");
         String storedFilename = name + "." + extension;
 
         if (file.isEmpty()) {
@@ -50,7 +50,7 @@ public class FileSystemStorageService implements StorageService {
                             + filename);
         }
         if (fileTypes != null && !fileTypes.isEmpty() && (!fileTypes.contains(extension) ||
-                !fileTypes.contains(detectFileType(file.getBytes())))) {
+                !fileTypes.contains(Util.detectFileType(file.getBytes())))) {
             throw new StorageBadRequest("Tipo de fichero no permitido " + filename);
         }
         try (InputStream inputStream = file.getInputStream()) {
@@ -58,30 +58,6 @@ public class FileSystemStorageService implements StorageService {
             Files.copy(inputStream, this.rootLocation.resolve(storedFilename),
                     StandardCopyOption.REPLACE_EXISTING);
             return storedFilename;
-        }
-    }
-
-    private String detectFileType(byte[] bytes) {
-        if (bytes.length >= 2 && bytes[0] == (byte) 0xFF && bytes[1] == (byte) 0xD8) {
-            return "jpeg";
-        } else if (bytes.length >= 8 &&
-                bytes[0] == (byte) 0x89 &&
-                bytes[1] == (byte) 0x50 &&
-                bytes[2] == (byte) 0x4E &&
-                bytes[3] == (byte) 0x47 &&
-                bytes[4] == (byte) 0x0D &&
-                bytes[5] == (byte) 0x0A &&
-                bytes[6] == (byte) 0x1A &&
-                bytes[7] == (byte) 0x0A) {
-            return "png";
-        } else if (bytes.length >= 6 &&
-                bytes[0] == (byte) 0x47 &&
-                bytes[1] == (byte) 0x49 &&
-                bytes[2] == (byte) 0x46 &&
-                bytes[3] == (byte) 0x38) {
-            return "gif";
-        } else {
-            return "application/octet-stream";
         }
     }
 
