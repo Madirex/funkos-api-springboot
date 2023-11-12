@@ -10,7 +10,7 @@ import com.madirex.funkosspringrest.dto.funko.PatchFunkoDTO;
 import com.madirex.funkosspringrest.dto.funko.UpdateFunkoDTO;
 import com.madirex.funkosspringrest.dto.notification.FunkoNotificationResponse;
 import com.madirex.funkosspringrest.exceptions.category.CategoryNotFoundException;
-import com.madirex.funkosspringrest.exceptions.category.CategoryNotValidIDException;
+import com.madirex.funkosspringrest.exceptions.category.CategoryNotValidException;
 import com.madirex.funkosspringrest.exceptions.funko.FunkoNotFoundException;
 import com.madirex.funkosspringrest.exceptions.funko.FunkoNotValidUUIDException;
 import com.madirex.funkosspringrest.mappers.funko.FunkoMapperImpl;
@@ -30,6 +30,10 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,6 +41,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -86,29 +91,45 @@ public class FunkoServiceImpl implements FunkoService {
     }
 
     /**
-     * Obtiene todos los Funkos filtrados por categoría
-     *
-     * @param funkoList Lista de Funkos
-     * @param category  Categoría por la que filtrar
-     * @return Lista de Funkos filtrados por categoría
-     */
-    @Cacheable
-    public List<GetFunkoDTO> getAllFunkoFilterByCategory(List<GetFunkoDTO> funkoList, String category) {
-        return funkoList.stream()
-                .filter(f -> f.getCategory() != null && f.getCategory().getType().name().equalsIgnoreCase(category))
-                .toList();
-    }
-
-    /**
      * Obtiene todos los Funkos
      *
+     * @param category    Categoría por la que filtrar
+     * @param maxPrice    Precio máximo por el que filtrar
+     * @param maxQuantity Cantidad máxima por la que filtrar
+     * @param pageable    Paginación
      * @return Lista de Funkos
      */
     @Cacheable
     @Override
-    public List<GetFunkoDTO> getAllFunko() {
-        var list = funkoRepository.findAll();
-        return funkoMapperImpl.toFunkoList(list);
+    public Page<GetFunkoDTO> getAllFunko(Optional<String> category, Optional<Double> maxPrice,
+                                         Optional<Integer> maxQuantity, PageRequest pageable) {
+        Specification<Funko> specType = (root, query, criteriaBuilder) ->
+                category.map(m -> {
+                    try {
+                        return criteriaBuilder.equal(root.get("category").get("type"), Category.Type.valueOf(m.toUpperCase()));
+                    } catch (IllegalArgumentException e) {
+                        return criteriaBuilder.isTrue(criteriaBuilder.literal(false));
+                    }
+                }).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
+
+        Specification<Funko> specMaxPrice = (root, query, criteriaBuilder) ->
+                maxPrice.map(p -> criteriaBuilder.lessThanOrEqualTo(root.get("price"), p))
+                        .orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
+
+        Specification<Funko> specMaxQuantity = (root, query, criteriaBuilder) ->
+                maxQuantity.map(p -> criteriaBuilder.lessThanOrEqualTo(root.get("quantity"), p))
+                        .orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
+
+        Specification<Funko> criterion = Specification.where(specType)
+                .and(specMaxPrice)
+                .and(specMaxQuantity);
+
+        Page<Funko> funkoPage = funkoRepository.findAll(criterion, pageable);
+        List<GetFunkoDTO> dtoList = funkoPage.getContent().stream()
+                .map(funkoMapperImpl::toGetFunkoDTO)
+                .toList();
+
+        return new PageImpl<>(dtoList, funkoPage.getPageable(), funkoPage.getTotalElements());
     }
 
     /**
@@ -137,12 +158,12 @@ public class FunkoServiceImpl implements FunkoService {
      *
      * @param funko CreateFunkoDTO con los datos del Funko a crear
      * @return Funko creado
-     * @throws CategoryNotFoundException   Si no se ha encontrado la categoría con el ID indicado
-     * @throws CategoryNotValidIDException Si el ID no tiene un formato válido
+     * @throws CategoryNotFoundException Si no se ha encontrado la categoría con el ID indicado
+     * @throws CategoryNotValidException Si el ID no tiene un formato válido
      */
     @CachePut(key = "#result.id")
     @Override
-    public GetFunkoDTO postFunko(CreateFunkoDTO funko) throws CategoryNotFoundException, CategoryNotValidIDException, JsonProcessingException {
+    public GetFunkoDTO postFunko(CreateFunkoDTO funko) throws CategoryNotFoundException, CategoryNotValidException, JsonProcessingException {
         var category = categoryService.getCategoryById(funko.getCategoryId());
         var f = funkoRepository.save(funkoMapperImpl.toFunko(funko, category));
         var funkoDTO = funkoMapperImpl.toGetFunkoDTO(f);
@@ -156,15 +177,15 @@ public class FunkoServiceImpl implements FunkoService {
      * @param id    UUID del Funko a actualizar
      * @param funko UpdateFunkoDTO con los datos a actualizar
      * @return Funko actualizado
-     * @throws FunkoNotValidUUIDException  Si el UUID no tiene un formato válido
-     * @throws CategoryNotFoundException   Si no se ha encontrado la categoría con el ID indicado
-     * @throws CategoryNotValidIDException Si el ID no tiene un formato válido
-     * @throws FunkoNotFoundException      Si no se ha encontrado el Funko con el UUID indicado
+     * @throws FunkoNotValidUUIDException Si el UUID no tiene un formato válido
+     * @throws CategoryNotFoundException  Si no se ha encontrado la categoría con el ID indicado
+     * @throws CategoryNotValidException  Si el ID no tiene un formato válido
+     * @throws FunkoNotFoundException     Si no se ha encontrado el Funko con el UUID indicado
      */
     @CachePut(key = "#result.id")
     @Override
     public GetFunkoDTO putFunko(String id, UpdateFunkoDTO funko) throws FunkoNotValidUUIDException,
-            CategoryNotFoundException, CategoryNotValidIDException, FunkoNotFoundException, JsonProcessingException {
+            CategoryNotFoundException, CategoryNotValidException, FunkoNotFoundException, JsonProcessingException {
         try {
             UUID uuid = UUID.fromString(id);
             Funko existingFunko = funkoRepository.findById(UUID.fromString(id))
@@ -187,14 +208,14 @@ public class FunkoServiceImpl implements FunkoService {
      * @param id    UUID del Funko a actualizar
      * @param funko Funko con los datos a actualizar
      * @return Funko actualizado
-     * @throws FunkoNotValidUUIDException  Si el UUID no tiene un formato válido
-     * @throws FunkoNotFoundException      Si no se ha encontrado el Funko con el UUID indicado
-     * @throws CategoryNotFoundException   Si no se ha encontrado la categoría con el ID indicado
-     * @throws CategoryNotValidIDException Si el ID no tiene un formato válido
+     * @throws FunkoNotValidUUIDException Si el UUID no tiene un formato válido
+     * @throws FunkoNotFoundException     Si no se ha encontrado el Funko con el UUID indicado
+     * @throws CategoryNotFoundException  Si no se ha encontrado la categoría con el ID indicado
+     * @throws CategoryNotValidException  Si el ID no tiene un formato válido
      */
     @CachePut(key = "#result.id")
     @Override
-    public GetFunkoDTO patchFunko(String id, PatchFunkoDTO funko) throws FunkoNotValidUUIDException, FunkoNotFoundException, CategoryNotFoundException, CategoryNotValidIDException, JsonProcessingException {
+    public GetFunkoDTO patchFunko(String id, PatchFunkoDTO funko) throws FunkoNotValidUUIDException, FunkoNotFoundException, CategoryNotFoundException, CategoryNotValidException, JsonProcessingException {
         try {
             UUID uuid = UUID.fromString(id);
             var opt = funkoRepository.findById(uuid);
@@ -243,16 +264,16 @@ public class FunkoServiceImpl implements FunkoService {
      * @param image   Imagen a actualizar
      * @param withUrl Si se quiere devolver la URL de la imagen
      * @return Funko actualizado
-     * @throws FunkoNotFoundException      Si no se ha encontrado el Funko con el UUID indicado
-     * @throws FunkoNotValidUUIDException  Si el UUID no tiene un formato válido
-     * @throws CategoryNotFoundException   Si no se ha encontrado la categoría con el ID indicado
-     * @throws CategoryNotValidIDException Si el ID no tiene un formato válido
+     * @throws FunkoNotFoundException     Si no se ha encontrado el Funko con el UUID indicado
+     * @throws FunkoNotValidUUIDException Si el UUID no tiene un formato válido
+     * @throws CategoryNotFoundException  Si no se ha encontrado la categoría con el ID indicado
+     * @throws CategoryNotValidException  Si el ID no tiene un formato válido
      */
     @Override
     @CachePut(key = "#result.id")
     @Transactional
     public GetFunkoDTO updateImage(String id, MultipartFile image, Boolean withUrl) throws FunkoNotFoundException,
-            FunkoNotValidUUIDException, CategoryNotFoundException, CategoryNotValidIDException, IOException {
+            FunkoNotValidUUIDException, CategoryNotFoundException, CategoryNotValidException, IOException {
         try {
             UUID uuid = UUID.fromString(id);
             var actualFunko = funkoRepository.findById(uuid).orElseThrow(() -> new FunkoNotFoundException(id));
