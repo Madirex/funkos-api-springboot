@@ -4,7 +4,6 @@ import com.madirex.funkosspringrest.dto.category.CreateCategoryDTO;
 import com.madirex.funkosspringrest.dto.category.PatchCategoryDTO;
 import com.madirex.funkosspringrest.dto.category.UpdateCategoryDTO;
 import com.madirex.funkosspringrest.exceptions.category.CategoryNotFoundException;
-import com.madirex.funkosspringrest.exceptions.category.CategoryNotValidIDException;
 import com.madirex.funkosspringrest.exceptions.category.DeleteCategoryException;
 import com.madirex.funkosspringrest.mappers.category.CategoryMapperImpl;
 import com.madirex.funkosspringrest.models.Category;
@@ -16,10 +15,13 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Optional;
 
 /**
  * Clase CategoryServiceImpl
@@ -29,8 +31,6 @@ import java.util.List;
 public class CategoryServiceImpl implements CategoryService {
 
     public static final String FUNKO_NOT_FOUND_MSG = "No se ha encontrado el Category con el ID indicado";
-    public static final String NOT_VALID_FORMAT_ID_MSG = "El ID no tiene un formato válido";
-
     private final CategoryRepository categoryRepository;
     private final CategoryMapperImpl categoryMapperImpl;
 
@@ -47,14 +47,32 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     /**
-     * Obtiene todos los Categorys
+     * Obtiene todas las categorías
      *
-     * @return Lista de Categorys
+     * @param type     Tipo de categoría por la que filtrar
+     * @param isActive Si la categoría está activa o no
+     * @param pageable Paginación
+     * @return Lista de categorías
      */
     @Cacheable
     @Override
-    public List<Category> getAllCategory() {
-        return categoryRepository.findAll();
+    public Page<Category> getAllCategory(Optional<String> type, Optional<Boolean> isActive, Pageable pageable) {
+        Specification<Category> specType = (root, query, criteriaBuilder) ->
+                type.map(m -> {
+                    try {
+                        return criteriaBuilder.equal(root.get("type"), Category.Type.valueOf(m.toUpperCase()));
+                    } catch (IllegalArgumentException e) {
+                        return criteriaBuilder.isTrue(criteriaBuilder.literal(false));
+                    }
+                }).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
+
+        Specification<Category> specIsActive = (root, query, criteriaBuilder) ->
+                isActive.map(d -> criteriaBuilder.equal(root.get("active"), d))
+                        .orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
+
+        Specification<Category> criterion = Specification.where(specType)
+                .and(specIsActive);
+        return categoryRepository.findAll(criterion, pageable);
     }
 
     /**
@@ -62,7 +80,7 @@ public class CategoryServiceImpl implements CategoryService {
      *
      * @param id ID del Category a obtener
      * @return Category con el ID indicado
-     * @throws CategoryNotFoundException   Si no se ha encontrado el Category con el ID indicado
+     * @throws CategoryNotFoundException Si no se ha encontrado el Category con el ID indicado
      */
     @Cacheable(key = "#result.id")
     @Override
