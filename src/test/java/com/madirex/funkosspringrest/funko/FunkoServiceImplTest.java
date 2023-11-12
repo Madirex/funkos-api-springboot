@@ -9,7 +9,7 @@ import com.madirex.funkosspringrest.dto.funko.GetFunkoDTO;
 import com.madirex.funkosspringrest.dto.funko.PatchFunkoDTO;
 import com.madirex.funkosspringrest.dto.funko.UpdateFunkoDTO;
 import com.madirex.funkosspringrest.exceptions.category.CategoryNotFoundException;
-import com.madirex.funkosspringrest.exceptions.category.CategoryNotValidIDException;
+import com.madirex.funkosspringrest.exceptions.category.CategoryNotValidException;
 import com.madirex.funkosspringrest.exceptions.funko.FunkoNotFoundException;
 import com.madirex.funkosspringrest.exceptions.funko.FunkoNotValidUUIDException;
 import com.madirex.funkosspringrest.mappers.funko.FunkoMapperImpl;
@@ -248,7 +248,7 @@ class FunkoServiceImplTest {
     }
 
     @Test
-    void testPostFunko() throws CategoryNotFoundException, CategoryNotValidIDException, IOException {
+    void testPostFunko() throws CategoryNotFoundException, CategoryNotValidException, IOException {
         var insert = CreateFunkoDTO.builder()
                 .name("nombre").price(2.2).quantity(2).image("imagen").categoryId(1L).build();
         var category = Category.builder().id(1L).type(Category.Type.MOVIE).active(true).createdAt(LocalDateTime.now())
@@ -273,7 +273,7 @@ class FunkoServiceImplTest {
     }
 
     @Test
-    void testPutFunko() throws CategoryNotFoundException, CategoryNotValidIDException, FunkoNotValidUUIDException, FunkoNotFoundException, IOException {
+    void testPutFunko() throws CategoryNotFoundException, CategoryNotValidException, FunkoNotValidUUIDException, FunkoNotFoundException, IOException {
         var update = UpdateFunkoDTO.builder()
                 .name("nombre").price(2.2).quantity(2).image("imagen").categoryId(1L).build();
         var category = Category.builder().id(1L).type(Category.Type.MOVIE).active(true).createdAt(LocalDateTime.now())
@@ -305,7 +305,7 @@ class FunkoServiceImplTest {
     }
 
     @Test
-    void testPatchFunko() throws CategoryNotFoundException, CategoryNotValidIDException, FunkoNotValidUUIDException, FunkoNotFoundException, IOException {
+    void testPatchFunko() throws CategoryNotFoundException, CategoryNotValidException, FunkoNotValidUUIDException, FunkoNotFoundException, IOException {
         var update = PatchFunkoDTO.builder()
                 .name("nombre").price(2.2).quantity(2).image("imagen").categoryId(1L).build();
         var category = Category.builder().id(1L).type(Category.Type.MOVIE).active(true).createdAt(LocalDateTime.now())
@@ -376,7 +376,7 @@ class FunkoServiceImplTest {
     }
 
     @Test
-    void testUpdateImageSuccess() throws CategoryNotFoundException, CategoryNotValidIDException, IOException {
+    void testUpdateImageSuccess() throws CategoryNotFoundException, CategoryNotValidException, IOException {
         String existingFunkoId = list.get(0).getId().toString();
         String imageUrl = "http://www.madirex.com/favicon.ico";
         MultipartFile multipartFile = mock(MultipartFile.class);

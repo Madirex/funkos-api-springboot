@@ -6,8 +6,6 @@ import com.madirex.funkosspringrest.dto.funko.CreateFunkoDTO;
 import com.madirex.funkosspringrest.dto.funko.GetFunkoDTO;
 import com.madirex.funkosspringrest.dto.funko.PatchFunkoDTO;
 import com.madirex.funkosspringrest.dto.funko.UpdateFunkoDTO;
-import com.madirex.funkosspringrest.exceptions.category.CategoryNotFoundException;
-import com.madirex.funkosspringrest.exceptions.category.CategoryNotValidIDException;
 import com.madirex.funkosspringrest.exceptions.funko.FunkoNotValidUUIDException;
 import com.madirex.funkosspringrest.models.Category;
 import com.madirex.funkosspringrest.services.funko.FunkoServiceImpl;
@@ -24,7 +22,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -91,23 +88,6 @@ class FunkoControllerImplTest {
                 () -> assertTrue(response.getContentAsString().contains("\"quantity\":" + funko.getQuantity())),
                 () -> assertTrue(response.getContentAsString().contains("\"image\":" + "\"" + funko.getImage() + "\""))
         );
-    }
-
-    @Test
-    void testGetFilteredByCategory() throws Exception {
-        var category = "Superhéroes";
-        var funkoList = List.of(funko, funko2);
-        when(service.getAllFunkoFilterByCategory(service.getAllFunko(), category)).thenReturn(funkoList);
-        MockHttpServletResponse response = mockMvc.perform(get(endpoint)
-                        .param("category", category)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andReturn().getResponse();
-        assertAll(
-                () -> assertEquals(HttpStatus.OK.value(), response.getStatus()),
-                () -> assertTrue(response.getContentAsString().contains("\"name\":" + "\"" + funko.getName() + "\"")),
-                () -> assertTrue(response.getContentAsString().contains("\"name\":" + "\"" + funko2.getName() + "\"")));
     }
 
     @Test
