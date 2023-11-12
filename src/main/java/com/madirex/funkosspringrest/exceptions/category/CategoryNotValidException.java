@@ -4,16 +4,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * Class CategoryNotValidIDException
+ * Class CategoryNotValidException
  */
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class CategoryNotValidIDException extends CategoryException {
+public class CategoryNotValidException extends CategoryException {
     /**
-     * Constructor CategoryNotValidIDException
+     * Constructor CategoryNotValidException
      *
      * @param message Mensaje de error
      */
-    public CategoryNotValidIDException(String message) {
+    public CategoryNotValidException(String message) {
         super("Categoría no válida - " + message);
     }
 }

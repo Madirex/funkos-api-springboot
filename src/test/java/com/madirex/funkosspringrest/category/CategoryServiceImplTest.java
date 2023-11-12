@@ -4,11 +4,10 @@ import com.madirex.funkosspringrest.dto.category.CreateCategoryDTO;
 import com.madirex.funkosspringrest.dto.category.PatchCategoryDTO;
 import com.madirex.funkosspringrest.dto.category.UpdateCategoryDTO;
 import com.madirex.funkosspringrest.exceptions.category.CategoryNotFoundException;
-import com.madirex.funkosspringrest.exceptions.category.CategoryNotValidIDException;
+import com.madirex.funkosspringrest.exceptions.category.CategoryNotValidException;
 import com.madirex.funkosspringrest.exceptions.category.DeleteCategoryException;
 import com.madirex.funkosspringrest.mappers.category.CategoryMapperImpl;
 import com.madirex.funkosspringrest.models.Category;
-import com.madirex.funkosspringrest.models.Funko;
 import com.madirex.funkosspringrest.repositories.CategoryRepository;
 import com.madirex.funkosspringrest.repositories.FunkoRepository;
 import com.madirex.funkosspringrest.services.category.CategoryServiceImpl;
@@ -23,7 +22,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -79,7 +77,7 @@ class CategoryServiceImplTest {
 
 
     @Test
-    void testGetCategoryById() throws CategoryNotValidIDException, CategoryNotFoundException {
+    void testGetCategoryById() throws CategoryNotValidException, CategoryNotFoundException {
         when(categoryRepository.findById(list.get(0).getId())).thenReturn(Optional.ofNullable(list.get(0)));
         var category = categoryService.getCategoryById(list.get(0).getId());
         assertAll("Category properties",
@@ -133,7 +131,7 @@ class CategoryServiceImplTest {
     }
 
     @Test
-    void testPatchCategory() throws CategoryNotFoundException, CategoryNotValidIDException {
+    void testPatchCategory() throws CategoryNotFoundException, CategoryNotValidException {
         var update = PatchCategoryDTO.builder()
                 .type(Category.Type.MOVIE)
                 .build();
