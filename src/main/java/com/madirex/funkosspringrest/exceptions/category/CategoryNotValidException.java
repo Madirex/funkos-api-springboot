@@ -14,6 +14,6 @@ public class CategoryNotValidIDException extends CategoryException {
      * @param message Mensaje de error
      */
     public CategoryNotValidIDException(String message) {
-        super("ID no válido - " + message);
+        super("Categoría no válida - " + message);
     }
 }
