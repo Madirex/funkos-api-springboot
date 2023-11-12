@@ -4,16 +4,24 @@ import com.madirex.funkosspringrest.dto.category.CreateCategoryDTO;
 import com.madirex.funkosspringrest.dto.category.PatchCategoryDTO;
 import com.madirex.funkosspringrest.dto.category.UpdateCategoryDTO;
 import com.madirex.funkosspringrest.exceptions.category.CategoryNotFoundException;
+import com.madirex.funkosspringrest.exceptions.category.CategoryNotValidException;
 import com.madirex.funkosspringrest.exceptions.category.DeleteCategoryException;
 import com.madirex.funkosspringrest.models.Category;
-import com.madirex.funkosspringrest.services.category.CategoryServiceImpl;
+import com.madirex.funkosspringrest.services.category.CategoryService;
+import com.madirex.funkosspringrest.utils.pagination.PageResponse;
+import com.madirex.funkosspringrest.utils.pagination.PaginationLinksUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.List;
+import java.util.Optional;
 
 /**
  * Clase CategoryRestControllerImpl
@@ -22,27 +30,43 @@ import java.util.List;
 @RequestMapping("/api/category")
 public class CategoryRestControllerImpl implements CategoryRestController {
 
-    private final CategoryServiceImpl service;
+    private final CategoryService service;
+    private final PaginationLinksUtils paginationLinksUtils;
 
     /**
      * Constructor de la clase
      *
-     * @param service Servicio de Category
+     * @param service              Servicio de Category
+     * @param paginationLinksUtils Utilidad para la paginación
      */
     @Autowired
-    public CategoryRestControllerImpl(CategoryServiceImpl service) {
+    public CategoryRestControllerImpl(CategoryService service, PaginationLinksUtils paginationLinksUtils) {
         this.service = service;
+        this.paginationLinksUtils = paginationLinksUtils;
     }
 
     /**
-     * Método para obtener todos los Categorys
+     * Método para obtener todas las categorías
      *
      * @return ResponseEntity con el código de estado
      */
     @GetMapping()
     @Override
-    public ResponseEntity<List<Category>> findAll() {
-        return ResponseEntity.ok(service.getAllCategory());
+    public ResponseEntity<PageResponse<Category>> findAll(
+            @RequestParam(required = false) Optional<String> type,
+            @RequestParam(required = false) Optional<Boolean> isActive,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction,
+            HttpServletRequest request
+    ) {
+        Sort sort = direction.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(request.getRequestURL().toString());
+        Page<Category> pageResult = service.getAllCategory(type, isActive, PageRequest.of(page, size, sort));
+        return ResponseEntity.ok()
+                .header("link", paginationLinksUtils.createLinkHeader(pageResult, uriBuilder))
+                .body(PageResponse.of(pageResult, sortBy, direction));
     }
 
     /**
@@ -53,7 +77,7 @@ public class CategoryRestControllerImpl implements CategoryRestController {
      */
     @GetMapping("/{id}")
     @Override
-    public ResponseEntity<Category> findById(@Valid @PathVariable Long id) throws CategoryNotFoundException {
+    public ResponseEntity<Category> findById(@Valid @PathVariable Long id) throws CategoryNotFoundException, CategoryNotValidException {
 
         Category category = service.getCategoryById(id);
         return ResponseEntity.ok(category);
@@ -80,7 +104,7 @@ public class CategoryRestControllerImpl implements CategoryRestController {
      */
     @PutMapping("/{id}")
     @Override
-    public ResponseEntity<Category> put(@Valid @PathVariable Long id, @Valid @RequestBody UpdateCategoryDTO funko) throws CategoryNotFoundException {
+    public ResponseEntity<Category> put(@Valid @PathVariable Long id, @Valid @RequestBody UpdateCategoryDTO funko) throws CategoryNotFoundException, CategoryNotValidException {
         Category updatedCategory = service.putCategory(id, funko);
         return ResponseEntity.ok(updatedCategory);
     }
@@ -95,7 +119,7 @@ public class CategoryRestControllerImpl implements CategoryRestController {
      */
     @PatchMapping("/{id}")
     @Override
-    public ResponseEntity<Category> patch(@Valid @PathVariable Long id, @Valid @RequestBody PatchCategoryDTO funko) throws CategoryNotFoundException {
+    public ResponseEntity<Category> patch(@Valid @PathVariable Long id, @Valid @RequestBody PatchCategoryDTO funko) throws CategoryNotFoundException, CategoryNotValidException {
         Category updatedCategory = service.patchCategory(id, funko);
         return ResponseEntity.ok(updatedCategory);
     }
