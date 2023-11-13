@@ -32,7 +32,7 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -102,7 +102,7 @@ public class FunkoServiceImpl implements FunkoService {
     @Cacheable
     @Override
     public Page<GetFunkoDTO> getAllFunko(Optional<String> category, Optional<Double> maxPrice,
-                                         Optional<Integer> maxQuantity, PageRequest pageable) {
+                                         Optional<Integer> maxQuantity, Pageable pageable) {
         Specification<Funko> specType = (root, query, criteriaBuilder) ->
                 category.map(m -> {
                     try {

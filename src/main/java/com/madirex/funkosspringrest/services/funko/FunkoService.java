@@ -9,8 +9,10 @@ import com.madirex.funkosspringrest.exceptions.category.CategoryNotFoundExceptio
 import com.madirex.funkosspringrest.exceptions.category.CategoryNotValidException;
 import com.madirex.funkosspringrest.exceptions.funko.FunkoNotFoundException;
 import com.madirex.funkosspringrest.exceptions.funko.FunkoNotValidUUIDException;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -21,7 +23,7 @@ import java.util.Optional;
  */
 public interface FunkoService {
     Page<GetFunkoDTO> getAllFunko(Optional<String> category, Optional<Double> maxPrice,
-                                  Optional<Integer> maxQuantity, PageRequest pageable);
+                                  Optional<Integer> maxQuantity, Pageable pageable);
 
     GetFunkoDTO getFunkoById(String id) throws FunkoNotValidUUIDException, FunkoNotFoundException;
 
