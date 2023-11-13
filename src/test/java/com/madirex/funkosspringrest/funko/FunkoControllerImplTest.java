@@ -15,6 +15,9 @@ import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -25,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -75,7 +79,10 @@ class FunkoControllerImplTest {
     @Test
     void testGetAll() throws Exception {
         var funkoList = List.of(funko, funko2);
-        when(service.getAllFunko()).thenReturn(funkoList);
+        var pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
+        var page = new PageImpl<>(funkoList);
+        when(service.getAllFunko(Optional.empty(),Optional.empty(), Optional.empty(),
+                pageable)).thenReturn(page);
         MockHttpServletResponse response = mockMvc.perform(get(endpoint)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
