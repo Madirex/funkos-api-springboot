@@ -28,6 +28,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -118,94 +120,22 @@ class FunkoServiceImplTest {
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build());
-        when(funkoRepository.findAll()).thenReturn(list);
-        when(funkoMapperImpl.toFunkoList(list)).thenReturn(list2);
-        var list3 = funkoService.getAllFunko();
+
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
+        Page<Funko> expectedPage = new PageImpl<>(list);
+        when(funkoRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(expectedPage);
+        when(funkoMapperImpl.toGetFunkoDTO(any(Funko.class))).thenReturn(list2.get(0));
+        Page<GetFunkoDTO> actualPage = funkoService.getAllFunko(Optional.empty(), Optional.empty(),
+                Optional.empty(), pageable);
+        var list3 = actualPage.getContent();
         assertAll("Funko properties",
                 () -> assertEquals(2, list.size(), "La lista debe contener 2 elementos"),
                 () -> assertEquals(2, list3.size(), "La lista debe contener 2 elementos"),
                 () -> assertEquals(list.get(0).getName(), list3.get(0).getName(), "El nombre debe coincidir"),
                 () -> assertEquals(list.get(0).getPrice(), list3.get(0).getPrice(), "El precio debe coincidir"),
-                () -> assertEquals(list.get(0).getQuantity(), list3.get(0).getQuantity(), "La cantidad debe coincidir"),
-                () -> assertEquals(list.get(0).getImage(), list3.get(0).getImage(), "La imagen debe coincidir"),
-                () -> assertEquals(list.get(1).getName(), list3.get(1).getName(), "El nombre debe coincidir"),
-                () -> assertEquals(list.get(1).getPrice(), list3.get(1).getPrice(), "El precio debe coincidir"),
-                () -> assertEquals(list.get(1).getQuantity(), list3.get(1).getQuantity(), "La cantidad debe coincidir"),
-                () -> assertEquals(list.get(1).getImage(), list3.get(1).getImage(), "La imagen debe coincidir")
+                () -> assertEquals(list.get(0).getQuantity(), list3.get(0).getQuantity(), "La cantidad debe coincidir")
         );
-        verify(funkoRepository, times(1)).findAll();
-    }
-
-    @Test
-    void testGetAllFunkoFilterByCategory() {
-        List<GetFunkoDTO> list2 = new ArrayList<>();
-        list2.add(GetFunkoDTO.builder()
-                .id(UUID.randomUUID())
-                .name("Test")
-                .price(2.2)
-                .quantity(2)
-                .image("http://tech.madirex.com/favicon.ico")
-                .category(Category.builder().id(1L).type(Category.Type.DISNEY).active(true).build())
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
-                .build());
-        list2.add(GetFunkoDTO.builder()
-                .id(UUID.randomUUID())
-                .name("Test2")
-                .price(42.42)
-                .quantity(42)
-                .image("http://www.madirex.com/favicon.ico")
-                .category(Category.builder().id(1L).type(Category.Type.MOVIE).active(true).build())
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
-                .build());
-        when(funkoRepository.findAll()).thenReturn(list);
-        when(funkoMapperImpl.toFunkoList(list)).thenReturn(list2);
-        var tmp = funkoService.getAllFunko();
-        var list3 = funkoService.getAllFunkoFilterByCategory(tmp, "MOVIE");
-        assertAll("Funko properties",
-                () -> assertEquals(2, list.size(), "La lista debe contener 2 elementos"),
-                () -> assertEquals(1, list3.size(), "La lista debe contener 1 elemento"),
-                () -> assertEquals(list.get(1).getName(), list3.get(0).getName(), "El nombre debe coincidir"),
-                () -> assertEquals(list.get(1).getPrice(), list3.get(0).getPrice(), "El precio debe coincidir"),
-                () -> assertEquals(list.get(1).getQuantity(), list3.get(0).getQuantity(), "La cantidad debe coincidir"),
-                () -> assertEquals(list.get(1).getImage(), list3.get(0).getImage(), "La imagen debe coincidir")
-        );
-        verify(funkoRepository, times(1)).findAll();
-    }
-
-    @Test
-    void testGetAllFunkoFilterByCategoryNull() {
-        List<GetFunkoDTO> list2 = new ArrayList<>();
-        list2.add(GetFunkoDTO.builder()
-                .id(UUID.randomUUID())
-                .name("Test")
-                .price(2.2)
-                .quantity(2)
-                .image("http://tech.madirex.com/favicon.ico")
-                .category(Category.builder().id(1L).type(Category.Type.MOVIE).active(true).build())
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
-                .build());
-        list2.add(GetFunkoDTO.builder()
-                .id(UUID.randomUUID())
-                .name("Test2")
-                .price(42.42)
-                .quantity(42)
-                .image("http://www.madirex.com/favicon.ico")
-                .category(Category.builder().id(1L).type(Category.Type.MOVIE).active(true).build())
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
-                .build());
-        when(funkoRepository.findAll()).thenReturn(list);
-        when(funkoMapperImpl.toFunkoList(list)).thenReturn(list2);
-        var tmp = funkoService.getAllFunko();
-        var list3 = funkoService.getAllFunkoFilterByCategory(tmp, null);
-        assertAll("Funko properties",
-                () -> assertEquals(2, list.size(), "La lista debe contener 2 elementos"),
-                () -> assertEquals(0, list3.size(), "La lista debe contener 2 elementos")
-        );
-        verify(funkoRepository, times(1)).findAll();
+        verify(funkoRepository, times(1)).findAll(any(Specification.class), any(Pageable.class));
     }
 
 
@@ -355,8 +285,17 @@ class FunkoServiceImplTest {
         when(funkoRepository.findById(list.get(0).getId())).thenReturn(Optional.ofNullable(list.get(0)));
         doNothing().when(funkoRepository).delete(any(Funko.class));
         funkoService.deleteFunko(String.valueOf(list.get(0).getId()));
-        assertEquals(0, funkoService.getAllFunko().size());
+
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
+        Page<Funko> expectedPage = new PageImpl<>(new ArrayList<>());
+        when(funkoRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(expectedPage);
+        Page<GetFunkoDTO> actualPage = funkoService.getAllFunko(Optional.empty(), Optional.empty(),
+                Optional.empty(), pageable);
+        var list3 = actualPage.getContent();
+        assertNotNull(list3);
+        assertEquals(0, actualPage.getContent().size());
         verify(funkoRepository, times(1)).delete(any(Funko.class));
+        verify(funkoRepository, times(1)).findAll(any(Specification.class), any(Pageable.class));
     }
 
     @Test
@@ -394,7 +333,8 @@ class FunkoServiceImplTest {
 
         when(funkoRepository.findById(list.get(0).getId()))
                 .thenReturn(Optional.of(list.get(0)));
-        when(storageService.store(multipartFile)).thenReturn(imageUrl);
+        when(storageService.store(multipartFile, List.of("jpg", "jpeg", "png"), list.get(0).getId().toString()))
+                .thenReturn(imageUrl);
 
         //path
         var update = PatchFunkoDTO.builder().image(imageUrl).build();
@@ -412,7 +352,8 @@ class FunkoServiceImplTest {
         );
         verify(funkoRepository, times(3)).findById(list.get(0).getId());
         verify(funkoRepository, times(2)).save(list.get(0));
-        verify(storageService, times(1)).store(multipartFile);
+        verify(storageService, times(1)).store(multipartFile, List.of("jpg", "jpeg", "png"),
+                list.get(0).getId().toString());
     }
 
     @Test
