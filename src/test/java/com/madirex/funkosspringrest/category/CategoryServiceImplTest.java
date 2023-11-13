@@ -17,6 +17,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -62,8 +64,12 @@ class CategoryServiceImplTest {
 
     @Test
     void testGetAllCategory() {
-        when(categoryRepository.findAll()).thenReturn(list);
-        var list3 = categoryService.getAllCategory();
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
+        Page<Category> expectedPage = new PageImpl<>(list);
+        when(categoryRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(expectedPage);
+        Page<Category> actualPage = categoryService.getAllCategory(Optional.empty(), Optional.empty()
+                , pageable);
+        var list3 = actualPage.getContent();
         assertAll("Category properties",
                 () -> assertEquals(2, list.size(), "La lista debe contener 2 elementos"),
                 () -> assertEquals(2, list3.size(), "La lista debe contener 2 elementos"),
@@ -72,12 +78,12 @@ class CategoryServiceImplTest {
                 () -> assertEquals(list.get(1).getType(), list3.get(1).getType(), "El tipo debe coincidir"),
                 () -> assertEquals(list.get(1).getActive(), list3.get(1).getActive(), "El estado debe coincidir")
         );
-        verify(categoryRepository, times(1)).findAll();
+        verify(categoryRepository, times(1)).findAll(any(Specification.class), any(Pageable.class));
     }
 
 
     @Test
-    void testGetCategoryById() throws CategoryNotValidException, CategoryNotFoundException {
+    void testGetCategoryById() throws CategoryNotFoundException {
         when(categoryRepository.findById(list.get(0).getId())).thenReturn(Optional.ofNullable(list.get(0)));
         var category = categoryService.getCategoryById(list.get(0).getId());
         assertAll("Category properties",

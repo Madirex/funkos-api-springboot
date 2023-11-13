@@ -15,21 +15,24 @@ import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.core.annotation.Order;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -67,7 +70,9 @@ class CategoryControllerImplTest {
     @Test
     void getAllTest() throws Exception {
         var categoryList = List.of(category, category2);
-        Mockito.when(service.getAllCategory()).thenReturn(categoryList);
+        var pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
+        var page = new PageImpl<>(categoryList);
+        when(service.getAllCategory(Optional.empty(), Optional.empty(), pageable)).thenReturn(page);
         MockHttpServletResponse response = mockMvc.perform(get(endpoint)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -112,8 +117,8 @@ class CategoryControllerImplTest {
 
         Mockito.when(service.postCategory(newCategory)).thenReturn(createdCategory);
         mockMvc.perform(MockMvcRequestBuilders.post(endpoint)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(newCategory)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(newCategory)))
                 .andExpect(status().isCreated());
     }
 
