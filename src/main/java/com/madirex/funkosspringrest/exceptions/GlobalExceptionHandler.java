@@ -1,7 +1,6 @@
 package com.madirex.funkosspringrest.exceptions;
 
 import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
-import org.hibernate.QueryException;
 import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,10 +24,4 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Error al procesar la propiedad en la consulta: " + ex.getPropertyName());
     }
-
-//    @ExceptionHandler(Exception.class)
-//    public ResponseEntity<String> handleInternalServerError(Exception ex) {
-//        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-//                .body("Error al procesar la solicitud.");
-//    }
 }
