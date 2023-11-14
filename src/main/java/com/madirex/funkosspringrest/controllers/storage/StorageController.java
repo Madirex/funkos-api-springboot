@@ -12,14 +12,21 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 
+/**
+ * Clase StorageController
+ */
 @RestController
 @Slf4j
 @RequestMapping("/storage")
 public class StorageController {
     private final StorageService storageService;
 
+    /**
+     * Constructor de la clase
+     *
+     * @param storageService Servicio de almacenamiento
+     */
     @Autowired
     public StorageController(StorageService storageService) {
         this.storageService = storageService;

@@ -4,7 +4,6 @@ import com.madirex.funkosspringrest.dto.category.CreateCategoryDTO;
 import com.madirex.funkosspringrest.dto.category.PatchCategoryDTO;
 import com.madirex.funkosspringrest.dto.category.UpdateCategoryDTO;
 import com.madirex.funkosspringrest.exceptions.category.CategoryNotFoundException;
-import com.madirex.funkosspringrest.exceptions.category.DeleteCategoryException;
 import com.madirex.funkosspringrest.mappers.category.CategoryMapperImpl;
 import com.madirex.funkosspringrest.models.Category;
 import com.madirex.funkosspringrest.repositories.CategoryRepository;
@@ -92,7 +91,7 @@ public class CategoryServiceImpl implements CategoryService {
     /**
      * Actualiza un Category
      *
-     * @param id    ID del Category a actualizar
+     * @param id    Id del Category a actualizar
      * @param funko Category con los datos a actualizar
      * @return Category actualizado
      * @throws CategoryNotFoundException Si no se ha encontrado el Category con el ID indicado
@@ -125,7 +124,7 @@ public class CategoryServiceImpl implements CategoryService {
     /**
      * Actualiza un Category
      *
-     * @param id    ID del Category a actualizar
+     * @param id    Id del Category a actualizar
      * @param funko UpdateCategoryDTO con los datos a actualizar
      * @return Category actualizado
      * @throws CategoryNotFoundException Si no se ha encontrado el Category con el ID indicado
@@ -148,7 +147,7 @@ public class CategoryServiceImpl implements CategoryService {
      */
     @CacheEvict(key = "#id")
     @Override
-    public void deleteCategory(Long id) throws CategoryNotFoundException, DeleteCategoryException {
+    public void deleteCategory(Long id) throws CategoryNotFoundException {
         var opt = categoryRepository.findById(id);
         if (opt.isEmpty()) {
             throw new CategoryNotFoundException(FUNKO_NOT_FOUND_MSG);

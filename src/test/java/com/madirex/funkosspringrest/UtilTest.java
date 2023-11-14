@@ -8,8 +8,16 @@ import java.lang.reflect.Modifier;
 
 import static org.springframework.test.util.AssertionErrors.assertTrue;
 
+/**
+ * Clase UtilTest
+ */
 class UtilTest {
 
+    /**
+     * Test para comprobar que el constructor es privado
+     *
+     * @throws Exception excepción
+     */
     @Test
     void testPrivateConstructor() throws Exception {
         Constructor<Util> constructor = Util.class.getDeclaredConstructor();

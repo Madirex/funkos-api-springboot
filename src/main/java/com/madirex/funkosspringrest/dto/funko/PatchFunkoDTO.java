@@ -1,6 +1,5 @@
 package com.madirex.funkosspringrest.dto.funko;
 
-import com.madirex.funkosspringrest.models.Category;
 import jakarta.validation.constraints.Min;
 import lombok.Builder;
 import lombok.Getter;

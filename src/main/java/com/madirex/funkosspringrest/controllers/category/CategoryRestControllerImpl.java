@@ -48,10 +48,16 @@ public class CategoryRestControllerImpl implements CategoryRestController {
     /**
      * Método para obtener todas las categorías
      *
+     * @param type      tipo
+     * @param isActive  ¿está activo?
+     * @param page      página
+     * @param size      tamaño de página
+     * @param sortBy    ordenar por
+     * @param direction dirección
+     * @param request   petición
      * @return ResponseEntity con el código de estado
      */
     @GetMapping()
-    @Override
     public ResponseEntity<PageResponse<Category>> findAll(
             @RequestParam(required = false) Optional<String> type,
             @RequestParam(required = false) Optional<Boolean> isActive,
@@ -70,10 +76,12 @@ public class CategoryRestControllerImpl implements CategoryRestController {
     }
 
     /**
-     * Método para obtener un Category por su ID
+     * Método para obtener una categoría por su id
      *
-     * @param id ID del Category en formato String
+     * @param id id de la categoría
      * @return ResponseEntity con el código de estado
+     * @throws CategoryNotFoundException de la categoría
+     * @throws CategoryNotValidException de la categoría
      */
     @GetMapping("/{id}")
     @Override
@@ -98,9 +106,11 @@ public class CategoryRestControllerImpl implements CategoryRestController {
     /**
      * Método para actualizar un Category
      *
-     * @param id    ID del Category en formato String
-     * @param funko Objeto UpdateCategoryDTO con los campos a actualizar
+     * @param id    id de la categoría
+     * @param funko categoría a actualizar
      * @return ResponseEntity con el código de estado
+     * @throws CategoryNotFoundException de la categoría
+     * @throws CategoryNotValidException de la categoría
      */
     @PutMapping("/{id}")
     @Override
@@ -113,9 +123,11 @@ public class CategoryRestControllerImpl implements CategoryRestController {
     /**
      * Método para actualizar parcialmente un Category
      *
-     * @param id    ID del Category en formato String
-     * @param funko Objeto PatchCategoryDTO con los campos a actualizar
+     * @param id    id de la categoría
+     * @param funko categoría a actualizar
      * @return ResponseEntity con el código de estado
+     * @throws CategoryNotFoundException de la categoría
+     * @throws CategoryNotValidException de la categoría
      */
     @PatchMapping("/{id}")
     @Override
@@ -128,8 +140,9 @@ public class CategoryRestControllerImpl implements CategoryRestController {
     /**
      * Método para eliminar un Category
      *
-     * @param id ID del Category en formato String
+     * @param id id de la categoría
      * @return ResponseEntity con el código de estado
+     * @throws CategoryNotFoundException de la categoría
      */
     @DeleteMapping("/{id}")
     @Override

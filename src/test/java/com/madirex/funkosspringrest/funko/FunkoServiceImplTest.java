@@ -42,6 +42,9 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * Clase FunkoServiceImplTest
+ */
 @ExtendWith(MockitoExtension.class)
 class FunkoServiceImplTest {
     List<Funko> list;
@@ -71,6 +74,9 @@ class FunkoServiceImplTest {
     @InjectMocks
     private FunkoServiceImpl funkoService;
 
+    /**
+     * Método setUp para inicializar los objetos
+     */
     @BeforeEach
     void setUp() {
         funkoService.setWebSocketService(webSocketHandlerMock);
@@ -80,7 +86,7 @@ class FunkoServiceImplTest {
                 .name("Test")
                 .price(2.2)
                 .quantity(2)
-                .image("http://tech.madirex.com/favicon.ico")
+                .image("https://tech.madirex.com/favicon.ico")
                 .category(Category.builder().id(1L).type(Category.Type.MOVIE).active(true).build())
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
@@ -90,13 +96,16 @@ class FunkoServiceImplTest {
                 .name("Test2")
                 .price(42.42)
                 .quantity(42)
-                .image("http://www.madirex.com/favicon.ico")
+                .image("https://www.madirex.com/favicon.ico")
                 .category(Category.builder().id(1L).type(Category.Type.MOVIE).active(true).build())
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build());
     }
 
+    /**
+     * Test para comprobar que se reciben todos los Funko
+     */
     @Test
     void testGetAllFunko() {
         List<GetFunkoDTO> list2 = new ArrayList<>();
@@ -105,7 +114,7 @@ class FunkoServiceImplTest {
                 .name("Test")
                 .price(2.2)
                 .quantity(2)
-                .image("http://tech.madirex.com/favicon.ico")
+                .image("https://tech.madirex.com/favicon.ico")
                 .category(Category.builder().id(1L).type(Category.Type.MOVIE).active(true).build())
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
@@ -115,7 +124,7 @@ class FunkoServiceImplTest {
                 .name("Test2")
                 .price(42.42)
                 .quantity(42)
-                .image("http://www.madirex.com/favicon.ico")
+                .image("https://www.madirex.com/favicon.ico")
                 .category(Category.builder().id(1L).type(Category.Type.MOVIE).active(true).build())
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
@@ -139,6 +148,12 @@ class FunkoServiceImplTest {
     }
 
 
+    /**
+     * Test para comprobar que se obtiene un Funko por su id
+     *
+     * @throws FunkoNotValidUUIDException excepción
+     * @throws FunkoNotFoundException     excepción
+     */
     @Test
     void testGetFunkoById() throws FunkoNotValidUUIDException, FunkoNotFoundException {
         List<GetFunkoDTO> list2 = new ArrayList<>();
@@ -147,7 +162,7 @@ class FunkoServiceImplTest {
                 .name("Test")
                 .price(2.2)
                 .quantity(2)
-                .image("http://tech.madirex.com/favicon.ico")
+                .image("https://tech.madirex.com/favicon.ico")
                 .category(Category.builder().id(1L).type(Category.Type.MOVIE).active(true).build())
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
@@ -164,6 +179,9 @@ class FunkoServiceImplTest {
         verify(funkoRepository, times(1)).findById(list.get(0).getId());
     }
 
+    /**
+     * Test para comprobar que no se ha encontrado el Funko por su id
+     */
     @Test
     void testGetFunkoByIdNotFound() {
         when(funkoRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
@@ -171,12 +189,22 @@ class FunkoServiceImplTest {
         verify(funkoRepository, times(1)).findById(any(UUID.class));
     }
 
+    /**
+     * Test para comprobar que el ID del Funko no es válido cuando se hace un FindById
+     */
     @Test
     void testGetFunkoByIdNotValidUUID() {
         String invalidUUID = "UUID NO VÁLIDA";
         assertThrows(FunkoNotValidUUIDException.class, () -> funkoService.getFunkoById(invalidUUID));
     }
 
+    /**
+     * Test para comprobar que se inserta un Funko
+     *
+     * @throws CategoryNotFoundException excepción de categoría no encontrada
+     * @throws CategoryNotValidException excepción de categoría no válida
+     * @throws IOException               excepción de entrada/salida
+     */
     @Test
     void testPostFunko() throws CategoryNotFoundException, CategoryNotValidException, IOException {
         var insert = CreateFunkoDTO.builder()
@@ -202,6 +230,15 @@ class FunkoServiceImplTest {
         verify(funkoRepository, times(1)).save(any(Funko.class));
     }
 
+    /**
+     * Test para probar que el Funko se ha actualizado
+     *
+     * @throws CategoryNotFoundException  excepción de categoría no encontrada
+     * @throws CategoryNotValidException  excepción de categoría no válida
+     * @throws FunkoNotValidUUIDException excepción de Funko no válido
+     * @throws FunkoNotFoundException     excepción de Funko no encontrado
+     * @throws IOException                excepción de entrada/salida
+     */
     @Test
     void testPutFunko() throws CategoryNotFoundException, CategoryNotValidException, FunkoNotValidUUIDException, FunkoNotFoundException, IOException {
         var update = UpdateFunkoDTO.builder()
@@ -226,6 +263,9 @@ class FunkoServiceImplTest {
         verify(funkoRepository, times(1)).save(any(Funko.class));
     }
 
+    /**
+     * Test para comprobar que el Funko no se encuentra cuando se hace un Put
+     */
     @Test
     void testPutFunkoNotFound() {
         var update = UpdateFunkoDTO.builder()
@@ -234,6 +274,15 @@ class FunkoServiceImplTest {
         assertThrows(FunkoNotFoundException.class, () -> funkoService.putFunko(list.get(0).getId().toString(), update));
     }
 
+    /**
+     * Test para comprobar el Funko se puede actualizar parcialmente
+     *
+     * @throws CategoryNotFoundException  excepción de categoría no encontrada
+     * @throws CategoryNotValidException  excepción de categoría no válida
+     * @throws FunkoNotValidUUIDException excepción de UUID del Funko no válida
+     * @throws FunkoNotFoundException     excepción de Funko no encontrado
+     * @throws IOException                excepción de entrada/salida
+     */
     @Test
     void testPatchFunko() throws CategoryNotFoundException, CategoryNotValidException, FunkoNotValidUUIDException, FunkoNotFoundException, IOException {
         var update = PatchFunkoDTO.builder()
@@ -256,6 +305,9 @@ class FunkoServiceImplTest {
         verify(funkoRepository, times(1)).save(any(Funko.class));
     }
 
+    /**
+     * Test para comprobar que el Funko no se encuentra cuando se hace un Patch
+     */
     @Test
     void testPatchFunkoNotFound() {
         var update = PatchFunkoDTO.builder()
@@ -264,6 +316,9 @@ class FunkoServiceImplTest {
         assertThrows(FunkoNotFoundException.class, () -> funkoService.patchFunko(list.get(0).getId().toString(), update));
     }
 
+    /**
+     * Test para comprobar que el Funko no es válido cuando se hace un Put
+     */
     @Test
     void testNotValidUUIDPutFunko() {
         assertThrows(FunkoNotValidUUIDException.class, () -> funkoService.putFunko("()", UpdateFunkoDTO.builder()
@@ -272,6 +327,9 @@ class FunkoServiceImplTest {
                 .build()));
     }
 
+    /**
+     * Test para comprobar que el ID del Funko no es válido cuando se hace un Patch
+     */
     @Test
     void testNotValidUUIDPatchFunko() {
         assertThrows(FunkoNotValidUUIDException.class, () -> funkoService.patchFunko("()", PatchFunkoDTO.builder()
@@ -280,6 +338,13 @@ class FunkoServiceImplTest {
                 .build()));
     }
 
+    /**
+     * Test para comprobar que se elimina un Funko
+     *
+     * @throws FunkoNotValidUUIDException excepción cuando el Funko no es válido
+     * @throws FunkoNotFoundException     excepción cuando el Funko no se encuentra
+     * @throws IOException                excepción de entrada/salida
+     */
     @Test
     void testDeleteFunko() throws FunkoNotValidUUIDException, FunkoNotFoundException, IOException {
         when(funkoRepository.findById(list.get(0).getId())).thenReturn(Optional.ofNullable(list.get(0)));
@@ -298,26 +363,42 @@ class FunkoServiceImplTest {
         verify(funkoRepository, times(1)).findAll(any(Specification.class), any(Pageable.class));
     }
 
+    /**
+     * Test para comprobar que el UUID no es válido al intentar eliminar el Funko
+     */
     @Test
     void testNotValidUUIDDeleteFunko() {
         assertThrows(FunkoNotValidUUIDException.class, () -> funkoService.deleteFunko("()"));
     }
 
+    /**
+     * Test para comprobar que el Funko no se encuentra cuando se intenta eliminar
+     */
     @Test
     void testDeleteFunkoNotFound() {
         assertThrows(FunkoNotFoundException.class, () -> funkoService.deleteFunko(UUID.randomUUID().toString()));
     }
 
+    /**
+     * Test para comprobar que el UUID no es válido al intentar eliminar el Funko
+     */
     @Test
     void testDeleteFunkoNotValidUUID() {
         String invalidUUID = "UUID NO VÁLIDA";
         assertThrows(FunkoNotValidUUIDException.class, () -> funkoService.deleteFunko(invalidUUID));
     }
 
+    /**
+     * Test que comprueba que se puede actualizar una imagen
+     *
+     * @throws CategoryNotFoundException No se ha encontrado la categoría
+     * @throws CategoryNotValidException La categoría no es válida
+     * @throws IOException               Problema Entrada/Salida
+     */
     @Test
     void testUpdateImageSuccess() throws CategoryNotFoundException, CategoryNotValidException, IOException {
         String existingFunkoId = list.get(0).getId().toString();
-        String imageUrl = "http://www.madirex.com/favicon.ico";
+        String imageUrl = "https://www.madirex.com/favicon.ico";
         MultipartFile multipartFile = mock(MultipartFile.class);
         GetFunkoDTO expectedFunkoDTO = GetFunkoDTO.builder()
                 .id(UUID.randomUUID())
@@ -356,6 +437,9 @@ class FunkoServiceImplTest {
                 list.get(0).getId().toString());
     }
 
+    /**
+     * Test que comprueba que el Funko no se ha encontrado al intentar actualizar la imagen
+     */
     @Test
     void testUpdateImageFunkoNotFound() {
         UUID fakeUuid = UUID.randomUUID();
@@ -365,6 +449,9 @@ class FunkoServiceImplTest {
                 multipartFile, false));
     }
 
+    /**
+     * Test que comprueba que el UUID no es válido al intentar actualizar la imagen
+     */
     @Test
     void testUpdateImageFunkoNotValidUUID() {
         MultipartFile multipartFile = mock(MultipartFile.class);
@@ -372,6 +459,11 @@ class FunkoServiceImplTest {
                 () -> funkoService.updateImage("()", multipartFile, false));
     }
 
+    /**
+     * Test que comprueba el OnChange cuando el WebSocketService es nulo
+     *
+     * @throws JsonProcessingException Excepción al procesar Json
+     */
     @Test
     void testOnChangeWhenWebSocketServiceIsNull() throws JsonProcessingException {
         MockitoAnnotations.openMocks(this);
@@ -381,6 +473,11 @@ class FunkoServiceImplTest {
         assertNotNull(getFunkoDTO);
     }
 
+    /**
+     * Test que comprueba el OnChange cuando el WebSocketService tiene una excepción de entrada/salida
+     *
+     * @throws JsonProcessingException Excepción al procesar Json
+     */
     @Test
     void testOnChangeWithIOException() throws JsonProcessingException {
         GetFunkoDTO dummyData = new GetFunkoDTO();

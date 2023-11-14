@@ -38,6 +38,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Clase CategoryControllerImplTest
+ */
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureJsonTesters
@@ -67,6 +70,11 @@ class CategoryControllerImplTest {
             .build();
     String endpoint = "/api/category";
 
+    /**
+     * Test para comprobar que se obtienen todas las categorías
+     *
+     * @throws Exception excepción
+     */
     @Test
     void getAllTest() throws Exception {
         var categoryList = List.of(category, category2);
@@ -85,6 +93,11 @@ class CategoryControllerImplTest {
         );
     }
 
+    /**
+     * Test para comprobar que se obtiene una categoría por su id
+     *
+     * @throws Exception excepción
+     */
     @Test
     void findByIdTest() throws Exception {
         Mockito.when(service.getCategoryById(category.getId())).thenReturn(category);
@@ -100,6 +113,11 @@ class CategoryControllerImplTest {
         );
     }
 
+    /**
+     * Test para comprobar que se crea una categoría
+     *
+     * @throws Exception excepción
+     */
     @Test
     void testPostCategory() throws Exception {
         CreateCategoryDTO newCategory = CreateCategoryDTO.builder()
@@ -122,6 +140,11 @@ class CategoryControllerImplTest {
                 .andExpect(status().isCreated());
     }
 
+    /**
+     * Test para comprobar que se actualiza una categoría
+     *
+     * @throws Exception excepción
+     */
     @Test
     void testPutCategory() throws Exception {
         Long funkId = 1L;
@@ -147,6 +170,11 @@ class CategoryControllerImplTest {
                 .andExpect(status().isOk());
     }
 
+    /**
+     * Test para comprobar que se actualiza parcialmente una categoría
+     *
+     * @throws Exception excepción
+     */
     @Test
     void testPatchCategory() throws Exception {
         Long funkId = 1L;
@@ -172,6 +200,11 @@ class CategoryControllerImplTest {
                 .andExpect(status().isOk());
     }
 
+    /**
+     * Test para comprobar que se elimina una categoría
+     *
+     * @throws Exception excepción
+     */
     @Test
     void testDeleteCategory() throws Exception {
         Long categoryIdToDelete = 1L;
@@ -180,6 +213,12 @@ class CategoryControllerImplTest {
                 .andExpect(status().isNoContent());
     }
 
+    /**
+     * Test para comprobar que se lanza la excepción CategoryNotFoundException
+     * cuando se intenta obtener una categoría que no existe
+     *
+     * @throws Exception excepción
+     */
     @Test
     void testDeleteCategoryFunkoExistsException() throws Exception {
         doThrow(new DeleteCategoryException("Error al eliminar la categoría"))
@@ -192,5 +231,4 @@ class CategoryControllerImplTest {
                 .andReturn().getResponse();
         assertEquals(400, response.getStatus());
     }
-
 }

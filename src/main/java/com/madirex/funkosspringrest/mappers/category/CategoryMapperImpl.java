@@ -24,7 +24,7 @@ public class CategoryMapperImpl implements CategoryMapper {
     }
 
     /**
-     * Mapea un UpdateCategoryDTO en Category
+     * Mapea un UpdateCategoryDTO en Category dada una categoría existente
      *
      * @param existingCategory Category existente
      * @param dto              UpdateCategoryDTO a mapear

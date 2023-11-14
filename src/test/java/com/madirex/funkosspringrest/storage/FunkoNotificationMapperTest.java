@@ -12,15 +12,24 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class FunkoNotificationMapperTest {
+/**
+ * Clase FunkoNotificationMapperTest
+ */
+class FunkoNotificationMapperTest {
 
     private FunkoNotificationMapper mapper;
 
+    /**
+     * Método setUp para inicializar los objetos
+     */
     @BeforeEach
     void setUp() {
         mapper = new FunkoNotificationMapper();
     }
 
+    /**
+     * Test para comprobar que el mapeo a la NotificationDTO funciona correctamente
+     */
     @Test
     void testToFunkoNotificationDto() {
         GetFunkoDTO dto = GetFunkoDTO.builder()

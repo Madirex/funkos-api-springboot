@@ -60,11 +60,17 @@ public class FunkoRestControllerImpl implements FunkoRestController {
     /**
      * Método para obtener todos los Funkos
      *
-     * @param category Categoría por la que filtrar
+     * @param category    categoría
+     * @param maxPrice    precio máximo
+     * @param maxQuantity cantidad máxima
+     * @param page        página
+     * @param size        tamaño de página
+     * @param sortBy      ordenar por
+     * @param direction   dirección
+     * @param request     petición
      * @return ResponseEntity con el código de estado
      */
     @GetMapping()
-    @Override
     public ResponseEntity<PageResponse<GetFunkoDTO>> getAllFunko(
             @Valid @RequestParam(required = false) Optional<String> category,
             @RequestParam(required = false) Optional<Double> maxPrice,
@@ -93,6 +99,7 @@ public class FunkoRestControllerImpl implements FunkoRestController {
      *
      * @param id UUID del Funko en formato String
      * @return ResponseEntity con el código de estado
+     * @throws FunkoNotFoundException Si no se ha encontrado el Funko con el UUID indicado
      */
     @GetMapping("/{id}")
     @Override
@@ -107,8 +114,11 @@ public class FunkoRestControllerImpl implements FunkoRestController {
     /**
      * Método para crear un Funko
      *
-     * @param funko Objeto CreateFunkoDTO con los campos a crear
+     * @param funko Funko a crear
      * @return ResponseEntity con el código de estado
+     * @throws JsonProcessingException   Si no se ha podido convertir el objeto a JSON
+     * @throws CategoryNotFoundException Si no se ha encontrado la categoría
+     * @throws CategoryNotValidException Si la categoría no es válida
      */
     @PostMapping
     @Override
@@ -121,10 +131,14 @@ public class FunkoRestControllerImpl implements FunkoRestController {
     /**
      * Método para actualizar un Funko
      *
-     * @param id    UUID del Funko en formato String
-     * @param funko Objeto UpdateFunkoDTO con los campos a actualizar
+     * @param id    id del Funko
+     * @param funko Funko a actualizar
      * @return ResponseEntity con el código de estado
-     * @throws FunkoNotFoundException Si no se ha encontrado el Funko con el UUID indicado
+     * @throws FunkoNotFoundException     del Funko
+     * @throws FunkoNotValidUUIDException del Funko
+     * @throws JsonProcessingException    excepción Json
+     * @throws CategoryNotFoundException  de la categoría
+     * @throws CategoryNotValidException  de la categoría
      */
     @PutMapping("/{id}")
     @Override
@@ -137,9 +151,14 @@ public class FunkoRestControllerImpl implements FunkoRestController {
     /**
      * Método para actualizar parcialmente un Funko
      *
-     * @param id    UUID del Funko en formato String
-     * @param funko Objeto PatchFunkoDTO con los campos a actualizar
+     * @param id    id del Funko
+     * @param funko Funko a actualizar
      * @return ResponseEntity con el código de estado
+     * @throws FunkoNotFoundException     del Funko
+     * @throws FunkoNotValidUUIDException del Funko
+     * @throws JsonProcessingException    excepción Json
+     * @throws CategoryNotFoundException  de la categoría
+     * @throws CategoryNotValidException  de la categoría
      */
     @PatchMapping("/{id}")
     @Override
@@ -152,8 +171,10 @@ public class FunkoRestControllerImpl implements FunkoRestController {
     /**
      * Método para eliminar un Funko
      *
-     * @param id UUID del Funko en formato String
+     * @param id id del Funko
      * @return ResponseEntity con el código de estado
+     * @throws FunkoNotFoundException  del Funko
+     * @throws JsonProcessingException excepción Json
      */
     @DeleteMapping("/{id}")
     @Override
@@ -199,6 +220,18 @@ public class FunkoRestControllerImpl implements FunkoRestController {
         return new ResponseEntity<>(mensaje, httpStatus);
     }
 
+    /**
+     * Método para actualizar la imagen de un Funko
+     *
+     * @param id   id del Funko
+     * @param file imagen del Funko
+     * @return ResponseEntity con el código de estado
+     * @throws FunkoNotValidUUIDException del Funko
+     * @throws CategoryNotFoundException  de la categoría
+     * @throws FunkoNotFoundException     del Funko
+     * @throws CategoryNotValidException  de la categoría
+     * @throws IOException                excepción de entrada/salida
+     */
     @PatchMapping(value = "/image/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<GetFunkoDTO> newFunkoImg(
             @PathVariable String id,

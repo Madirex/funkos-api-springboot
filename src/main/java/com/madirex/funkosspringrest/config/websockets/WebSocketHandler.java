@@ -15,12 +15,20 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+/**
+ * Clase WebSocketHandler
+ */
 @Slf4j
 public class WebSocketHandler extends TextWebSocketHandler implements SubProtocolCapable, WebSocketSender {
     private final String entity;
 
     private final Set<WebSocketSession> sessions = new CopyOnWriteArraySet<>();
 
+    /**
+     * Constructor de la clase
+     *
+     * @param entity Entidad que se va a manejar
+     */
     public WebSocketHandler(String entity) {
         this.entity = entity;
     }
@@ -48,7 +56,7 @@ public class WebSocketHandler extends TextWebSocketHandler implements SubProtoco
      * @param status  Estado de la conexión
      */
     @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
+    public void afterConnectionClosed(@NonNull WebSocketSession session, @NonNull CloseStatus status) {
         log.info("Conexión cerrada con el servidor: " + status);
         sessions.remove(session);
     }
@@ -96,10 +104,9 @@ public class WebSocketHandler extends TextWebSocketHandler implements SubProtoco
      *
      * @param session   Sesión del cliente
      * @param exception Excepción que se ha producido
-     * @throws Exception Error al manejar el error
      */
     @Override
-    public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
+    public void handleTransportError(@NonNull WebSocketSession session, Throwable exception) {
         log.info("Error de transporte con el servidor: " + exception.getMessage());
     }
 

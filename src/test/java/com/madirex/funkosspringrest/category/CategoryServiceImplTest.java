@@ -4,8 +4,6 @@ import com.madirex.funkosspringrest.dto.category.CreateCategoryDTO;
 import com.madirex.funkosspringrest.dto.category.PatchCategoryDTO;
 import com.madirex.funkosspringrest.dto.category.UpdateCategoryDTO;
 import com.madirex.funkosspringrest.exceptions.category.CategoryNotFoundException;
-import com.madirex.funkosspringrest.exceptions.category.CategoryNotValidException;
-import com.madirex.funkosspringrest.exceptions.category.DeleteCategoryException;
 import com.madirex.funkosspringrest.mappers.category.CategoryMapperImpl;
 import com.madirex.funkosspringrest.models.Category;
 import com.madirex.funkosspringrest.repositories.CategoryRepository;
@@ -28,6 +26,9 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * Clase CategoryServiceImplTest
+ */
 @ExtendWith(MockitoExtension.class)
 class CategoryServiceImplTest {
     List<Category> list;
@@ -43,6 +44,9 @@ class CategoryServiceImplTest {
     @InjectMocks
     private CategoryServiceImpl categoryService;
 
+    /**
+     * Método setUp para inicializar los objetos
+     */
     @BeforeEach
     void setUp() {
         list = new ArrayList<>();
@@ -62,6 +66,9 @@ class CategoryServiceImplTest {
                 .build());
     }
 
+    /**
+     * Test para comprobar que se obtienen todas las categorías
+     */
     @Test
     void testGetAllCategory() {
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
@@ -82,6 +89,11 @@ class CategoryServiceImplTest {
     }
 
 
+    /**
+     * Test para comprobar que se obtiene una categoría por su id
+     *
+     * @throws CategoryNotFoundException excepción
+     */
     @Test
     void testGetCategoryById() throws CategoryNotFoundException {
         when(categoryRepository.findById(list.get(0).getId())).thenReturn(Optional.ofNullable(list.get(0)));
@@ -94,6 +106,9 @@ class CategoryServiceImplTest {
         verify(categoryRepository, times(1)).findById(list.get(0).getId());
     }
 
+    /**
+     * Test para comprobar la excepción cuando no se encuentra la categoría dada una id
+     */
     @Test
     void testGetCategoryByIdNotFound() {
         when(categoryRepository.findById(1L)).thenReturn(Optional.empty());
@@ -101,6 +116,9 @@ class CategoryServiceImplTest {
         verify(categoryRepository, times(1)).findById(1L);
     }
 
+    /**
+     * Test para comprobar que se crea una categoría
+     */
     @Test
     void testPostCategory() {
         var insert = CreateCategoryDTO.builder()
@@ -118,6 +136,11 @@ class CategoryServiceImplTest {
         verify(categoryRepository, times(1)).save(any(Category.class));
     }
 
+    /**
+     * Test para comprobar que se actualiza una categoría
+     *
+     * @throws CategoryNotFoundException excepción
+     */
     @Test
     void testPutCategory() throws CategoryNotFoundException {
         var update = UpdateCategoryDTO.builder()
@@ -136,8 +159,13 @@ class CategoryServiceImplTest {
         verify(categoryRepository, times(1)).save(any(Category.class));
     }
 
+    /**
+     * Test para comprobar que se puede actualizar parcialmente una categoría
+     *
+     * @throws CategoryNotFoundException excepción
+     */
     @Test
-    void testPatchCategory() throws CategoryNotFoundException, CategoryNotValidException {
+    void testPatchCategory() throws CategoryNotFoundException {
         var update = PatchCategoryDTO.builder()
                 .type(Category.Type.MOVIE)
                 .build();
@@ -152,6 +180,9 @@ class CategoryServiceImplTest {
         verify(categoryRepository, times(1)).save(any(Category.class));
     }
 
+    /**
+     * Test para comprobar que se lanza una excepción cuando no se encuentra la categoría al tratar de hacer un Patch
+     */
     @Test
     void testPatchCategoryNotFoundCategory() {
         var fp = PatchCategoryDTO.builder()
@@ -160,8 +191,13 @@ class CategoryServiceImplTest {
         assertThrows(CategoryNotFoundException.class, () -> categoryService.patchCategory(1L, fp));
     }
 
+    /**
+     * Test que comprueba que se pueda eliminar la categoría
+     *
+     * @throws CategoryNotFoundException excepción
+     */
     @Test
-    void testDeleteCategory() throws CategoryNotFoundException, DeleteCategoryException {
+    void testDeleteCategory() throws CategoryNotFoundException {
         var update = PatchCategoryDTO.builder()
                 .type(Category.Type.MOVIE)
                 .build();
@@ -177,6 +213,9 @@ class CategoryServiceImplTest {
         );
     }
 
+    /**
+     * Test que comprueba que se lanza una excepción NotFound cuando no se encuentra la categoría al tratar de eliminarla
+     */
     @Test
     void testDeleteCategoryNotFound() {
         assertThrows(CategoryNotFoundException.class, () -> categoryService.deleteCategory(1L));

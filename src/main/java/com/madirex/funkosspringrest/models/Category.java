@@ -9,6 +9,9 @@ import org.springframework.lang.NonNull;
 
 import java.time.LocalDateTime;
 
+/**
+ * Class Category
+ */
 @Getter
 @Setter
 @NoArgsConstructor
@@ -33,6 +36,9 @@ public class Category {
     @NonNull
     private Boolean active;
 
+    /**
+     * Enum Type
+     */
     public enum Type {
         SERIE, DISNEY, SUPERHEROS, MOVIE, OTHER
     }

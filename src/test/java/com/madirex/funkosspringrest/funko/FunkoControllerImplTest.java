@@ -38,6 +38,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Clase FunkoControllerImplTest
+ */
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureJsonTesters
@@ -70,18 +73,28 @@ class FunkoControllerImplTest {
             .build();
     String endpoint = "/api/funkos";
 
+    /**
+     * Constructor de FunkoControllerImplTest
+     *
+     * @param service servicio de Funko
+     */
     @Autowired
     public FunkoControllerImplTest(FunkoServiceImpl service) {
         this.service = service;
         mapper.registerModule(new JavaTimeModule());
     }
 
+    /**
+     * Test para comprobar que se obtienen todos los Funkos
+     *
+     * @throws Exception excepción
+     */
     @Test
     void testGetAll() throws Exception {
         var funkoList = List.of(funko, funko2);
         var pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
         var page = new PageImpl<>(funkoList);
-        when(service.getAllFunko(Optional.empty(),Optional.empty(), Optional.empty(),
+        when(service.getAllFunko(Optional.empty(), Optional.empty(), Optional.empty(),
                 pageable)).thenReturn(page);
         MockHttpServletResponse response = mockMvc.perform(get(endpoint)
                         .accept(MediaType.APPLICATION_JSON))
@@ -97,6 +110,11 @@ class FunkoControllerImplTest {
         );
     }
 
+    /**
+     * Test para comprobar que se obtiene un Funko por su id
+     *
+     * @throws Exception excepción
+     */
     @Test
     void testFindById() throws Exception {
         when(service.getFunkoById(funko.getId().toString())).thenReturn(funko);
@@ -114,6 +132,11 @@ class FunkoControllerImplTest {
         );
     }
 
+    /**
+     * Test para comprobar que se obtiene un Funko por su id
+     *
+     * @throws Exception excepción
+     */
     @Test
     void testFindByIdNotValidUUID() throws Exception {
         when(service.getFunkoById("()")).thenThrow(new FunkoNotValidUUIDException(""));
@@ -125,6 +148,11 @@ class FunkoControllerImplTest {
         assertEquals(400, response.getStatus());
     }
 
+    /**
+     * Test para comprobar que se obtiene un Funko por su id
+     *
+     * @throws Exception excepción
+     */
     @Test
     void testDeleteFunko() throws Exception {
         String funkoIdToDelete = UUID.randomUUID().toString();
@@ -133,6 +161,11 @@ class FunkoControllerImplTest {
                 .andExpect(status().isNoContent());
     }
 
+    /**
+     * Test para comprobar UUID no válida al intentar eliminar a un Funko
+     *
+     * @throws Exception excepción
+     */
     @Test
     void testDeleteNotValidUUID() throws Exception {
         doThrow(new FunkoNotValidUUIDException("")).when(service).deleteFunko("()");
@@ -144,6 +177,11 @@ class FunkoControllerImplTest {
         assertEquals(400, response.getStatus());
     }
 
+    /**
+     * Test para comprobar que se crea un Funko
+     *
+     * @throws Exception excepción
+     */
     @Test
     void testPostFunko() throws Exception {
         CreateFunkoDTO newFunko = CreateFunkoDTO.builder()
@@ -173,6 +211,11 @@ class FunkoControllerImplTest {
 
     }
 
+    /**
+     * Test para comprobar que se actualiza un Funko
+     *
+     * @throws Exception excepción
+     */
     @Test
     void testPutFunko() throws Exception {
         String funkId = UUID.randomUUID().toString();
@@ -204,6 +247,11 @@ class FunkoControllerImplTest {
                 .andExpect(status().isOk());
     }
 
+    /**
+     * Test para comprobar UUID no válida al hacer un Put
+     *
+     * @throws Exception excepción
+     */
     @Test
     void testPutNotValidUUID() throws Exception {
         doThrow(new FunkoNotValidUUIDException("")).when(service).putFunko("a()a", UpdateFunkoDTO.builder()
@@ -221,6 +269,11 @@ class FunkoControllerImplTest {
         assertEquals(400, response.getStatus());
     }
 
+    /**
+     * Test para comprobar que se actualiza parcialmente un Funko
+     *
+     * @throws Exception excepción
+     */
     @Test
     void testPatchFunko() throws Exception {
         String funkId = UUID.randomUUID().toString();
@@ -249,6 +302,11 @@ class FunkoControllerImplTest {
                 .andExpect(status().isOk());
     }
 
+    /**
+     * Test de ValidationException
+     *
+     * @throws Exception excepción
+     */
     @Test
     void testValidationExceptionHandling() throws Exception {
         CreateFunkoDTO invalidFunko = CreateFunkoDTO.builder()
@@ -264,6 +322,11 @@ class FunkoControllerImplTest {
                 .andExpect(status().isBadRequest());
     }
 
+    /**
+     * Test para comprobar que se obtienen todos los Funkos
+     *
+     * @throws Exception excepción
+     */
     @Test
     void updateFunkoImage() throws Exception {
         var myLocalEndpoint = endpoint + "/image/" + funko.getId().toString();
@@ -296,6 +359,11 @@ class FunkoControllerImplTest {
         verify(service, times(1)).updateImage(anyString(), any(MultipartFile.class), anyBoolean());
     }
 
+    /**
+     * Test para comprobar cuando no se le asigna una imagen cuando se intenta actualizar la imagen de un Funko
+     *
+     * @throws Exception excepción
+     */
     @Test
     void testUpdateFunkoImageNoImageProvided() throws Exception {
         var myLocalEndpoint = endpoint + "/image/" + funko.getId().toString();

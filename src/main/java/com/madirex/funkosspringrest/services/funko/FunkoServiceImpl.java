@@ -55,7 +55,6 @@ public class FunkoServiceImpl implements FunkoService {
 
     public static final String FUNKO_NOT_FOUND_MSG = "No se ha encontrado el Funko con el UUID indicado";
     public static final String NOT_VALID_FORMAT_UUID_MSG = "El UUID no tiene un formato válido";
-    public static final String CATEGORY_ID_NOT_FOUND_MSG = "No se ha encontrado la categoría con el ID indicado.";
 
     private final FunkoRepository funkoRepository;
     private final FunkoMapperImpl funkoMapperImpl;

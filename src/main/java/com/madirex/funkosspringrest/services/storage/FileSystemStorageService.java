@@ -26,15 +26,32 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+/**
+ * Clase FileSystemStorageService
+ */
 @Service
 @Slf4j
 public class FileSystemStorageService implements StorageService {
     private final Path rootLocation;
 
+    /**
+     * Constructor de la clase
+     *
+     * @param path ruta
+     */
     public FileSystemStorageService(@Value("${upload.root-location}") String path) {
         this.rootLocation = Paths.get(path);
     }
 
+    /**
+     * Almacena un fichero
+     *
+     * @param file      fichero
+     * @param fileTypes tipos de fichero
+     * @param name      nombre
+     * @return nombre del fichero
+     * @throws IOException excepción de entrada/salida
+     */
     @Override
     public String store(MultipartFile file, List<String> fileTypes, String name) throws IOException {
         String filename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
@@ -61,24 +78,42 @@ public class FileSystemStorageService implements StorageService {
         }
     }
 
+    /**
+     * Carga todos los ficheros
+     *
+     * @return Stream de Path
+     */
     @Override
     public Stream<Path> loadAll() {
         log.info("Cargando todos los ficheros almacenados");
-        try {
-            return Files.walk(this.rootLocation, 1)
-                    .filter(path -> !path.equals(this.rootLocation))
-                    .map(this.rootLocation::relativize);
+        try (Stream<Path> pathStream = Files.walk(this.rootLocation, 1)
+                .filter(path -> !path.equals(this.rootLocation))
+                .map(this.rootLocation::relativize)) {
+            return pathStream.toList().stream();
         } catch (IOException e) {
             throw new StorageInternal("Fallo al leer ficheros almacenados " + e);
         }
     }
 
+    /**
+     * Carga un fichero
+     *
+     * @param filename nombre del fichero
+     * @return Path
+     */
     @Override
     public Path load(String filename) {
         log.info("Cargando fichero " + filename);
         return rootLocation.resolve(filename);
     }
 
+    /**
+     * Carga un fichero como recurso
+     *
+     * @param filename nombre del fichero
+     * @return Resource
+     * @throws MalformedURLException excepción de URL mal formada
+     */
     @Override
     public Resource loadAsResource(String filename) throws MalformedURLException {
         log.info("Cargando fichero " + filename);
@@ -91,18 +126,32 @@ public class FileSystemStorageService implements StorageService {
         }
     }
 
+    /**
+     * Elimina todos los ficheros
+     */
     @Override
     public void deleteAll() {
         log.info("Eliminando todos los ficheros almacenados");
         FileSystemUtils.deleteRecursively(rootLocation.toFile());
     }
 
+    /**
+     * Inicializa el almacenamiento
+     *
+     * @throws IOException excepción de entrada/salida
+     */
     @Override
     public void init() throws IOException {
         log.info("Inicializando almacenamiento");
         Files.createDirectories(rootLocation);
     }
 
+    /**
+     * Elimina un fichero
+     *
+     * @param filename nombre del fichero
+     * @throws IOException excepción de entrada/salida
+     */
     @Override
     public void delete(String filename) throws IOException {
         String justFilename = StringUtils.getFilename(filename);
@@ -111,6 +160,12 @@ public class FileSystemStorageService implements StorageService {
         Files.deleteIfExists(file);
     }
 
+    /**
+     * Obtiene la URL de un fichero
+     *
+     * @param filename nombre del fichero
+     * @return URL del fichero
+     */
     @Override
     public String getUrl(String filename) {
         log.info("Obteniendo URL del fichero " + filename);

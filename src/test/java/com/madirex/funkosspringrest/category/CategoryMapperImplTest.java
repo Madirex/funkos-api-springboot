@@ -10,14 +10,23 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * Clase CategoryMapperImplTest
+ */
 class CategoryMapperImplTest {
     private CategoryMapperImpl categoryMapperImpl;
 
+    /**
+     * Método setUp para inicializar los objetos
+     */
     @BeforeEach
     void setUp() {
         categoryMapperImpl = new CategoryMapperImpl();
     }
 
+    /**
+     * Test para comprobar que el mapeo de CreateCategory a Category es correcto
+     */
     @Test
     void testCreateCategoryDTOToCategory() {
         var category = CreateCategoryDTO.builder()
@@ -31,6 +40,9 @@ class CategoryMapperImplTest {
         );
     }
 
+    /**
+     * Test para comprobar que el mapeo de un UpdateCategory a DTO es correcto
+     */
     @Test
     void testUpdateCategoryDTOToCategory() {
         var existingCategory = Category.builder()

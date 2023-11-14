@@ -9,15 +9,32 @@ import org.springframework.context.annotation.Configuration;
 
 import java.io.IOException;
 
+/**
+ * Clase StorageConfig
+ */
 @Configuration
 @Slf4j
 public class StorageConfig {
+    private final StorageService storageService;
+    private final String deleteAll;
+
+    /**
+     * Constructor
+     *
+     * @param storageService Servicio de almacenamiento
+     * @param deleteAll      Borrar todos los ficheros
+     */
     @Autowired
-    private StorageService storageService;
+    public StorageConfig(StorageService storageService, @Value("${upload.delete}") String deleteAll) {
+        this.storageService = storageService;
+        this.deleteAll = deleteAll;
+    }
 
-    @Value("${upload.delete}")
-    private String deleteAll;
-
+    /**
+     * Método init
+     *
+     * @throws IOException Error al inicializar el servicio de almacenamiento
+     */
     @PostConstruct
     public void init() throws IOException {
         if (deleteAll.equals("true")) {

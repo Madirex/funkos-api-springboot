@@ -15,14 +15,23 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Clase FunkoMapperImplTest
+ */
 class FunkoMapperImplTest {
     private FunkoMapperImpl funkoMapperImpl;
 
+    /**
+     * Método setUp para inicializar los objetos
+     */
     @BeforeEach
     void setUp() {
         funkoMapperImpl = new FunkoMapperImpl();
     }
 
+    /**
+     * Test para comprobar que el mapeo de CreateFunko a Funko es correcto
+     */
     @Test
     void testCreateFunkoDTOToFunko() {
         var funko = CreateFunkoDTO.builder()
@@ -43,6 +52,9 @@ class FunkoMapperImplTest {
         );
     }
 
+    /**
+     * Test para comprobar que el mapeo de un UpdateFunko a DTO es correcto
+     */
     @Test
     void testUpdateFunkoDTOToFunko() {
         var funkoToEdit = Funko.builder()
@@ -60,7 +72,7 @@ class FunkoMapperImplTest {
                 .image("imagen")
                 .categoryId(1L)
                 .build();
-        var mapped = funkoMapperImpl.toFunko(funkoToEdit,funko,Category.builder().id(1L).type(Category.Type.MOVIE).active(true).build());
+        var mapped = funkoMapperImpl.toFunko(funkoToEdit, funko, Category.builder().id(1L).type(Category.Type.MOVIE).active(true).build());
         assertAll("Funko properties",
                 () -> assertNotNull(mapped.getId(), "El ID no debe ser nulo"),
                 () -> assertEquals(funko.getName(), mapped.getName(), "El nombre debe coincidir"),
@@ -71,6 +83,9 @@ class FunkoMapperImplTest {
         );
     }
 
+    /**
+     * Test para comprobar que el mapeo de un Funko a DTO es correcto
+     */
     @Test
     void toGetFunkoDTO() {
         var funko = Funko.builder()
@@ -95,6 +110,9 @@ class FunkoMapperImplTest {
                 () -> assertEquals(funko.getUpdatedAt(), mapped.getUpdatedAt(), "La fecha de actualización debe coincidir"));
     }
 
+    /**
+     * Test para comprobar mappeo a GetFunkoDTOList
+     */
     @Test
     void toGetFunkoDTOList() {
         List<Funko> list = new ArrayList<>();

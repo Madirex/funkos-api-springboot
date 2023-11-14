@@ -25,6 +25,9 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Clase FileSystemStorageServiceTest
+ */
 @ExtendWith(MockitoExtension.class)
 class FileSystemStorageServiceTest {
 
@@ -34,11 +37,16 @@ class FileSystemStorageServiceTest {
     @InjectMocks
     private final FileSystemStorageService fileSystemStorageService = new FileSystemStorageService("funkos-images");
 
-    byte[] bytesPNG = { (byte) 137, (byte) 80, (byte) 78, (byte) 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82,
+    byte[] bytesPNG = {(byte) 137, (byte) 80, (byte) 78, (byte) 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82,
             0, 0, 0, 1, 0, 0, 0, 1, 8, 6, 0, 0, 0, 31, 21, (byte) -60, (byte) -60,
             (byte) 137, (byte) 80, (byte) 78, (byte) 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82,
-            0, 0, 0, 1, 0, 0, 0, 1, 8, 6, 0, 0, 0, 31, 21, (byte) -60, (byte) -60 };
+            0, 0, 0, 1, 0, 0, 0, 1, 8, 6, 0, 0, 0, 31, 21, (byte) -60, (byte) -60};
 
+    /**
+     * Método setUp para inicializar los objetos
+     *
+     * @throws IOException excepción entrada/salida
+     */
     @BeforeEach
     public void setUp() throws IOException {
         fileSystemStorageService.deleteAll();
@@ -52,6 +60,11 @@ class FileSystemStorageServiceTest {
         RequestContextHolder.setRequestAttributes(attrs);
     }
 
+    /**
+     * Test para probar que el método Store funciona correctamente
+     *
+     * @throws IOException excepción entrada/salida
+     */
     @Test
     void testStore() throws IOException {
         var id = UUID.randomUUID().toString();
@@ -64,6 +77,9 @@ class FileSystemStorageServiceTest {
         );
     }
 
+    /**
+     * Test para probar que el método Store lanza una excepción cuando se le pasa un fichero vacío
+     */
     @Test
     void testStoreWithEmptyFile() {
         var res = assertThrows(StorageBadRequest.class, () -> fileSystemStorageService.store(
@@ -74,8 +90,12 @@ class FileSystemStorageServiceTest {
     }
 
 
+    /**
+     * Test para probar que el método Store lanza una excepción cuando se le pasa un fichero con 2 puntos
+     * Esto es importante para evitar intentos de subir ficheros fuera del directorio actual
+     */
     @Test
-    void testStoreWith2puntos() {
+    void testStoreWithTwoDots() {
         var res = assertThrows(StorageBadRequest.class, () -> fileSystemStorageService.store(
                 new MockMultipartFile("funko", "../funko.png",
                         "image/png", bytesPNG),
@@ -84,6 +104,9 @@ class FileSystemStorageServiceTest {
                 "directorio actual ../funko.png", res.getMessage());
     }
 
+    /**
+     * Test para comprobar que el método loadAll funciona correctamente
+     */
     @Test
     void testLoadAll() {
         var res = fileSystemStorageService.loadAll();
@@ -93,6 +116,9 @@ class FileSystemStorageServiceTest {
         );
     }
 
+    /**
+     * Test para comprobar que el método load funciona correctamente
+     */
     @Test
     void testLoad() {
         var res = fileSystemStorageService.load("funko.png");
@@ -102,6 +128,9 @@ class FileSystemStorageServiceTest {
         );
     }
 
+    /**
+     * Test para comprobar que el método loadAsResource funciona correctamente
+     */
     @Test
     void testLoadAsResource() throws IOException {
         var id = UUID.randomUUID().toString();
@@ -116,6 +145,9 @@ class FileSystemStorageServiceTest {
         );
     }
 
+    /**
+     * Test para comprobar el caso incorrecto NotFound de LoadAsResource
+     */
     @Test
     void testLoadAsResoureNotFound() {
         var res = assertThrows(StorageNotFound.class, () -> fileSystemStorageService.loadAsResource("funko.png"));
@@ -125,6 +157,9 @@ class FileSystemStorageServiceTest {
         );
     }
 
+    /**
+     * Test para comprobar el caso incorrecto MalformedUrl de LoadAsResource
+     */
     @Test
     void testLoadAsResoureMalformedUrl() {
         var res = assertThrows(StorageNotFound.class, () -> fileSystemStorageService.loadAsResource("funko.png"));
@@ -135,6 +170,11 @@ class FileSystemStorageServiceTest {
         );
     }
 
+    /**
+     * Test para comprobar que el método deleteAll funciona correctamente
+     *
+     * @throws IOException excepción entrada/salida
+     */
     @Test
     void testDeleteAll() throws IOException {
         fileSystemStorageService.deleteAll();
@@ -146,6 +186,9 @@ class FileSystemStorageServiceTest {
         );
     }
 
+    /**
+     * Test para comprobar que el método deleteAll lanza una excepción StorageInternal
+     */
     @Test
     void testDeleteAllInternalError() {
         fileSystemStorageService.deleteAll();
@@ -156,6 +199,11 @@ class FileSystemStorageServiceTest {
         );
     }
 
+    /**
+     * Test para comprobar que el método init funciona correctamente
+     *
+     * @throws IOException excepción entrada/salida
+     */
     @Test
     void testInit() throws IOException {
         fileSystemStorageService.deleteAll();
@@ -167,6 +215,11 @@ class FileSystemStorageServiceTest {
         );
     }
 
+    /**
+     * Test para comprobar que el método delete funciona correctamente
+     *
+     * @throws IOException excepción entrada/salida
+     */
     @Test
     void testDelete() throws IOException {
         var file = fileSystemStorageService.store(
@@ -181,6 +234,9 @@ class FileSystemStorageServiceTest {
         );
     }
 
+    /**
+     * Test para comprobar que funciona correctamente el getUrl
+     */
     @Test
     void testGetUrl() {
         String filename = "testFile.txt";

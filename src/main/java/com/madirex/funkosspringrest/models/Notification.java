@@ -11,5 +11,8 @@ public record Notification<T>(
         T data,
         String createdAt
 ) {
+    /**
+     * Enum Type
+     */
     public enum Type {CREATE, UPDATE, DELETE}
 }

@@ -9,45 +9,84 @@ import com.madirex.funkosspringrest.exceptions.category.CategoryNotFoundExceptio
 import com.madirex.funkosspringrest.exceptions.category.CategoryNotValidException;
 import com.madirex.funkosspringrest.exceptions.funko.FunkoNotFoundException;
 import com.madirex.funkosspringrest.exceptions.funko.FunkoNotValidUUIDException;
-import com.madirex.funkosspringrest.utils.pagination.PageResponse;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * Interface FunkoRestController
  */
 public interface FunkoRestController {
 
-    @GetMapping()
-    ResponseEntity<PageResponse<GetFunkoDTO>> getAllFunko(
-            @Valid @RequestParam(required = false) Optional<String> category,
-            @RequestParam(required = false) Optional<Double> maxPrice,
-            @RequestParam(required = false) Optional<Integer> maxQuantity,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "asc") String direction,
-            HttpServletRequest request
-    );
-
+    /**
+     * Método para obtener todos los Funkos
+     *
+     * @param id id del Funko
+     * @return ResponseEntity con el código de estado
+     * @throws FunkoNotValidUUIDException del Funko
+     * @throws FunkoNotFoundException     del Funko
+     */
     ResponseEntity<GetFunkoDTO> getFunkoById(@Valid @PathVariable String id) throws FunkoNotValidUUIDException, FunkoNotFoundException;
 
+    /**
+     * Método para crear un Funko
+     *
+     * @param funko Funko a crear
+     * @return ResponseEntity con el código de estado
+     * @throws CategoryNotFoundException de la categoría
+     * @throws CategoryNotValidException de la categoría
+     * @throws JsonProcessingException   de la categoría
+     */
     ResponseEntity<GetFunkoDTO> postFunko(@Valid @RequestBody CreateFunkoDTO funko) throws CategoryNotFoundException, CategoryNotValidException, JsonProcessingException;
 
+    /**
+     * Método para actualizar un Funko
+     *
+     * @param id    id del Funko
+     * @param funko Funko a actualizar
+     * @return ResponseEntity con el código de estado
+     * @throws FunkoNotValidUUIDException del Funko
+     * @throws FunkoNotFoundException     del Funko
+     * @throws CategoryNotFoundException  de la categoría
+     * @throws CategoryNotValidException  de la categoría
+     * @throws JsonProcessingException    excepción Json
+     */
     ResponseEntity<GetFunkoDTO> putFunko(@Valid @PathVariable String id, @Valid @RequestBody UpdateFunkoDTO funko) throws FunkoNotValidUUIDException, FunkoNotFoundException, CategoryNotFoundException, CategoryNotValidException, JsonProcessingException;
 
+    /**
+     * Método para actualizar parcialmente un Funko
+     *
+     * @param id    id del Funko
+     * @param funko Funko a actualizar
+     * @return ResponseEntity con el código de estado
+     * @throws FunkoNotValidUUIDException del Funko
+     * @throws FunkoNotFoundException     del Funko
+     * @throws CategoryNotFoundException  de la categoría
+     * @throws CategoryNotValidException  de la categoría
+     * @throws JsonProcessingException    excepción Json
+     */
     ResponseEntity<GetFunkoDTO> patchFunko(@Valid @PathVariable String id, @Valid @RequestBody PatchFunkoDTO funko) throws FunkoNotValidUUIDException, FunkoNotFoundException, CategoryNotFoundException, CategoryNotValidException, JsonProcessingException;
 
+    /**
+     * Método para eliminar un Funko
+     *
+     * @param id id del Funko
+     * @return ResponseEntity con el código de estado
+     * @throws FunkoNotValidUUIDException del Funko
+     * @throws FunkoNotFoundException     del Funko
+     * @throws JsonProcessingException    excepción Json
+     */
     ResponseEntity<String> deleteFunko(@Valid @PathVariable String id) throws FunkoNotValidUUIDException, FunkoNotFoundException, JsonProcessingException;
 
+    /**
+     * Manejador de excepciones
+     *
+     * @param ex MethodArgumentNotValidException
+     * @return Map<String, String>
+     */
     Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex);
 }

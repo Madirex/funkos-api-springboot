@@ -24,6 +24,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Clase StorageControllerTest
+ */
 @AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest(properties = "spring.profiles.active=test")
@@ -35,6 +38,11 @@ class StorageControllerTest {
     @MockBean
     private FileSystemStorageService storageService;
 
+    /**
+     * Test para comprobar que se sirve un archivo correctamente
+     *
+     * @throws Exception excepción
+     */
     @Test
     void testServerFile() throws Exception {
         Resource file = new UrlResource(Paths.get("src/test/resources/funko.png").toUri());
@@ -45,6 +53,11 @@ class StorageControllerTest {
     }
 
 
+    /**
+     * Test para comprobar que no haya contenido al servir un archivo
+     *
+     * @throws Exception excepción
+     */
     @Test
     void testServeFileNotContentType() throws Exception {
         byte[] content = "Contenido de prueba".getBytes();
