@@ -40,6 +40,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -106,7 +107,8 @@ public class FunkoServiceImpl implements FunkoService {
         Specification<Funko> specType = (root, query, criteriaBuilder) ->
                 category.map(m -> {
                     try {
-                        return criteriaBuilder.equal(root.get("category").get("type"), Category.Type.valueOf(m.toUpperCase()));
+                        return criteriaBuilder.equal(root.get("category").get("type"), Category.Type
+                                .valueOf(m.toUpperCase()));
                     } catch (IllegalArgumentException e) {
                         return criteriaBuilder.isTrue(criteriaBuilder.literal(false));
                     }
@@ -215,7 +217,8 @@ public class FunkoServiceImpl implements FunkoService {
      */
     @CachePut(key = "#result.id")
     @Override
-    public GetFunkoDTO patchFunko(String id, PatchFunkoDTO funko) throws FunkoNotValidUUIDException, FunkoNotFoundException, CategoryNotFoundException, CategoryNotValidException, JsonProcessingException {
+    public GetFunkoDTO patchFunko(String id, PatchFunkoDTO funko) throws FunkoNotValidUUIDException,
+            FunkoNotFoundException, CategoryNotFoundException, CategoryNotValidException, JsonProcessingException {
         try {
             UUID uuid = UUID.fromString(id);
             var opt = funkoRepository.findById(uuid);
@@ -225,6 +228,7 @@ public class FunkoServiceImpl implements FunkoService {
             BeanUtils.copyProperties(funko, opt.get(), Util.getNullPropertyNames(funko));
             opt.get().setId(uuid);
             opt.get().setUpdatedAt(LocalDateTime.now());
+            opt.get().setCategory(categoryService.getCategoryById(funko.getCategoryId()));
             Funko modified = funkoRepository.save(opt.get());
             var funkoDTO = funkoMapperImpl.toGetFunkoDTO(modified);
             onChange(Notification.Type.UPDATE, funkoDTO);
@@ -277,7 +281,9 @@ public class FunkoServiceImpl implements FunkoService {
         try {
             UUID uuid = UUID.fromString(id);
             var actualFunko = funkoRepository.findById(uuid).orElseThrow(() -> new FunkoNotFoundException(id));
-            String imageStored = storageService.store(image, List.of("jpg", "jpeg", "png"), id);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss-SSSSSS");
+            String imageStored = storageService.store(image, List.of("jpg", "jpeg", "png"), id
+                    + "-" + LocalDateTime.now().format(formatter));
             String imageUrl = Boolean.FALSE.equals(withUrl) ? imageStored : storageService.getUrl(imageStored);
 
             if (actualFunko.getImage() != null && !actualFunko.getImage().equals(Funko.IMAGE_DEFAULT)) {

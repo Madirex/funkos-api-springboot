@@ -9,6 +9,7 @@ import com.madirex.funkosspringrest.exceptions.category.CategoryNotFoundExceptio
 import com.madirex.funkosspringrest.exceptions.category.CategoryNotValidException;
 import com.madirex.funkosspringrest.exceptions.funko.FunkoNotFoundException;
 import com.madirex.funkosspringrest.exceptions.funko.FunkoNotValidUUIDException;
+import com.madirex.funkosspringrest.exceptions.pagination.PageNotValidException;
 import com.madirex.funkosspringrest.services.funko.FunkoServiceImpl;
 import com.madirex.funkosspringrest.utils.pagination.PageResponse;
 import com.madirex.funkosspringrest.utils.pagination.PaginationLinksUtils;
@@ -48,7 +49,7 @@ public class FunkoRestControllerImpl implements FunkoRestController {
      * Constructor de la clase
      *
      * @param service              Servicio de Funko
-     * @param paginationLinksUtils
+     * @param paginationLinksUtils Utilidad para la paginación
      */
     @Autowired
     public FunkoRestControllerImpl(FunkoServiceImpl service, PaginationLinksUtils paginationLinksUtils) {
@@ -74,6 +75,9 @@ public class FunkoRestControllerImpl implements FunkoRestController {
             @RequestParam(defaultValue = "asc") String direction,
             HttpServletRequest request
     ) {
+        if (page < 0 || size < 1) {
+            throw new PageNotValidException("La página no puede ser menor que 0 y su tamaño no debe de ser menor a 1.");
+        }
         Sort sort = direction.equalsIgnoreCase(
                 Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(request.getRequestURL().toString());
@@ -108,15 +112,10 @@ public class FunkoRestControllerImpl implements FunkoRestController {
      */
     @PostMapping
     @Override
-    public ResponseEntity<GetFunkoDTO> postFunko(@Valid @RequestBody CreateFunkoDTO funko) throws JsonProcessingException, CategoryNotFoundException, CategoryNotValidException {
-//        try {
+    public ResponseEntity<GetFunkoDTO> postFunko(@Valid @RequestBody CreateFunkoDTO funko) throws JsonProcessingException,
+            CategoryNotFoundException, CategoryNotValidException {
         GetFunkoDTO funkoDTO = service.postFunko(funko);
         return ResponseEntity.status(HttpStatus.CREATED).body(funkoDTO);
-//        } catch (CategoryNotFoundException e) {
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "La categoría no se encuentra: " + e.getMessage());
-//        } catch (CategoryNotValidIDException e) {
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ID de categoría no válido: " + e.getMessage());
-//        }
     }
 
     /**
@@ -129,14 +128,10 @@ public class FunkoRestControllerImpl implements FunkoRestController {
      */
     @PutMapping("/{id}")
     @Override
-    public ResponseEntity<GetFunkoDTO> putFunko(@Valid @PathVariable String id, @Valid @RequestBody UpdateFunkoDTO funko) throws FunkoNotFoundException, FunkoNotValidUUIDException, JsonProcessingException, CategoryNotFoundException, CategoryNotValidException {
-//        try {
+    public ResponseEntity<GetFunkoDTO> putFunko(@Valid @PathVariable String id, @Valid @RequestBody UpdateFunkoDTO funko)
+            throws FunkoNotFoundException, FunkoNotValidUUIDException, JsonProcessingException,
+            CategoryNotFoundException, CategoryNotValidException {
         return ResponseEntity.ok(service.putFunko(id, funko));
-//        } catch (CategoryNotFoundException e) {
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "La categoría no se encuentra: " + e.getMessage());
-//        } catch (CategoryNotValidIDException e) {
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ID de categoría no válido: " + e.getMessage());
-//        }
     }
 
     /**
@@ -148,14 +143,10 @@ public class FunkoRestControllerImpl implements FunkoRestController {
      */
     @PatchMapping("/{id}")
     @Override
-    public ResponseEntity<GetFunkoDTO> patchFunko(@Valid @PathVariable String id, @Valid @RequestBody PatchFunkoDTO funko) throws FunkoNotFoundException, FunkoNotValidUUIDException, JsonProcessingException, CategoryNotFoundException, CategoryNotValidException {
-//        try {
+    public ResponseEntity<GetFunkoDTO> patchFunko(@Valid @PathVariable String id, @Valid @RequestBody PatchFunkoDTO funko)
+            throws FunkoNotFoundException, FunkoNotValidUUIDException, JsonProcessingException,
+            CategoryNotFoundException, CategoryNotValidException {
         return ResponseEntity.ok(service.patchFunko(id, funko));
-//        } catch (CategoryNotFoundException e) {
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "La categoría no se encuentra: " + e.getMessage());
-//        } catch (CategoryNotValidIDException e) {
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ID de categoría no válido: " + e.getMessage());
-//        }
     }
 
     /**
@@ -166,7 +157,8 @@ public class FunkoRestControllerImpl implements FunkoRestController {
      */
     @DeleteMapping("/{id}")
     @Override
-    public ResponseEntity<String> deleteFunko(@Valid @PathVariable String id) throws FunkoNotFoundException, JsonProcessingException {
+    public ResponseEntity<String> deleteFunko(@Valid @PathVariable String id) throws FunkoNotFoundException,
+            JsonProcessingException {
         try {
             service.deleteFunko(id);
         } catch (FunkoNotValidUUIDException e) {
