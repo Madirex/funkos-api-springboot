@@ -9,10 +9,10 @@ import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
-import java.io.IOException;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -23,20 +23,20 @@ class WebSocketHandlerTest {
     private WebSocketSession sessionMock;
 
     @Test
-    void afterConnectionEstablished() throws Exception {
+    void testAfterConnectionEstablished() throws Exception {
         WebSocketHandler handler = new WebSocketHandler("testEntity");
         handler.afterConnectionEstablished(sessionMock);
         verify(sessionMock, times(1)).sendMessage(any(TextMessage.class));
     }
 
     @Test
-    void afterConnectionClosed() {
+    void testAfterConnectionClosed() {
         WebSocketHandler handler = new WebSocketHandler("testEntity");
         assertDoesNotThrow(() -> handler.afterConnectionClosed(sessionMock, CloseStatus.NORMAL));
     }
 
     @Test
-    void sendMessage() throws Exception {
+    void testSendMessage() throws Exception {
         WebSocketHandler handler = new WebSocketHandler("testEntity");
         when(sessionMock.isOpen()).thenReturn(true);
         handler.afterConnectionEstablished(sessionMock);
@@ -45,7 +45,7 @@ class WebSocketHandlerTest {
     }
 
     @Test
-    void sendPeriodicMessages() throws Exception {
+    void testSendPeriodicMessages() throws Exception {
         WebSocketHandler handler = new WebSocketHandler("testEntity");
         when(sessionMock.isOpen()).thenReturn(true);
         handler.afterConnectionEstablished(sessionMock);
@@ -54,7 +54,7 @@ class WebSocketHandlerTest {
     }
 
     @Test
-    void handleTransportError() throws Exception {
+    void testHandleTransportError() throws Exception {
         WebSocketHandler handler = new WebSocketHandler("testEntity");
         Throwable exception = new RuntimeException("Test error");
         handler.handleTransportError(sessionMock, exception);
