@@ -185,7 +185,8 @@ class FunkoServiceImplTest {
     @Test
     void testGetFunkoByIdNotFound() {
         when(funkoRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
-        assertThrows(FunkoNotFoundException.class, () -> funkoService.getFunkoById(UUID.randomUUID().toString()));
+        String id = UUID.randomUUID().toString();
+        assertThrows(FunkoNotFoundException.class, () -> funkoService.getFunkoById(id));
         verify(funkoRepository, times(1)).findById(any(UUID.class));
     }
 
@@ -270,8 +271,9 @@ class FunkoServiceImplTest {
     void testPutFunkoNotFound() {
         var update = UpdateFunkoDTO.builder()
                 .name("nombre").price(2.2).quantity(2).image("imagen").categoryId(1L).build();
+        var data = list.get(0).getId().toString();
         when(funkoRepository.findById(list.get(0).getId())).thenReturn(Optional.empty());
-        assertThrows(FunkoNotFoundException.class, () -> funkoService.putFunko(list.get(0).getId().toString(), update));
+        assertThrows(FunkoNotFoundException.class, () -> funkoService.putFunko(data, update));
     }
 
     /**
@@ -312,8 +314,9 @@ class FunkoServiceImplTest {
     void testPatchFunkoNotFound() {
         var update = PatchFunkoDTO.builder()
                 .name("nombre").price(2.2).quantity(2).image("imagen").categoryId(1L).build();
+        var data = list.get(0).getId().toString();
         when(funkoRepository.findById(list.get(0).getId())).thenReturn(Optional.empty());
-        assertThrows(FunkoNotFoundException.class, () -> funkoService.patchFunko(list.get(0).getId().toString(), update));
+        assertThrows(FunkoNotFoundException.class, () -> funkoService.patchFunko(data, update));
     }
 
     /**
@@ -321,10 +324,11 @@ class FunkoServiceImplTest {
      */
     @Test
     void testNotValidUUIDPutFunko() {
-        assertThrows(FunkoNotValidUUIDException.class, () -> funkoService.putFunko("()", UpdateFunkoDTO.builder()
+        var data = UpdateFunkoDTO.builder()
                 .price(14.99)
                 .quantity(7)
-                .build()));
+                .build();
+        assertThrows(FunkoNotValidUUIDException.class, () -> funkoService.putFunko("()", data));
     }
 
     /**
@@ -332,10 +336,11 @@ class FunkoServiceImplTest {
      */
     @Test
     void testNotValidUUIDPatchFunko() {
-        assertThrows(FunkoNotValidUUIDException.class, () -> funkoService.patchFunko("()", PatchFunkoDTO.builder()
+        var data = PatchFunkoDTO.builder()
                 .price(14.99)
                 .quantity(7)
-                .build()));
+                .build();
+        assertThrows(FunkoNotValidUUIDException.class, () -> funkoService.patchFunko("()", data));
     }
 
     /**
@@ -376,7 +381,8 @@ class FunkoServiceImplTest {
      */
     @Test
     void testDeleteFunkoNotFound() {
-        assertThrows(FunkoNotFoundException.class, () -> funkoService.deleteFunko(UUID.randomUUID().toString()));
+        var data = UUID.randomUUID().toString();
+        assertThrows(FunkoNotFoundException.class, () -> funkoService.deleteFunko(data));
     }
 
     /**
@@ -445,8 +451,8 @@ class FunkoServiceImplTest {
         UUID fakeUuid = UUID.randomUUID();
         MultipartFile multipartFile = mock(MultipartFile.class);
         when(funkoRepository.findById(fakeUuid)).thenThrow(new FunkoNotFoundException(fakeUuid.toString()));
-        assertThrows(FunkoNotFoundException.class, () -> funkoService.updateImage(fakeUuid.toString(),
-                multipartFile, false));
+        String fakeUuidString = fakeUuid.toString();
+        assertThrows(FunkoNotFoundException.class, () -> funkoService.updateImage(fakeUuidString, multipartFile, false));
     }
 
     /**

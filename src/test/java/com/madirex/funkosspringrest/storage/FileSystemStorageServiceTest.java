@@ -82,10 +82,12 @@ class FileSystemStorageServiceTest {
      */
     @Test
     void testStoreWithEmptyFile() {
-        var res = assertThrows(StorageBadRequest.class, () -> fileSystemStorageService.store(
-                new MockMultipartFile("funko", "funko.png",
-                        "", "".getBytes()),
-                List.of("jpg", "jpeg", "png"), UUID.randomUUID().toString()));
+        MockMultipartFile mockFile = new MockMultipartFile("funko", "funko.png", "",
+                "".getBytes());
+        String randomUUID = UUID.randomUUID().toString();
+        var list = List.of("jpg", "jpeg", "png");
+        var res = assertThrows(StorageBadRequest.class, () -> fileSystemStorageService.store(mockFile, list, randomUUID));
+
         assertEquals("Fichero vacío funko.png", res.getMessage());
     }
 
@@ -96,10 +98,12 @@ class FileSystemStorageServiceTest {
      */
     @Test
     void testStoreWithTwoDots() {
-        var res = assertThrows(StorageBadRequest.class, () -> fileSystemStorageService.store(
-                new MockMultipartFile("funko", "../funko.png",
-                        "image/png", bytesPNG),
-                List.of("jpg", "jpeg", "png"), UUID.randomUUID().toString()));
+        var multipartFile = new MockMultipartFile("funko", "../funko.png",
+                "image/png", bytesPNG);
+        var list = List.of("jpg", "jpeg", "png");
+        var id = UUID.randomUUID().toString();
+        var res = assertThrows(StorageBadRequest.class, () ->
+                fileSystemStorageService.store(multipartFile, list, id));
         assertEquals("No se puede almacenar un fichero con una ruta relativa fuera del " +
                 "directorio actual ../funko.png", res.getMessage());
     }
@@ -149,7 +153,7 @@ class FileSystemStorageServiceTest {
      * Test para comprobar el caso incorrecto NotFound de LoadAsResource
      */
     @Test
-    void testLoadAsResoureNotFound() {
+    void testLoadAsResourceNotFound() {
         var res = assertThrows(StorageNotFound.class, () -> fileSystemStorageService.loadAsResource("funko.png"));
         assertAll(
                 () -> assertNotNull(res),
@@ -161,7 +165,7 @@ class FileSystemStorageServiceTest {
      * Test para comprobar el caso incorrecto MalformedUrl de LoadAsResource
      */
     @Test
-    void testLoadAsResoureMalformedUrl() {
+    void testLoadAsResourceMalformedUrl() {
         var res = assertThrows(StorageNotFound.class, () -> fileSystemStorageService.loadAsResource("funko.png"));
 
         assertAll(

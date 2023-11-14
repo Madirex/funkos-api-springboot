@@ -107,7 +107,7 @@ class CategoryServiceImplTest {
     }
 
     /**
-     * Test para comprobar la excepción cuando no se encuentra la categoría dada una id
+     * Test para comprobar la excepción cuando no se encuentra la categoría dado un ID
      */
     @Test
     void testGetCategoryByIdNotFound() {

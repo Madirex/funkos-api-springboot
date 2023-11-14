@@ -239,7 +239,7 @@ class FunkoControllerImplTest {
                 .updatedAt(LocalDateTime.now())
                 .build();
 
-        when(service.putFunko(eq(funkId), eq(updatedFunko))).thenReturn(updatedFunkoResponse);
+        when(service.putFunko(any(), eq(updatedFunko))).thenReturn(updatedFunkoResponse);
 
         mockMvc.perform(MockMvcRequestBuilders.put(endpoint + "/" + funkId)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -294,7 +294,7 @@ class FunkoControllerImplTest {
                 .updatedAt(LocalDateTime.now())
                 .build();
 
-        when(service.patchFunko(eq(funkId), eq(patchedFunko))).thenReturn(patchedFunkoResponse);
+        when(service.patchFunko(any(), eq(patchedFunko))).thenReturn(patchedFunkoResponse);
 
         mockMvc.perform(MockMvcRequestBuilders.patch(endpoint + "/" + funkId)
                         .contentType(MediaType.APPLICATION_JSON)

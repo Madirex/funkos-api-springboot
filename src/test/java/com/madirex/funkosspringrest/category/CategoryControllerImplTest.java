@@ -29,8 +29,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -147,7 +146,7 @@ class CategoryControllerImplTest {
      */
     @Test
     void testPutCategory() throws Exception {
-        Long funkId = 1L;
+        long funkId = 1L;
 
         UpdateCategoryDTO patchedCategory = UpdateCategoryDTO.builder()
                 .type(Category.Type.MOVIE)
@@ -162,7 +161,7 @@ class CategoryControllerImplTest {
                 .updatedAt(LocalDateTime.now())
                 .build();
 
-        Mockito.when(service.putCategory(eq(funkId), eq(patchedCategory))).thenReturn(patchedCategoryResponse);
+        Mockito.when(service.putCategory(any(), eq(patchedCategory))).thenReturn(patchedCategoryResponse);
 
         mockMvc.perform(MockMvcRequestBuilders.put(endpoint + "/" + funkId)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -177,7 +176,7 @@ class CategoryControllerImplTest {
      */
     @Test
     void testPatchCategory() throws Exception {
-        Long funkId = 1L;
+        long funkId = 1L;
 
         PatchCategoryDTO patchedCategory = PatchCategoryDTO.builder()
                 .type(Category.Type.DISNEY)
@@ -192,7 +191,7 @@ class CategoryControllerImplTest {
                 .updatedAt(LocalDateTime.now())
                 .build();
 
-        Mockito.when(service.patchCategory(eq(funkId), eq(patchedCategory))).thenReturn(patchedCategoryResponse);
+        Mockito.when(service.patchCategory(any(), eq(patchedCategory))).thenReturn(patchedCategoryResponse);
 
         mockMvc.perform(MockMvcRequestBuilders.patch(endpoint + "/" + funkId)
                         .contentType(MediaType.APPLICATION_JSON)
