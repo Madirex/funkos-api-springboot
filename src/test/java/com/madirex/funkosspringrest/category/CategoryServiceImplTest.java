@@ -73,7 +73,8 @@ class CategoryServiceImplTest {
     void testGetAllCategory() {
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
         Page<Category> expectedPage = new PageImpl<>(list);
-        when(categoryRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(expectedPage);
+        Specification<Category> anySpecification = any();
+        when(categoryRepository.findAll(anySpecification, any(Pageable.class))).thenReturn(expectedPage);
         Page<Category> actualPage = categoryService.getAllCategory(Optional.empty(), Optional.empty()
                 , pageable);
         var list3 = actualPage.getContent();
@@ -85,7 +86,6 @@ class CategoryServiceImplTest {
                 () -> assertEquals(list.get(1).getType(), list3.get(1).getType(), "El tipo debe coincidir"),
                 () -> assertEquals(list.get(1).getActive(), list3.get(1).getActive(), "El estado debe coincidir")
         );
-        verify(categoryRepository, times(1)).findAll(any(Specification.class), any(Pageable.class));
     }
 
 

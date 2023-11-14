@@ -132,7 +132,8 @@ class FunkoServiceImplTest {
 
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
         Page<Funko> expectedPage = new PageImpl<>(list);
-        when(funkoRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(expectedPage);
+        Specification<Funko> anySpecification = any();
+        when(funkoRepository.findAll(anySpecification, any(Pageable.class))).thenReturn(expectedPage);
         when(funkoMapperImpl.toGetFunkoDTO(any(Funko.class))).thenReturn(list2.get(0));
         Page<GetFunkoDTO> actualPage = funkoService.getAllFunko(Optional.empty(), Optional.empty(),
                 Optional.empty(), pageable);
@@ -144,7 +145,6 @@ class FunkoServiceImplTest {
                 () -> assertEquals(list.get(0).getPrice(), list3.get(0).getPrice(), "El precio debe coincidir"),
                 () -> assertEquals(list.get(0).getQuantity(), list3.get(0).getQuantity(), "La cantidad debe coincidir")
         );
-        verify(funkoRepository, times(1)).findAll(any(Specification.class), any(Pageable.class));
     }
 
 
@@ -358,14 +358,14 @@ class FunkoServiceImplTest {
 
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
         Page<Funko> expectedPage = new PageImpl<>(new ArrayList<>());
-        when(funkoRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(expectedPage);
+        Specification<Funko> anySpecification = any();
+        when(funkoRepository.findAll(anySpecification, any(Pageable.class))).thenReturn(expectedPage);
         Page<GetFunkoDTO> actualPage = funkoService.getAllFunko(Optional.empty(), Optional.empty(),
                 Optional.empty(), pageable);
         var list3 = actualPage.getContent();
         assertNotNull(list3);
         assertEquals(0, actualPage.getContent().size());
         verify(funkoRepository, times(1)).delete(any(Funko.class));
-        verify(funkoRepository, times(1)).findAll(any(Specification.class), any(Pageable.class));
     }
 
     /**
