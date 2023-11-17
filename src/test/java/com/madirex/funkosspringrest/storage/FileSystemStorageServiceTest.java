@@ -42,6 +42,13 @@ class FileSystemStorageServiceTest {
             (byte) 137, (byte) 80, (byte) 78, (byte) 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82,
             0, 0, 0, 1, 0, 0, 0, 1, 8, 6, 0, 0, 0, 31, 21, (byte) -60, (byte) -60};
 
+    byte[] bytesGIF = {(byte) 71, (byte) 73, (byte) 70, (byte) 56, (byte) 57, (byte) 97, 0, 0, (byte) 192, 0, 0,
+            (byte) 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, (byte) 33, (byte) 249, 4, 1, 0, 0, 0, 0};
+
+    byte[] bytesJPEG = {(byte) 255, (byte) 216, (byte) 255, (byte) 224, 0, 16, 74, 70, 73, 70, 0, 1, 1, 0, 96, 0, 0,
+            (byte) 255, (byte) 219, 0, (byte) 67, 0, 8, 6, 6, 7, 6, 5, 8, 7, 7, 7, 9, 9};
+
+
     /**
      * Método setUp para inicializar los objetos
      *
@@ -61,12 +68,12 @@ class FileSystemStorageServiceTest {
     }
 
     /**
-     * Test para probar que el método Store funciona correctamente
+     * Test para probar que el método Store funciona correctamente (PNG)
      *
      * @throws IOException excepción entrada/salida
      */
     @Test
-    void testStore() throws IOException {
+    void testStorePng() throws IOException {
         var id = UUID.randomUUID().toString();
         String file = fileSystemStorageService.store(new MockMultipartFile("funko", "funko.png",
                 "image/png", bytesPNG), List.of("jpg", "jpeg", "png"), id);
@@ -75,6 +82,63 @@ class FileSystemStorageServiceTest {
                 () -> assertNotNull(file),
                 () -> assertTrue(file.contains(id + ".png"))
         );
+    }
+
+    /**
+     * Test para probar que el método Store funciona correctamente (JPG)
+     *
+     * @throws IOException excepción entrada/salida
+     */
+    @Test
+    void testStoreJpg() throws IOException {
+        var id = UUID.randomUUID().toString();
+        String file = fileSystemStorageService.store(new MockMultipartFile("funko", "funko.jpg",
+                "image/jpg", bytesJPEG), List.of("jpg", "jpeg", "png"), id);
+
+        assertAll(
+                () -> assertNotNull(file),
+                () -> assertTrue(file.contains(id + ".jpg"))
+        );
+    }
+
+    /**
+     * Test para probar que el método Store funciona correctamente (Jpeg)
+     *
+     * @throws IOException excepción entrada/salida
+     */
+    @Test
+    void testStoreJpeg() throws IOException {
+        var id = UUID.randomUUID().toString();
+        String file = fileSystemStorageService.store(new MockMultipartFile("funko", "funko.jpeg",
+                "image/jpeg", bytesPNG), List.of("jpg", "jpeg", "png"), id);
+
+        assertAll(
+                () -> assertNotNull(file),
+                () -> assertTrue(file.contains(id + ".jpeg"))
+        );
+    }
+
+    /**
+     * Test para probar que no se permite insertar (Gif)
+     */
+    @Test
+    void testStoreGifNotAllowed() {
+        var id = UUID.randomUUID().toString();
+        var list = List.of("jpg", "jpeg", "png");
+        var multiPart = new MockMultipartFile("funko", "funko.gif",
+                "image/gif", bytesGIF);
+        assertThrows(StorageBadRequest.class, () -> fileSystemStorageService.store(multiPart, list, id));
+    }
+
+    /**
+     * Test para probar que no se permite insertar (Gif)
+     */
+    @Test
+    void testStoreGifNotAllowedFormat() {
+        var id = UUID.randomUUID().toString();
+        var list = List.of("jpg", "jpeg", "png", "gif");
+        var multiPart = new MockMultipartFile("funko", "funko.gif", "image/gif", bytesGIF);
+        assertThrows(StorageBadRequest.class, () -> fileSystemStorageService.store(multiPart, list, id));
     }
 
     /**

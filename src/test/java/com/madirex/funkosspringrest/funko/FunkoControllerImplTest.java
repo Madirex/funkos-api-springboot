@@ -7,6 +7,7 @@ import com.madirex.funkosspringrest.dto.funko.GetFunkoDTO;
 import com.madirex.funkosspringrest.dto.funko.PatchFunkoDTO;
 import com.madirex.funkosspringrest.dto.funko.UpdateFunkoDTO;
 import com.madirex.funkosspringrest.exceptions.funko.FunkoNotValidUUIDException;
+import com.madirex.funkosspringrest.exceptions.pagination.PageNotValidException;
 import com.madirex.funkosspringrest.models.Category;
 import com.madirex.funkosspringrest.services.funko.FunkoServiceImpl;
 import org.junit.jupiter.api.Test;

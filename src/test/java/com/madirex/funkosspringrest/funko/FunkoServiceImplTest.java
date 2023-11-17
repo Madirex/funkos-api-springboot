@@ -9,7 +9,6 @@ import com.madirex.funkosspringrest.dto.funko.GetFunkoDTO;
 import com.madirex.funkosspringrest.dto.funko.PatchFunkoDTO;
 import com.madirex.funkosspringrest.dto.funko.UpdateFunkoDTO;
 import com.madirex.funkosspringrest.exceptions.category.CategoryNotFoundException;
-import com.madirex.funkosspringrest.exceptions.category.CategoryNotValidException;
 import com.madirex.funkosspringrest.exceptions.funko.FunkoNotFoundException;
 import com.madirex.funkosspringrest.exceptions.funko.FunkoNotValidUUIDException;
 import com.madirex.funkosspringrest.mappers.funko.FunkoMapperImpl;
@@ -203,11 +202,10 @@ class FunkoServiceImplTest {
      * Test para comprobar que se inserta un Funko
      *
      * @throws CategoryNotFoundException excepción de categoría no encontrada
-     * @throws CategoryNotValidException excepción de categoría no válida
      * @throws IOException               excepción de entrada/salida
      */
     @Test
-    void testPostFunko() throws CategoryNotFoundException, CategoryNotValidException, IOException {
+    void testPostFunko() throws CategoryNotFoundException, IOException {
         var insert = CreateFunkoDTO.builder()
                 .name("nombre").price(2.2).quantity(2).image("imagen").categoryId(1L).build();
         var category = Category.builder().id(1L).type(Category.Type.MOVIE).active(true).createdAt(LocalDateTime.now())
@@ -235,13 +233,12 @@ class FunkoServiceImplTest {
      * Test para probar que el Funko se ha actualizado
      *
      * @throws CategoryNotFoundException  excepción de categoría no encontrada
-     * @throws CategoryNotValidException  excepción de categoría no válida
      * @throws FunkoNotValidUUIDException excepción de Funko no válido
      * @throws FunkoNotFoundException     excepción de Funko no encontrado
      * @throws IOException                excepción de entrada/salida
      */
     @Test
-    void testPutFunko() throws CategoryNotFoundException, CategoryNotValidException, FunkoNotValidUUIDException, FunkoNotFoundException, IOException {
+    void testPutFunko() throws CategoryNotFoundException, FunkoNotValidUUIDException, FunkoNotFoundException, IOException {
         var update = UpdateFunkoDTO.builder()
                 .name("nombre").price(2.2).quantity(2).image("imagen").categoryId(1L).build();
         var category = Category.builder().id(1L).type(Category.Type.MOVIE).active(true).createdAt(LocalDateTime.now())
@@ -280,13 +277,12 @@ class FunkoServiceImplTest {
      * Test para comprobar el Funko se puede actualizar parcialmente
      *
      * @throws CategoryNotFoundException  excepción de categoría no encontrada
-     * @throws CategoryNotValidException  excepción de categoría no válida
      * @throws FunkoNotValidUUIDException excepción de UUID del Funko no válida
      * @throws FunkoNotFoundException     excepción de Funko no encontrado
      * @throws IOException                excepción de entrada/salida
      */
     @Test
-    void testPatchFunko() throws CategoryNotFoundException, CategoryNotValidException, FunkoNotValidUUIDException, FunkoNotFoundException, IOException {
+    void testPatchFunko() throws CategoryNotFoundException, FunkoNotValidUUIDException, FunkoNotFoundException, IOException {
         var update = PatchFunkoDTO.builder()
                 .name("nombre").price(2.2).quantity(2).image("imagen").categoryId(1L).build();
         var category = Category.builder().id(1L).type(Category.Type.MOVIE).active(true).createdAt(LocalDateTime.now())
@@ -398,11 +394,10 @@ class FunkoServiceImplTest {
      * Test que comprueba que se puede actualizar una imagen
      *
      * @throws CategoryNotFoundException No se ha encontrado la categoría
-     * @throws CategoryNotValidException La categoría no es válida
      * @throws IOException               Problema Entrada/Salida
      */
     @Test
-    void testUpdateImageSuccess() throws CategoryNotFoundException, CategoryNotValidException, IOException {
+    void testUpdateImageSuccess() throws CategoryNotFoundException, IOException {
         String existingFunkoId = list.get(0).getId().toString();
         String imageUrl = "https://www.madirex.com/favicon.ico";
         MultipartFile multipartFile = mock(MultipartFile.class);
