@@ -7,7 +7,6 @@ import com.madirex.funkosspringrest.dto.funko.GetFunkoDTO;
 import com.madirex.funkosspringrest.dto.funko.PatchFunkoDTO;
 import com.madirex.funkosspringrest.dto.funko.UpdateFunkoDTO;
 import com.madirex.funkosspringrest.exceptions.funko.FunkoNotValidUUIDException;
-import com.madirex.funkosspringrest.exceptions.pagination.PageNotValidException;
 import com.madirex.funkosspringrest.models.Category;
 import com.madirex.funkosspringrest.services.funko.FunkoServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -109,6 +108,35 @@ class FunkoControllerImplTest {
                 () -> assertTrue(response.getContentAsString().contains("\"quantity\":" + funko.getQuantity())),
                 () -> assertTrue(response.getContentAsString().contains("\"image\":" + "\"" + funko.getImage() + "\""))
         );
+    }
+
+    /**
+     * Test para comprobar retorno de error cuando page tiene valor no válido
+     *
+     * @throws Exception excepción
+     */
+    @Test
+    void getAll_ShouldReturnErrorResponse_withInvalidPageParam() throws Exception {
+        mockMvc.perform(get(endpoint)
+                .param("page", "-1")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    /**
+     * Test para comprobar retorno de error cuando size tiene valor no válido
+     *
+     * @throws Exception excepción
+     */
+    @Test
+    void getAll_ShouldReturnErrorResponse_withInvalidSizeParam() throws Exception {
+        mockMvc.perform(get(endpoint)
+                .param("size", "0")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
     }
 
     /**
