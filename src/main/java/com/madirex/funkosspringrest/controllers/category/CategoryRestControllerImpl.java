@@ -5,6 +5,7 @@ import com.madirex.funkosspringrest.dto.category.PatchCategoryDTO;
 import com.madirex.funkosspringrest.dto.category.UpdateCategoryDTO;
 import com.madirex.funkosspringrest.exceptions.category.CategoryNotFoundException;
 import com.madirex.funkosspringrest.exceptions.category.DeleteCategoryException;
+import com.madirex.funkosspringrest.exceptions.pagination.PageNotValidException;
 import com.madirex.funkosspringrest.models.Category;
 import com.madirex.funkosspringrest.services.category.CategoryService;
 import com.madirex.funkosspringrest.utils.pagination.PageResponse;
@@ -66,6 +67,9 @@ public class CategoryRestControllerImpl implements CategoryRestController {
             @RequestParam(defaultValue = "asc") String direction,
             HttpServletRequest request
     ) {
+        if (page < 0 || size < 1) {
+            throw new PageNotValidException("La página no puede ser menor que 0 y su tamaño no debe de ser menor a 1.");
+        }
         Sort sort = direction.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(request.getRequestURL().toString());
         Page<Category> pageResult = service.getAllCategory(type, isActive, PageRequest.of(page, size, sort));
