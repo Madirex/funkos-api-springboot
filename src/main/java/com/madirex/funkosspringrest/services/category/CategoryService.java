@@ -4,7 +4,6 @@ import com.madirex.funkosspringrest.dto.category.CreateCategoryDTO;
 import com.madirex.funkosspringrest.dto.category.PatchCategoryDTO;
 import com.madirex.funkosspringrest.dto.category.UpdateCategoryDTO;
 import com.madirex.funkosspringrest.exceptions.category.CategoryNotFoundException;
-import com.madirex.funkosspringrest.exceptions.category.CategoryNotValidException;
 import com.madirex.funkosspringrest.exceptions.category.DeleteCategoryException;
 import com.madirex.funkosspringrest.models.Category;
 import org.springframework.data.domain.Page;
@@ -32,10 +31,9 @@ public interface CategoryService {
      *
      * @param id id
      * @return Category
-     * @throws CategoryNotValidException CategoryNotValidException
      * @throws CategoryNotFoundException CategoryNotFoundException
      */
-    Category getCategoryById(Long id) throws CategoryNotValidException, CategoryNotFoundException;
+    Category getCategoryById(Long id) throws CategoryNotFoundException;
 
     /**
      * Crea una categoría
@@ -51,10 +49,9 @@ public interface CategoryService {
      * @param id       id
      * @param category category
      * @return Category
-     * @throws CategoryNotValidException CategoryNotValidException
      * @throws CategoryNotFoundException CategoryNotFoundException
      */
-    Category putCategory(Long id, UpdateCategoryDTO category) throws CategoryNotValidException, CategoryNotFoundException;
+    Category putCategory(Long id, UpdateCategoryDTO category) throws CategoryNotFoundException;
 
     /**
      * Actualiza una categoría parcialmente
@@ -62,10 +59,9 @@ public interface CategoryService {
      * @param id       id
      * @param category category
      * @return Category
-     * @throws CategoryNotValidException CategoryNotValidException
      * @throws CategoryNotFoundException CategoryNotFoundException
      */
-    Category patchCategory(Long id, PatchCategoryDTO category) throws CategoryNotValidException, CategoryNotFoundException;
+    Category patchCategory(Long id, PatchCategoryDTO category) throws CategoryNotFoundException;
 
     /**
      * Elimina una categoría

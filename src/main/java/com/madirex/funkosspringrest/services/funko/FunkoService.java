@@ -6,7 +6,6 @@ import com.madirex.funkosspringrest.dto.funko.GetFunkoDTO;
 import com.madirex.funkosspringrest.dto.funko.PatchFunkoDTO;
 import com.madirex.funkosspringrest.dto.funko.UpdateFunkoDTO;
 import com.madirex.funkosspringrest.exceptions.category.CategoryNotFoundException;
-import com.madirex.funkosspringrest.exceptions.category.CategoryNotValidException;
 import com.madirex.funkosspringrest.exceptions.funko.FunkoNotFoundException;
 import com.madirex.funkosspringrest.exceptions.funko.FunkoNotValidUUIDException;
 import org.springframework.data.domain.Page;
@@ -48,9 +47,8 @@ public interface FunkoService {
      * @param funko CreateFunkoDTO con los datos del Funko a crear
      * @return Funko creado
      * @throws CategoryNotFoundException Si no se ha encontrado la categoría con el ID indicado
-     * @throws CategoryNotValidException Si el ID no tiene un formato válido
      */
-    GetFunkoDTO postFunko(CreateFunkoDTO funko) throws CategoryNotFoundException, CategoryNotValidException, JsonProcessingException;
+    GetFunkoDTO postFunko(CreateFunkoDTO funko) throws CategoryNotFoundException, JsonProcessingException;
 
     /**
      * Actualiza un Funko
@@ -60,10 +58,9 @@ public interface FunkoService {
      * @return Funko actualizado
      * @throws FunkoNotValidUUIDException Si el UUID no tiene un formato válido
      * @throws CategoryNotFoundException  Si no se ha encontrado la categoría con el ID indicado
-     * @throws CategoryNotValidException  Si el ID no tiene un formato válido
      * @throws FunkoNotFoundException     Si no se ha encontrado el Funko con el UUID indicado
      */
-    GetFunkoDTO putFunko(String id, UpdateFunkoDTO funko) throws FunkoNotValidUUIDException, FunkoNotFoundException, CategoryNotFoundException, CategoryNotValidException, JsonProcessingException;
+    GetFunkoDTO putFunko(String id, UpdateFunkoDTO funko) throws FunkoNotValidUUIDException, FunkoNotFoundException, CategoryNotFoundException, JsonProcessingException;
 
     /**
      * Actualiza un Funko
@@ -74,9 +71,8 @@ public interface FunkoService {
      * @throws FunkoNotValidUUIDException Si el UUID no tiene un formato válido
      * @throws FunkoNotFoundException     Si no se ha encontrado el Funko con el UUID indicado
      * @throws CategoryNotFoundException  Si no se ha encontrado la categoría con el ID indicado
-     * @throws CategoryNotValidException  Si el ID no tiene un formato válido
      */
-    GetFunkoDTO patchFunko(String id, PatchFunkoDTO funko) throws FunkoNotValidUUIDException, FunkoNotFoundException, CategoryNotFoundException, CategoryNotValidException, JsonProcessingException;
+    GetFunkoDTO patchFunko(String id, PatchFunkoDTO funko) throws FunkoNotValidUUIDException, FunkoNotFoundException, CategoryNotFoundException, JsonProcessingException;
 
     /**
      * Elimina un Funko
@@ -98,7 +94,6 @@ public interface FunkoService {
      * @throws FunkoNotFoundException     Si no se ha encontrado el Funko con el UUID indicado
      * @throws FunkoNotValidUUIDException Si el UUID no tiene un formato válido
      * @throws CategoryNotFoundException  Si no se ha encontrado la categoría con el ID indicado
-     * @throws CategoryNotValidException  Si el ID no tiene un formato válido
      */
-    GetFunkoDTO updateImage(String id, MultipartFile image, Boolean withUrl) throws FunkoNotFoundException, FunkoNotValidUUIDException, CategoryNotFoundException, CategoryNotValidException, IOException;
+    GetFunkoDTO updateImage(String id, MultipartFile image, Boolean withUrl) throws FunkoNotFoundException, FunkoNotValidUUIDException, CategoryNotFoundException, IOException;
 }

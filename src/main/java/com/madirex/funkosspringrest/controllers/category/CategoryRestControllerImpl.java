@@ -4,7 +4,6 @@ import com.madirex.funkosspringrest.dto.category.CreateCategoryDTO;
 import com.madirex.funkosspringrest.dto.category.PatchCategoryDTO;
 import com.madirex.funkosspringrest.dto.category.UpdateCategoryDTO;
 import com.madirex.funkosspringrest.exceptions.category.CategoryNotFoundException;
-import com.madirex.funkosspringrest.exceptions.category.CategoryNotValidException;
 import com.madirex.funkosspringrest.exceptions.category.DeleteCategoryException;
 import com.madirex.funkosspringrest.models.Category;
 import com.madirex.funkosspringrest.services.category.CategoryService;
@@ -81,11 +80,10 @@ public class CategoryRestControllerImpl implements CategoryRestController {
      * @param id id de la categoría
      * @return ResponseEntity con el código de estado
      * @throws CategoryNotFoundException de la categoría
-     * @throws CategoryNotValidException de la categoría
      */
     @GetMapping("/{id}")
     @Override
-    public ResponseEntity<Category> findById(@Valid @PathVariable Long id) throws CategoryNotFoundException, CategoryNotValidException {
+    public ResponseEntity<Category> findById(@Valid @PathVariable Long id) throws CategoryNotFoundException {
 
         Category category = service.getCategoryById(id);
         return ResponseEntity.ok(category);
@@ -110,11 +108,10 @@ public class CategoryRestControllerImpl implements CategoryRestController {
      * @param funko categoría a actualizar
      * @return ResponseEntity con el código de estado
      * @throws CategoryNotFoundException de la categoría
-     * @throws CategoryNotValidException de la categoría
      */
     @PutMapping("/{id}")
     @Override
-    public ResponseEntity<Category> put(@Valid @PathVariable Long id, @Valid @RequestBody UpdateCategoryDTO funko) throws CategoryNotFoundException, CategoryNotValidException {
+    public ResponseEntity<Category> put(@Valid @PathVariable Long id, @Valid @RequestBody UpdateCategoryDTO funko) throws CategoryNotFoundException {
         Category updatedCategory = service.putCategory(id, funko);
         return ResponseEntity.ok(updatedCategory);
     }
@@ -127,11 +124,10 @@ public class CategoryRestControllerImpl implements CategoryRestController {
      * @param funko categoría a actualizar
      * @return ResponseEntity con el código de estado
      * @throws CategoryNotFoundException de la categoría
-     * @throws CategoryNotValidException de la categoría
      */
     @PatchMapping("/{id}")
     @Override
-    public ResponseEntity<Category> patch(@Valid @PathVariable Long id, @Valid @RequestBody PatchCategoryDTO funko) throws CategoryNotFoundException, CategoryNotValidException {
+    public ResponseEntity<Category> patch(@Valid @PathVariable Long id, @Valid @RequestBody PatchCategoryDTO funko) throws CategoryNotFoundException {
         Category updatedCategory = service.patchCategory(id, funko);
         return ResponseEntity.ok(updatedCategory);
     }

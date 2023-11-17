@@ -6,7 +6,6 @@ import com.madirex.funkosspringrest.dto.funko.GetFunkoDTO;
 import com.madirex.funkosspringrest.dto.funko.PatchFunkoDTO;
 import com.madirex.funkosspringrest.dto.funko.UpdateFunkoDTO;
 import com.madirex.funkosspringrest.exceptions.category.CategoryNotFoundException;
-import com.madirex.funkosspringrest.exceptions.category.CategoryNotValidException;
 import com.madirex.funkosspringrest.exceptions.funko.FunkoNotFoundException;
 import com.madirex.funkosspringrest.exceptions.funko.FunkoNotValidUUIDException;
 import com.madirex.funkosspringrest.exceptions.pagination.PageNotValidException;
@@ -32,6 +31,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -118,12 +118,11 @@ public class FunkoRestControllerImpl implements FunkoRestController {
      * @return ResponseEntity con el código de estado
      * @throws JsonProcessingException   Si no se ha podido convertir el objeto a JSON
      * @throws CategoryNotFoundException Si no se ha encontrado la categoría
-     * @throws CategoryNotValidException Si la categoría no es válida
      */
     @PostMapping
     @Override
     public ResponseEntity<GetFunkoDTO> postFunko(@Valid @RequestBody CreateFunkoDTO funko) throws JsonProcessingException,
-            CategoryNotFoundException, CategoryNotValidException {
+            CategoryNotFoundException {
         GetFunkoDTO funkoDTO = service.postFunko(funko);
         return ResponseEntity.status(HttpStatus.CREATED).body(funkoDTO);
     }
@@ -138,13 +137,12 @@ public class FunkoRestControllerImpl implements FunkoRestController {
      * @throws FunkoNotValidUUIDException del Funko
      * @throws JsonProcessingException    excepción Json
      * @throws CategoryNotFoundException  de la categoría
-     * @throws CategoryNotValidException  de la categoría
      */
     @PutMapping("/{id}")
     @Override
     public ResponseEntity<GetFunkoDTO> putFunko(@Valid @PathVariable String id, @Valid @RequestBody UpdateFunkoDTO funko)
             throws FunkoNotFoundException, FunkoNotValidUUIDException, JsonProcessingException,
-            CategoryNotFoundException, CategoryNotValidException {
+            CategoryNotFoundException {
         return ResponseEntity.ok(service.putFunko(id, funko));
     }
 
@@ -158,13 +156,12 @@ public class FunkoRestControllerImpl implements FunkoRestController {
      * @throws FunkoNotValidUUIDException del Funko
      * @throws JsonProcessingException    excepción Json
      * @throws CategoryNotFoundException  de la categoría
-     * @throws CategoryNotValidException  de la categoría
      */
     @PatchMapping("/{id}")
     @Override
     public ResponseEntity<GetFunkoDTO> patchFunko(@Valid @PathVariable String id, @Valid @RequestBody PatchFunkoDTO funko)
             throws FunkoNotFoundException, FunkoNotValidUUIDException, JsonProcessingException,
-            CategoryNotFoundException, CategoryNotValidException {
+            CategoryNotFoundException {
         return ResponseEntity.ok(service.patchFunko(id, funko));
     }
 
@@ -196,15 +193,20 @@ public class FunkoRestControllerImpl implements FunkoRestController {
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    @Override
-    public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
+    public ResponseEntity<Map<String, Object>> handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach(error -> {
             String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });
-        return errors;
+
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("code", HttpStatus.BAD_REQUEST.value());
+        response.put("errors", errors);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
     /**
@@ -216,8 +218,8 @@ public class FunkoRestControllerImpl implements FunkoRestController {
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<String> handleResponseStatusException(ResponseStatusException ex) {
         HttpStatusCode httpStatus = ex.getStatusCode();
-        String mensaje = ex.getReason();
-        return new ResponseEntity<>(mensaje, httpStatus);
+        String msg = ex.getReason();
+        return new ResponseEntity<>(msg, httpStatus);
     }
 
     /**
@@ -229,14 +231,13 @@ public class FunkoRestControllerImpl implements FunkoRestController {
      * @throws FunkoNotValidUUIDException del Funko
      * @throws CategoryNotFoundException  de la categoría
      * @throws FunkoNotFoundException     del Funko
-     * @throws CategoryNotValidException  de la categoría
      * @throws IOException                excepción de entrada/salida
      */
     @PatchMapping(value = "/image/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<GetFunkoDTO> newFunkoImg(
             @PathVariable String id,
             @RequestPart("file") MultipartFile file) throws FunkoNotValidUUIDException, CategoryNotFoundException,
-            FunkoNotFoundException, CategoryNotValidException, IOException {
+            FunkoNotFoundException, IOException {
         if (!file.isEmpty()) {
             return ResponseEntity.ok(service.updateImage(id, file, true));
         } else {

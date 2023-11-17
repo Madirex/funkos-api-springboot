@@ -4,7 +4,6 @@ import com.madirex.funkosspringrest.dto.category.CreateCategoryDTO;
 import com.madirex.funkosspringrest.dto.category.PatchCategoryDTO;
 import com.madirex.funkosspringrest.dto.category.UpdateCategoryDTO;
 import com.madirex.funkosspringrest.exceptions.category.CategoryNotFoundException;
-import com.madirex.funkosspringrest.exceptions.category.CategoryNotValidException;
 import com.madirex.funkosspringrest.models.Category;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -21,10 +20,9 @@ public interface CategoryRestController {
      *
      * @param id id de la categoría
      * @return ResponseEntity con el código de estado
-     * @throws CategoryNotValidException de la categoría
      * @throws CategoryNotFoundException de la categoría
      */
-    ResponseEntity<Category> findById(@Valid @PathVariable Long id) throws CategoryNotValidException, CategoryNotFoundException;
+    ResponseEntity<Category> findById(@Valid @PathVariable Long id) throws CategoryNotFoundException;
 
     /**
      * Método para crear una categoría
@@ -40,10 +38,9 @@ public interface CategoryRestController {
      * @param id       id de la categoría
      * @param category categoría a actualizar
      * @return ResponseEntity con el código de estado
-     * @throws CategoryNotValidException de la categoría
      * @throws CategoryNotFoundException de la categoría
      */
-    ResponseEntity<Category> put(@Valid @PathVariable Long id, @Valid @RequestBody UpdateCategoryDTO category) throws CategoryNotValidException, CategoryNotFoundException;
+    ResponseEntity<Category> put(@Valid @PathVariable Long id, @Valid @RequestBody UpdateCategoryDTO category) throws CategoryNotFoundException;
 
     /**
      * Método para actualizar parcialmente una categoría
@@ -51,10 +48,9 @@ public interface CategoryRestController {
      * @param id       id de la categoría
      * @param category categoría a actualizar
      * @return ResponseEntity con el código de estado
-     * @throws CategoryNotValidException de la categoría
      * @throws CategoryNotFoundException de la categoría
      */
-    ResponseEntity<Category> patch(@Valid @PathVariable Long id, @Valid @RequestBody PatchCategoryDTO category) throws CategoryNotValidException, CategoryNotFoundException;
+    ResponseEntity<Category> patch(@Valid @PathVariable Long id, @Valid @RequestBody PatchCategoryDTO category) throws CategoryNotFoundException;
 
     /**
      * Método para eliminar una categoría
