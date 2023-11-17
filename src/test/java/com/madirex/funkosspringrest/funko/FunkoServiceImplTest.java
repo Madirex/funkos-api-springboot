@@ -29,6 +29,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.test.annotation.Repeat;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -399,7 +400,7 @@ class FunkoServiceImplTest {
     @Test
     void testUpdateImageSuccess() throws CategoryNotFoundException, IOException {
         String existingFunkoId = list.get(0).getId().toString();
-        String imageUrl = "https://www.madirex.com/favicon.ico";
+        String imageUrl = "https://tech.madirex.com/favicon.ico";
         MultipartFile multipartFile = mock(MultipartFile.class);
         GetFunkoDTO expectedFunkoDTO = GetFunkoDTO.builder()
                 .id(UUID.randomUUID())
