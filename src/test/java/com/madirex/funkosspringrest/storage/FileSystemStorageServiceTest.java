@@ -1,10 +1,10 @@
 package com.madirex.funkosspringrest.storage;
 
 
-import com.madirex.funkosspringrest.exceptions.storage.StorageBadRequest;
-import com.madirex.funkosspringrest.exceptions.storage.StorageInternal;
-import com.madirex.funkosspringrest.exceptions.storage.StorageNotFound;
-import com.madirex.funkosspringrest.services.storage.FileSystemStorageService;
+import com.madirex.funkosspringrest.storage.exceptions.StorageBadRequest;
+import com.madirex.funkosspringrest.storage.exceptions.StorageInternal;
+import com.madirex.funkosspringrest.storage.exceptions.StorageNotFound;
+import com.madirex.funkosspringrest.storage.services.FileSystemStorageService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

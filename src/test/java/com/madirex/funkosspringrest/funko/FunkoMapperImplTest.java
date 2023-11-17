@@ -1,10 +1,10 @@
 package com.madirex.funkosspringrest.funko;
 
-import com.madirex.funkosspringrest.dto.funko.CreateFunkoDTO;
-import com.madirex.funkosspringrest.dto.funko.UpdateFunkoDTO;
-import com.madirex.funkosspringrest.mappers.funko.FunkoMapperImpl;
-import com.madirex.funkosspringrest.models.Category;
-import com.madirex.funkosspringrest.models.Funko;
+import com.madirex.funkosspringrest.rest.funko.dto.CreateFunkoDTO;
+import com.madirex.funkosspringrest.rest.funko.dto.UpdateFunkoDTO;
+import com.madirex.funkosspringrest.rest.funko.mappers.FunkoMapperImpl;
+import com.madirex.funkosspringrest.rest.category.models.Category;
+import com.madirex.funkosspringrest.rest.funko.models.Funko;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

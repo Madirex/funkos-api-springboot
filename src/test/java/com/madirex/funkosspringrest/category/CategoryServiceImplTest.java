@@ -1,14 +1,14 @@
 package com.madirex.funkosspringrest.category;
 
-import com.madirex.funkosspringrest.dto.category.CreateCategoryDTO;
-import com.madirex.funkosspringrest.dto.category.PatchCategoryDTO;
-import com.madirex.funkosspringrest.dto.category.UpdateCategoryDTO;
-import com.madirex.funkosspringrest.exceptions.category.CategoryNotFoundException;
-import com.madirex.funkosspringrest.mappers.category.CategoryMapperImpl;
-import com.madirex.funkosspringrest.models.Category;
-import com.madirex.funkosspringrest.repositories.CategoryRepository;
-import com.madirex.funkosspringrest.repositories.FunkoRepository;
-import com.madirex.funkosspringrest.services.category.CategoryServiceImpl;
+import com.madirex.funkosspringrest.rest.category.dto.CreateCategoryDTO;
+import com.madirex.funkosspringrest.rest.category.dto.PatchCategoryDTO;
+import com.madirex.funkosspringrest.rest.category.dto.UpdateCategoryDTO;
+import com.madirex.funkosspringrest.rest.category.exceptions.CategoryNotFoundException;
+import com.madirex.funkosspringrest.rest.category.mappers.CategoryMapperImpl;
+import com.madirex.funkosspringrest.rest.category.models.Category;
+import com.madirex.funkosspringrest.rest.category.repositories.CategoryRepository;
+import com.madirex.funkosspringrest.rest.funko.repositories.FunkoRepository;
+import com.madirex.funkosspringrest.rest.category.services.CategoryServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,6 +1,6 @@
 package com.madirex.funkosspringrest;
 
-import com.madirex.funkosspringrest.utils.Util;
+import com.madirex.funkosspringrest.util.Util;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Constructor;

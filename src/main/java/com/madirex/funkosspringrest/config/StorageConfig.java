@@ -1,6 +1,6 @@
 package com.madirex.funkosspringrest.config;
 
-import com.madirex.funkosspringrest.services.storage.StorageService;
+import com.madirex.funkosspringrest.storage.services.StorageService;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

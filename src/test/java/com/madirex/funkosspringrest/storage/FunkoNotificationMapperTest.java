@@ -1,8 +1,8 @@
 package com.madirex.funkosspringrest.storage;
 
-import com.madirex.funkosspringrest.dto.funko.GetFunkoDTO;
-import com.madirex.funkosspringrest.mappers.notification.FunkoNotificationMapper;
-import com.madirex.funkosspringrest.models.Category;
+import com.madirex.funkosspringrest.rest.funko.dto.GetFunkoDTO;
+import com.madirex.funkosspringrest.rest.funko.mappers.FunkoNotificationMapper;
+import com.madirex.funkosspringrest.rest.category.models.Category;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

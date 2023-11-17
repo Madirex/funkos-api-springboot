@@ -1,6 +1,6 @@
 package com.madirex.funkosspringrest.storage;
 
-import com.madirex.funkosspringrest.services.storage.FileSystemStorageService;
+import com.madirex.funkosspringrest.storage.services.FileSystemStorageService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
