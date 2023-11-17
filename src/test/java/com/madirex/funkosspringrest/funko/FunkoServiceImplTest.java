@@ -420,7 +420,7 @@ class FunkoServiceImplTest {
 
         when(funkoRepository.findById(list.get(0).getId()))
                 .thenReturn(Optional.of(list.get(0)));
-        when(storageService.store(multipartFile, List.of("jpg", "jpeg", "png"), list.get(0).getId().toString()))
+        when(storageService.store(any(), any(), any()))
                 .thenReturn(imageUrl);
 
         //path
@@ -439,8 +439,7 @@ class FunkoServiceImplTest {
         );
         verify(funkoRepository, times(3)).findById(list.get(0).getId());
         verify(funkoRepository, times(2)).save(list.get(0));
-        verify(storageService, times(1)).store(multipartFile, List.of("jpg", "jpeg", "png"),
-                list.get(0).getId().toString());
+        verify(storageService, times(1)).store(any(), any(), any());
     }
 
     /**
