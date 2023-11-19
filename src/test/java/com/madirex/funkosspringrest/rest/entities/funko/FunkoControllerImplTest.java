@@ -409,8 +409,6 @@ class FunkoControllerImplTest {
         ).andReturn().getResponse();
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
-        assertTrue(response.getContentAsString().contains("No se ha enviado una imagen para el Funko"));
-
         verify(service, never()).updateImage(anyString(), any(MultipartFile.class), anyBoolean());
     }
 

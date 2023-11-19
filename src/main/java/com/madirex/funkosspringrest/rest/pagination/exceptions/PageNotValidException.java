@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 /**
  * Class PageNotValidException
  */
-@ResponseStatus(HttpStatus.NOT_FOUND)
+@ResponseStatus(HttpStatus.BAD_REQUEST)
 public class PageNotValidException extends ResponseException {
     /**
      * Constructor PageNotValidException
@@ -25,6 +25,6 @@ public class PageNotValidException extends ResponseException {
      */
     @Override
     public HttpStatus getHttpStatus() {
-        return HttpStatus.NOT_FOUND;
+        return HttpStatus.BAD_REQUEST;
     }
 }
