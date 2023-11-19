@@ -1,4 +1,4 @@
-package com.madirex.funkosspringrest.category;
+package com.madirex.funkosspringrest.rest.entities.category;
 
 import com.madirex.funkosspringrest.rest.entities.category.dto.CreateCategoryDTO;
 import com.madirex.funkosspringrest.rest.entities.category.dto.PatchCategoryDTO;

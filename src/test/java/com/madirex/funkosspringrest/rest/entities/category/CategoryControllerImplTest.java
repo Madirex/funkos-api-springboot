@@ -1,4 +1,4 @@
-package com.madirex.funkosspringrest.category;
+package com.madirex.funkosspringrest.rest.entities.category;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.madirex.funkosspringrest.rest.entities.category.dto.CreateCategoryDTO;

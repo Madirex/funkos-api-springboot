@@ -1,4 +1,4 @@
-package com.madirex.funkosspringrest.funko;
+package com.madirex.funkosspringrest.rest.entities.funko;
 
 import com.madirex.funkosspringrest.rest.entities.funko.dto.CreateFunkoDTO;
 import com.madirex.funkosspringrest.rest.entities.funko.dto.UpdateFunkoDTO;

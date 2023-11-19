@@ -1,4 +1,4 @@
-package com.madirex.funkosspringrest.funko;
+package com.madirex.funkosspringrest.rest.entities.funko;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;

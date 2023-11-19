@@ -1,4 +1,4 @@
-package com.madirex.funkosspringrest.pagination;
+package com.madirex.funkosspringrest.rest.pagination;
 
 import com.madirex.funkosspringrest.rest.pagination.util.PaginationLinksUtils;
 import org.junit.jupiter.api.Test;
