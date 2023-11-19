@@ -1,13 +1,13 @@
 package com.madirex.funkosspringrest.category;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.madirex.funkosspringrest.rest.category.dto.CreateCategoryDTO;
-import com.madirex.funkosspringrest.rest.category.dto.PatchCategoryDTO;
-import com.madirex.funkosspringrest.rest.category.dto.UpdateCategoryDTO;
-import com.madirex.funkosspringrest.rest.category.exceptions.DeleteCategoryException;
-import com.madirex.funkosspringrest.rest.category.models.Category;
-import com.madirex.funkosspringrest.rest.category.services.CategoryServiceImpl;
-import com.madirex.funkosspringrest.rest.funko.services.FunkoServiceImpl;
+import com.madirex.funkosspringrest.rest.entities.category.dto.CreateCategoryDTO;
+import com.madirex.funkosspringrest.rest.entities.category.dto.PatchCategoryDTO;
+import com.madirex.funkosspringrest.rest.entities.category.dto.UpdateCategoryDTO;
+import com.madirex.funkosspringrest.rest.entities.category.exceptions.DeleteCategoryException;
+import com.madirex.funkosspringrest.rest.entities.category.models.Category;
+import com.madirex.funkosspringrest.rest.entities.category.services.CategoryServiceImpl;
+import com.madirex.funkosspringrest.rest.entities.funko.services.FunkoServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;

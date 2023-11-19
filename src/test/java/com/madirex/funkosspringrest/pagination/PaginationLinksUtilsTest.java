@@ -1,6 +1,6 @@
 package com.madirex.funkosspringrest.pagination;
 
-import com.madirex.funkosspringrest.pagination.util.PaginationLinksUtils;
+import com.madirex.funkosspringrest.rest.pagination.util.PaginationLinksUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;

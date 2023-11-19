@@ -1,9 +1,9 @@
 package com.madirex.funkosspringrest.category;
 
-import com.madirex.funkosspringrest.rest.category.dto.CreateCategoryDTO;
-import com.madirex.funkosspringrest.rest.category.dto.UpdateCategoryDTO;
-import com.madirex.funkosspringrest.rest.category.mappers.CategoryMapperImpl;
-import com.madirex.funkosspringrest.rest.category.models.Category;
+import com.madirex.funkosspringrest.rest.entities.category.dto.CreateCategoryDTO;
+import com.madirex.funkosspringrest.rest.entities.category.dto.UpdateCategoryDTO;
+import com.madirex.funkosspringrest.rest.entities.category.mappers.CategoryMapperImpl;
+import com.madirex.funkosspringrest.rest.entities.category.models.Category;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
