@@ -199,7 +199,7 @@ public class FunkoWebController {
         }
         var categories = categoryService.getAllCategory(Optional.empty(), Optional.empty(), PageRequest.of(0, 1000))
                 .get()
-                .map(Category::getType);
+                .map(Category::getId);
         var funko = CreateFunkoDTO.builder()
                 .name("")
                 .price(0.0)
@@ -229,7 +229,7 @@ public class FunkoWebController {
         if (result.hasErrors()) {
             var categories = categoryService.getAllCategory(Optional.empty(), Optional.empty(), PageRequest.of(0, 1000))
                     .get()
-                    .map(Category::getType);
+                    .map(Category::getId);
             model.addAttribute(CATEGORIES_NAME, categories);
             return "funkos/create";
         }
