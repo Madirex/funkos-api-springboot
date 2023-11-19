@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Funko Image</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.2/css/bootstrap.min.css}">
+    <link href="/images/favicon.ico" rel="icon" type="image/x-icon">
+</head>
+<body>
+<div class="container">
+    <div th:replace="~{funkos/header.html :: header}"></div>
+    <h1>Update funko Image</h1>
+    <dl class="row">
+        <dt class="col-sm-2">ID:</dt>
+        <dd class="col-sm-10" th:text="${funko.id}"></dd>
+        <dt class="col-sm-2">Name:</dt>
+        <dd class="col-sm-10" th:text="${funko.name}"></dd>
+        <dt class="col-sm-2">Price:</dt>
+        <dd class="col-sm-10" th:text="${funko.price}"></dd>
+        <dt class="col-sm-2">Stock:</dt>
+        <dd class="col-sm-10" th:text="${funko.quantity}"></dd>
+        <dt class="col-sm-2">Image:</dt>
+        <dd class="col-sm-10"><img alt="Funko Image" class="img-fluid" th:src="${funko.image}"></dd>
+        <dt class="col-sm-2">Category:</dt>
+        <dd class="col-sm-10" th:text="${funko.category}"></dd>
+    </dl>
+
+    <form action="@{/funkos/update-image/{id}(id=${id})}"
+          enctype="multipart/form-data"
+          method="post"
+          th:action="@{/funkos/update-image/{id}(id=${id})}"
+          th:object="${funko}"
+    >
+
+        <div class="form-group">
+            <label for="image">Image:</label>
+            <input accept="image/*" class="form-control-file" id="image" name="image" required type="file">
+            <small class="text-danger" th:errors="*{image}" th:if="${#fields.hasErrors('image')}"></small>
+            <input name="id" th:value="${funko.id}" type="hidden">
+        </div>
+
+        <button class="btn btn-primary" type="submit">Update</button>
+        <a class="btn btn-secondary mx-2" href="/funkos">Back</a>
+    </form>
+</div>
+<div th:replace="~{funkos/footer.html :: footer}"></div>
+<script th:src="@{/webjars/bootstrap/4.6.2/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

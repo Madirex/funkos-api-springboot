@@ -2,16 +2,21 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Crear Funko</title>
+    <title>Update Funko</title>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.2/css/bootstrap.min.css}">
     <link href="/images/favicon.ico" rel="icon" type="image/x-icon">
 </head>
 <body>
 <div class="container">
     <div th:replace="~{funkos/header.html :: header}"></div>
-
-    <h1>Create Funko</h1>
-    <form action="/funkos/create" method="post" th:object="${funko}">
+    <h1>Update Funko</h1>
+    <form action="@{/funkos/update/{id}(id=${id})}" method="post"
+          th:action="@{/funkos/update/{id}(id=${id})}"
+          th:object="${funko}">
+        <div class="form-group">
+            <label for="id">ID:</label>
+            <label th:text="${id}">id</label>
+        </div>
         <div class="form-group">
             <label for="name">Name:</label>
             <input class="form-control" id="name" name="name" th:field="*{name}" type="text">
@@ -46,9 +51,7 @@
         <a class="btn btn-secondary mx-2" href="/funkos">Back</a>
     </form>
 </div>
-
 <div th:replace="~{funkos/footer.html :: footer}"></div>
-
 <script th:src="@{/webjars/bootstrap/4.6.2/js/bootstrap.bundle.min.js}"></script>
 </body>
 </html>

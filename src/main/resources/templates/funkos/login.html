@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.2/css/bootstrap.min.css}">
+    <link href="/images/favicon.ico" rel="icon" type="image/x-icon">
+</head>
+<body>
+<div class="container">
+    <h1>Login</h1>
+    <form action="/funkos" method="post">
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input class="form-control" id="password" name="password" required type="password">
+        </div>
+        <div th:if="${error}">
+            <p style="color: red;" th:text="${error}"></p>
+        </div>
+        <button class="btn btn-primary" type="submit">Login</button>
+    </form>
+</div>
+
+<div th:replace="~{funkos/footer.html :: footer}"></div>
+
+<script th:src="@{/webjars/bootstrap/4.6.2/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>
