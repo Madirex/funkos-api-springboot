@@ -63,7 +63,7 @@
                 <a class="page-link"
                    th:href="@{${funkoPage.last ? '#' : '/funkos/index'}(page=${funkoPage.number + 1}, size=${funkoPage.size}, sort=${funkoPage.pageable.sort})}">Next</a>
             </li>
-            <li class="page-item" th:classappend="${productosPage.last ? 'disabled' : ''}">
+            <li class="page-item" th:classappend="${funkoPage.last ? 'disabled' : ''}">
                 <a class="page-link"
                    th:href="@{${funkoPage.last ? '#' : '/funkos/index'}(page=${funkoPage.totalPages - 1}, size=${funkoPage.size}, sort=${funkoPage.pageable.sort})}">&raquo;</a>
             </li>
