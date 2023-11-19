@@ -1,6 +1,7 @@
 package com.madirex.funkosspringrest.rest.entities.order.services;
 
 import com.madirex.funkosspringrest.rest.entities.funko.exceptions.FunkoNotFoundException;
+import com.madirex.funkosspringrest.rest.entities.funko.exceptions.FunkoNotValidUUIDException;
 import com.madirex.funkosspringrest.rest.entities.funko.repository.FunkoRepository;
 import com.madirex.funkosspringrest.rest.entities.order.dto.CreateOrder;
 import com.madirex.funkosspringrest.rest.entities.order.dto.UpdateOrder;
@@ -22,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+
+import static com.madirex.funkosspringrest.rest.entities.funko.services.FunkoServiceImpl.NOT_VALID_FORMAT_UUID_MSG;
 
 /**
  * Implementación de la interfaz OrderService
@@ -141,14 +144,18 @@ public class OrderServiceImpl implements OrderService {
             throw new OrderNotItems(order.getId());
         }
         order.getOrderLineList().forEach(orderLine -> {
-            var funkoOpt = funkoRepository.findById(UUID.fromString(orderLine.getProductId()));
-            if (funkoOpt.isEmpty()) {
-                throw new FunkoNotFoundException("id: " + orderLine.getProductId());
+            try {
+                var funkoOpt = funkoRepository.findById(UUID.fromString(orderLine.getProductId()));
+                if (funkoOpt.isEmpty()) {
+                    throw new FunkoNotFoundException("id: " + orderLine.getProductId());
+                }
+                var funko = funkoOpt.get();
+                funko.setQuantity(funko.getQuantity() - orderLine.getQuantity());
+                funkoRepository.save(funko);
+                orderLine.setTotal(orderLine.getQuantity() * orderLine.getProductPrice());
+            } catch (IllegalArgumentException e) {
+                throw new FunkoNotValidUUIDException(NOT_VALID_FORMAT_UUID_MSG);
             }
-            var funko = funkoOpt.get();
-            funko.setQuantity(funko.getQuantity() - orderLine.getQuantity());
-            funkoRepository.save(funko);
-            orderLine.setTotal(orderLine.getQuantity() * orderLine.getProductPrice());
         });
         var total = order.getOrderLineList().stream()
                 .map(orderLine -> orderLine.getQuantity() * orderLine.getProductPrice())
@@ -170,13 +177,17 @@ public class OrderServiceImpl implements OrderService {
         log.info("Retornando stock del order: {}", order);
         if (order.getOrderLineList() != null) {
             order.getOrderLineList().forEach(orderLine -> {
-                var funkoOpt = funkoRepository.findById(UUID.fromString(orderLine.getProductId()));
-                if (funkoOpt.isEmpty()) {
-                    throw new FunkoNotFoundException("id: " + orderLine.getProductId());
+                try {
+                    var funkoOpt = funkoRepository.findById(UUID.fromString(orderLine.getProductId()));
+                    if (funkoOpt.isEmpty()) {
+                        throw new FunkoNotFoundException("id: " + orderLine.getProductId());
+                    }
+                    var funko = funkoOpt.get();
+                    funko.setQuantity(funko.getQuantity() + orderLine.getQuantity());
+                    funkoRepository.save(funko);
+                } catch (IllegalArgumentException e) {
+                    throw new FunkoNotValidUUIDException(NOT_VALID_FORMAT_UUID_MSG);
                 }
-                var funko = funkoOpt.get();
-                funko.setQuantity(funko.getQuantity() + orderLine.getQuantity());
-                funkoRepository.save(funko);
             });
         }
     }
@@ -192,13 +203,17 @@ public class OrderServiceImpl implements OrderService {
             throw new OrderNotItems(order.getId());
         }
         order.getOrderLineList().forEach(orderLine -> {
-            var funko = funkoRepository.findById(UUID.fromString(orderLine.getProductId()))
-                    .orElseThrow(() -> new ProductNotFound(orderLine.getProductId()));
-            if (funko.getQuantity() < orderLine.getQuantity() && orderLine.getQuantity() > 0) {
-                throw new ProductNotStock(orderLine.getProductId());
-            }
-            if (!funko.getPrice().equals(orderLine.getProductPrice())) {
-                throw new ProductBadPrice(orderLine.getProductId());
+            try {
+                var funko = funkoRepository.findById(UUID.fromString(orderLine.getProductId()))
+                        .orElseThrow(() -> new ProductNotFound(orderLine.getProductId()));
+                if (funko.getQuantity() < orderLine.getQuantity() && orderLine.getQuantity() > 0) {
+                    throw new ProductNotStock(orderLine.getProductId());
+                }
+                if (!funko.getPrice().equals(orderLine.getProductPrice())) {
+                    throw new ProductBadPrice(orderLine.getProductId());
+                }
+            } catch (IllegalArgumentException e) {
+                throw new FunkoNotValidUUIDException(NOT_VALID_FORMAT_UUID_MSG);
             }
         });
     }
