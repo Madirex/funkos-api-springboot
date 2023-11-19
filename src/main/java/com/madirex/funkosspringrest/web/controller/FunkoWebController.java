@@ -34,10 +34,15 @@ import java.util.Optional;
  * FunkoWebController
  */
 @Controller
-@RequestMapping("/funko")
+@RequestMapping("/funkos")
 @Slf4j
 public class FunkoWebController {
     public static final String NOT_LOGGED_BACK_TO_LOGIN_MSG = "No hay sesión o no ha hecho login. Volviendo al Login";
+    public static final String CATEGORIES_NAME = "categories";
+    public static final String FUNKO_NAME = "funko";
+    public static final String REDIRECT_FUNKOS_LOGIN = "redirect:/funkos/login";
+    public static final String REDIRECT_FUNKOS = "redirect:/funkos";
+    public static final String USER_SESSION_MSG = "userSession";
     private final FunkoService funkoService;
     private final CategoryService categoryService;
     private final MessageSource messageSource;
@@ -71,9 +76,9 @@ public class FunkoWebController {
         log.info("Login GET");
         if (isLoggedAndSessionIsActive(session)) {
             log.info("Volviendo al index");
-            return "redirect:/funko";
+            return REDIRECT_FUNKOS;
         }
-        return "funko/login";
+        return "funkos/login";
     }
 
     /**
@@ -90,11 +95,11 @@ public class FunkoWebController {
         if ("pass".equals(password)) {
             userSession.setLastLogin(new Date());
             userSession.setLogged(true);
-            session.setAttribute("userSession", userSession);
+            session.setAttribute(USER_SESSION_MSG, userSession);
             session.setMaxInactiveInterval(1800);
-            return "redirect:/funko";
+            return REDIRECT_FUNKOS;
         } else {
-            return "funko/login";
+            return "funkos/login";
         }
     }
 
@@ -108,7 +113,7 @@ public class FunkoWebController {
     public String logout(HttpSession session) {
         log.info("Logout GET");
         session.invalidate();
-        return "redirect:/funko";
+        return REDIRECT_FUNKOS;
     }
 
     /**
@@ -136,7 +141,7 @@ public class FunkoWebController {
     ) {
         if (!isLoggedAndSessionIsActive(session)) {
             log.info(NOT_LOGGED_BACK_TO_LOGIN_MSG);
-            return "redirect:/funko/login";
+            return REDIRECT_FUNKOS_LOGIN;
         }
         log.info("Index GET con parámetros search: " + search + ", page: " + page + ", size: " + size);
         Sort sort = direction.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy)
@@ -145,7 +150,7 @@ public class FunkoWebController {
         var funkoPage = funkoService.getAllFunko(search, Optional.empty(), Optional.empty(),
                 pageable);
         String welcomeMessage = messageSource.getMessage("welcome.message", null, locale);
-        UserStore sessionData = (UserStore) session.getAttribute("userSession");
+        UserStore sessionData = (UserStore) session.getAttribute(USER_SESSION_MSG);
         sessionData.incrementLoginCount();
         var visitNum = sessionData.getLoginCount();
         var lastLogin = sessionData.getLastLogin();
@@ -155,7 +160,7 @@ public class FunkoWebController {
         model.addAttribute("welcomeMessage", welcomeMessage);
         model.addAttribute("visitNum", visitNum);
         model.addAttribute("lastLoginDate", localizedLastLoginDate);
-        return "funko/index";
+        return "funkos/index";
     }
 
     /**
@@ -171,11 +176,11 @@ public class FunkoWebController {
         log.info("Details GET");
         if (!isLoggedAndSessionIsActive(session)) {
             log.info(NOT_LOGGED_BACK_TO_LOGIN_MSG);
-            return "redirect:/funko/login";
+            return REDIRECT_FUNKOS_LOGIN;
         }
         GetFunkoDTO funko = funkoService.getFunkoById(id);
-        model.addAttribute("funko", funko);
-        return "funko/details";
+        model.addAttribute(FUNKO_NAME, funko);
+        return "funkos/details";
     }
 
     /**
@@ -190,7 +195,7 @@ public class FunkoWebController {
         log.info("Create GET");
         if (!isLoggedAndSessionIsActive(session)) {
             log.info(NOT_LOGGED_BACK_TO_LOGIN_MSG);
-            return "redirect:/funko/login";
+            return REDIRECT_FUNKOS_LOGIN;
         }
         var categories = categoryService.getAllCategory(Optional.empty(), Optional.empty(), PageRequest.of(0, 1000))
                 .get()
@@ -202,9 +207,9 @@ public class FunkoWebController {
                 .image("https://www.madirex.com/favicon.ico")
                 .categoryId(null)
                 .build();
-        model.addAttribute("funko", funko);
-        model.addAttribute("categories", categories);
-        return "funko/create";
+        model.addAttribute(FUNKO_NAME, funko);
+        model.addAttribute(CATEGORIES_NAME, categories);
+        return "funkos/create";
     }
 
     /**
@@ -225,11 +230,11 @@ public class FunkoWebController {
             var categories = categoryService.getAllCategory(Optional.empty(), Optional.empty(), PageRequest.of(0, 1000))
                     .get()
                     .map(Category::getType);
-            model.addAttribute("categories", categories);
-            return "funko/create";
+            model.addAttribute(CATEGORIES_NAME, categories);
+            return "funkos/create";
         }
         funkoService.postFunko(funkoDto);
-        return "redirect:/funko";
+        return REDIRECT_FUNKOS;
     }
 
     /**
@@ -244,7 +249,7 @@ public class FunkoWebController {
     public String updateForm(@PathVariable("id") String id, Model model, HttpSession session) {
         if (!isLoggedAndSessionIsActive(session)) {
             log.info(NOT_LOGGED_BACK_TO_LOGIN_MSG);
-            return "redirect:/funko/login";
+            return REDIRECT_FUNKOS_LOGIN;
         }
         var categories = categoryService.getAllCategory(Optional.empty(), Optional.empty(),
                         PageRequest.of(0, 1000))
@@ -258,9 +263,9 @@ public class FunkoWebController {
                 .image(funko.getImage())
                 .categoryId(funko.getCategory().getId())
                 .build();
-        model.addAttribute("funko", funkoUpdateRequest);
-        model.addAttribute("categories", categories);
-        return "funko/update";
+        model.addAttribute(FUNKO_NAME, funkoUpdateRequest);
+        model.addAttribute(CATEGORIES_NAME, categories);
+        return "funkos/update";
     }
 
     /**
@@ -281,12 +286,12 @@ public class FunkoWebController {
                             PageRequest.of(0, 1000))
                     .get()
                     .map(Category::getType);
-            model.addAttribute("categories", categories);
-            return "funko/update";
+            model.addAttribute(CATEGORIES_NAME, categories);
+            return "funkos/update";
         }
         log.info("Update POST");
         funkoService.putFunko(id, funkoUpdateRequest);
-        return "redirect:/funko";
+        return REDIRECT_FUNKOS;
     }
 
     /**
@@ -301,10 +306,10 @@ public class FunkoWebController {
     public String delete(@PathVariable("id") String id, HttpSession session) throws JsonProcessingException {
         if (!isLoggedAndSessionIsActive(session)) {
             log.info(NOT_LOGGED_BACK_TO_LOGIN_MSG);
-            return "redirect:/funko/login";
+            return REDIRECT_FUNKOS_LOGIN;
         }
         funkoService.deleteFunko(id);
-        return "redirect:/funko";
+        return REDIRECT_FUNKOS;
     }
 
     /**
@@ -319,11 +324,11 @@ public class FunkoWebController {
     public String showUpdateImageForm(@PathVariable("id") String productId, Model model, HttpSession session) {
         if (!isLoggedAndSessionIsActive(session)) {
             log.info(NOT_LOGGED_BACK_TO_LOGIN_MSG);
-            return "redirect:/funko/login";
+            return REDIRECT_FUNKOS_LOGIN;
         }
         GetFunkoDTO funko = funkoService.getFunkoById(productId);
-        model.addAttribute("funko", funko);
-        return "funko/update-image";
+        model.addAttribute(FUNKO_NAME, funko);
+        return "funkos/update-image";
     }
 
     /**
@@ -339,7 +344,7 @@ public class FunkoWebController {
             throws IOException {
         log.info("Update POST con imagen");
         funkoService.updateImage(productId, image, true);
-        return "redirect:/funko";
+        return REDIRECT_FUNKOS;
     }
 
     /**
@@ -363,7 +368,7 @@ public class FunkoWebController {
      */
     private boolean isLoggedAndSessionIsActive(HttpSession session) {
         log.info("Comprobando si ha hecho login");
-        UserStore sessionData = (UserStore) session.getAttribute("userSession");
+        UserStore sessionData = (UserStore) session.getAttribute(USER_SESSION_MSG);
         return sessionData != null && sessionData.isLogged();
     }
 }
