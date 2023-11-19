@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * Status 400
  */
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class ProductNotStock extends ResponseException {
+public class ProductWithoutStock extends ResponseException {
 
     /**
      * Constructor de la excepción
      *
      * @param id id del producto
      */
-    public ProductNotStock(String id) {
+    public ProductWithoutStock(String id) {
         super("Cantidad no válida o producto con id " + id + " no tiene stock suficiente");
     }
 

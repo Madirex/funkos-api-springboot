@@ -4,10 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.bson.types.ObjectId;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -24,9 +21,11 @@ import java.util.List;
 @Document("orders")
 @TypeAlias("order")
 @Getter
+@AllArgsConstructor
 @Setter
 @Builder
 @ToString
+@NoArgsConstructor
 public class Order {
     @Id
     @Builder.Default

@@ -207,7 +207,7 @@ public class OrderServiceImpl implements OrderService {
                 var funko = funkoRepository.findById(UUID.fromString(orderLine.getProductId()))
                         .orElseThrow(() -> new ProductNotFound(orderLine.getProductId()));
                 if (funko.getQuantity() < orderLine.getQuantity() && orderLine.getQuantity() > 0) {
-                    throw new ProductNotStock(orderLine.getProductId());
+                    throw new ProductWithoutStock(orderLine.getProductId());
                 }
                 if (!funko.getPrice().equals(orderLine.getProductPrice())) {
                     throw new ProductBadPrice(orderLine.getProductId());
