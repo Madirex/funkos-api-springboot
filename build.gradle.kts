@@ -31,6 +31,7 @@ dependencies {
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml")
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+    implementation("org.webjars:bootstrap:4.6.2")
 
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.3")
 
