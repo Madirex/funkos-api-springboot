@@ -1,5 +1,7 @@
 package com.madirex.funkosspringrest.rest.entities.order.services;
 
+import com.madirex.funkosspringrest.rest.entities.order.dto.CreateOrder;
+import com.madirex.funkosspringrest.rest.entities.order.dto.UpdateOrder;
 import com.madirex.funkosspringrest.rest.entities.order.models.Order;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
@@ -31,7 +33,7 @@ public interface OrderService {
      * @param order Order
      * @return Order saved
      */
-    Order save(Order order);
+    Order save(CreateOrder order);
 
     /**
      * Delete order
@@ -47,5 +49,5 @@ public interface OrderService {
      * @param order   Order
      * @return Order updated
      */
-    Order update(ObjectId orderId, Order order);
+    Order update(ObjectId orderId, UpdateOrder order);
 }

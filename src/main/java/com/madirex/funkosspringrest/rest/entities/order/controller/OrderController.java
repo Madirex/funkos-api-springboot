@@ -1,5 +1,7 @@
 package com.madirex.funkosspringrest.rest.entities.order.controller;
 
+import com.madirex.funkosspringrest.rest.entities.order.dto.CreateOrder;
+import com.madirex.funkosspringrest.rest.entities.order.dto.UpdateOrder;
 import com.madirex.funkosspringrest.rest.entities.order.models.Order;
 import com.madirex.funkosspringrest.rest.entities.order.services.OrderService;
 import com.madirex.funkosspringrest.rest.pagination.model.PageResponse;
@@ -80,7 +82,7 @@ public class OrderController {
      * @return Pedido creado
      */
     @PostMapping()
-    public ResponseEntity<Order> createOrder(@Valid @RequestBody Order order) {
+    public ResponseEntity<Order> createOrder(@Valid @RequestBody CreateOrder order) {
         log.info("Creando pedido: " + order);
         return ResponseEntity.status(HttpStatus.CREATED).body(orderService.save(order));
     }
@@ -93,7 +95,7 @@ public class OrderController {
      * @return Pedido actualizado
      */
     @PutMapping("/{id}")
-    public ResponseEntity<Order> updateOrder(@PathVariable("id") ObjectId orderId, @Valid @RequestBody Order order) {
+    public ResponseEntity<Order> updateOrder(@PathVariable("id") ObjectId orderId, @Valid @RequestBody UpdateOrder order) {
         log.info("Actualizando pedido con id: " + orderId);
         return ResponseEntity.ok(orderService.update(orderId, order));
     }

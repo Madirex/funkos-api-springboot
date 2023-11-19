@@ -1,9 +1,8 @@
 package com.madirex.funkosspringrest.rest.entities.order.models;
 
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
-
-import java.util.UUID;
 
 /**
  * Clase OrderLine
@@ -19,13 +18,16 @@ public class OrderLine {
     @Builder.Default
     private Integer quantity = 1;
 
-    private UUID productId;
+    @NotNull(message = "El ID del producto no puede ser nulo")
+    private String productId;
 
     @Min(value = 0, message = "El precio del producto no puede ser negativo")
     @Builder.Default
+    @NotNull(message = "El precio del producto no puede ser nulo")
     private Double productPrice = 0.0;
 
     @Builder.Default
+    @NotNull(message = "El total no puede ser nulo")
     private Double total = 0.0;
 
     /**

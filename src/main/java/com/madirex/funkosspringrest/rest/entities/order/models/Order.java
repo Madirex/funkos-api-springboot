@@ -1,6 +1,8 @@
 package com.madirex.funkosspringrest.rest.entities.order.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,6 +25,7 @@ import java.util.List;
 @TypeAlias("order")
 @Getter
 @Setter
+@Builder
 @ToString
 public class Order {
     @Id
@@ -33,15 +36,19 @@ public class Order {
     private Long userId;
 
     @NotNull(message = "El cliente no puede ser nulo")
+    @Valid
     private Client client;
 
     @NotNull(message = "La lista de líneas de pedido no puede ser nula")
+    @Valid
     private List<OrderLine> orderLineList;
 
     @Builder.Default()
+    @Min(value = 1, message = "La cantidad debe de ser igual o mayor que 1")
     private Integer quantity = 0;
 
     @Builder.Default()
+    @Min(value = 0, message = "El total no puede ser negativo")
     private Double total = 0.0;
 
     @CreationTimestamp
@@ -53,6 +60,7 @@ public class Order {
     private LocalDateTime updatedAt = LocalDateTime.now();
 
     @Builder.Default()
+    @NotNull(message = "isDeleted no puede ser nulo")
     private Boolean isDeleted = false;
 
     /**
@@ -62,6 +70,9 @@ public class Order {
      */
     @JsonProperty("id")
     public String getId() {
+        if (id == null) {
+            id = new ObjectId();
+        }
         return id.toHexString();
     }
 

@@ -13,13 +13,13 @@ import lombok.ToString;
 import java.util.List;
 
 /**
- * CreateOrder
+ * UpdateOrder
  */
 @Getter
 @Setter
 @Builder
 @ToString
-public class CreateOrder {
+public class UpdateOrder {
     @NotNull(message = "El ID del usuario no puede ser nulo")
     private Long userId;
 

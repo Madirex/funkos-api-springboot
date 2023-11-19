@@ -2,7 +2,10 @@ package com.madirex.funkosspringrest.rest.entities.order.services;
 
 import com.madirex.funkosspringrest.rest.entities.funko.exceptions.FunkoNotFoundException;
 import com.madirex.funkosspringrest.rest.entities.funko.repository.FunkoRepository;
+import com.madirex.funkosspringrest.rest.entities.order.dto.CreateOrder;
+import com.madirex.funkosspringrest.rest.entities.order.dto.UpdateOrder;
 import com.madirex.funkosspringrest.rest.entities.order.exceptions.*;
+import com.madirex.funkosspringrest.rest.entities.order.mappers.OrderMapper;
 import com.madirex.funkosspringrest.rest.entities.order.models.Order;
 import com.madirex.funkosspringrest.rest.entities.order.models.OrderLine;
 import com.madirex.funkosspringrest.rest.entities.order.repository.OrderRepository;
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Implementación de la interfaz OrderService
@@ -28,16 +32,19 @@ import java.time.LocalDateTime;
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final FunkoRepository funkoRepository;
+    private final OrderMapper orderMapper;
 
     /**
      * Constructor de la clase
      *
      * @param orderRepository Repositorio Order
      * @param funkoRepository Repositorio Funko
+     * @param orderMapper     Mapper Order
      */
-    public OrderServiceImpl(OrderRepository orderRepository, FunkoRepository funkoRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository, FunkoRepository funkoRepository, OrderMapper orderMapper) {
         this.orderRepository = orderRepository;
         this.funkoRepository = funkoRepository;
+        this.orderMapper = orderMapper;
     }
 
     /**
@@ -62,20 +69,22 @@ public class OrderServiceImpl implements OrderService {
     @Cacheable(key = "#idOrder")
     public Order findById(ObjectId idOrder) {
         log.info("Obteniendo order con id: " + idOrder);
-        return orderRepository.findById(idOrder).orElseThrow(() -> new OrderNotFound(idOrder.toHexString()));
+        return orderRepository.findById(idOrder)
+                .orElseThrow(() -> new OrderNotFound(idOrder.toHexString()));
     }
 
     /**
      * Guarda un pedido
      *
-     * @param order pedido
+     * @param createOrder pedido a crear
      * @return Pedido guardado
      */
     @Override
     @Transactional
     @CachePut(key = "#result.id")
-    public Order save(Order order) {
-        log.info("Guardando order: {}", order);
+    public Order save(CreateOrder createOrder) {
+        log.info("Guardando order: {}", createOrder);
+        var order = orderMapper.createOrderToOrder(createOrder);
         checkValidOrder(order);
         var orderToSave = reserveStockOrders(order);
         orderToSave.setCreatedAt(LocalDateTime.now());
@@ -93,7 +102,8 @@ public class OrderServiceImpl implements OrderService {
     @CacheEvict(key = "#idOrder")
     public void delete(ObjectId idOrder) {
         log.info("Borrando order: " + idOrder);
-        var orderToDelete = orderRepository.findById(idOrder).orElseThrow(() -> new OrderNotFound(idOrder.toHexString()));
+        var orderToDelete = orderRepository.findById(idOrder)
+                .orElseThrow(() -> new OrderNotFound(idOrder.toHexString()));
         updateStockOrders(orderToDelete);
         orderRepository.deleteById(idOrder);
     }
@@ -101,19 +111,20 @@ public class OrderServiceImpl implements OrderService {
     /**
      * Actualiza un pedido
      *
-     * @param idOrder id del pedido
-     * @param order   pedido
+     * @param idOrder     id del pedido
+     * @param updateOrder pedido
      * @return Pedido actualizado
      */
     @Override
     @Transactional
     @CachePut(key = "#idOrder")
-    public Order update(ObjectId idOrder, Order order) {
+    public Order update(ObjectId idOrder, UpdateOrder updateOrder) {
         log.info("Actualizando order con id: " + idOrder);
-        orderRepository.findById(idOrder).orElseThrow(() -> new OrderNotFound(idOrder.toHexString()));
-        updateStockOrders(order);
-        checkValidOrder(order);
-        var orderToSave = reserveStockOrders(order);
+        var order = orderRepository.findById(idOrder).orElseThrow(() -> new OrderNotFound(idOrder.toHexString()));
+        var updatedOrder = orderMapper.updateOrderToOrder(order, updateOrder);
+        updateStockOrders(updatedOrder);
+        checkValidOrder(updatedOrder);
+        var orderToSave = reserveStockOrders(updatedOrder);
         orderToSave.setUpdatedAt(LocalDateTime.now());
         return orderRepository.save(orderToSave);
     }
@@ -130,9 +141,9 @@ public class OrderServiceImpl implements OrderService {
             throw new OrderNotItems(order.getId());
         }
         order.getOrderLineList().forEach(orderLine -> {
-            var funkoOpt = funkoRepository.findById(orderLine.getProductId());
+            var funkoOpt = funkoRepository.findById(UUID.fromString(orderLine.getProductId()));
             if (funkoOpt.isEmpty()) {
-                throw new FunkoNotFoundException("id: " + orderLine.getProductId().toString());
+                throw new FunkoNotFoundException("id: " + orderLine.getProductId());
             }
             var funko = funkoOpt.get();
             funko.setQuantity(funko.getQuantity() - orderLine.getQuantity());
@@ -159,9 +170,9 @@ public class OrderServiceImpl implements OrderService {
         log.info("Retornando stock del order: {}", order);
         if (order.getOrderLineList() != null) {
             order.getOrderLineList().forEach(orderLine -> {
-                var funkoOpt = funkoRepository.findById(orderLine.getProductId());
+                var funkoOpt = funkoRepository.findById(UUID.fromString(orderLine.getProductId()));
                 if (funkoOpt.isEmpty()) {
-                    throw new FunkoNotFoundException("id: " + orderLine.getProductId().toString());
+                    throw new FunkoNotFoundException("id: " + orderLine.getProductId());
                 }
                 var funko = funkoOpt.get();
                 funko.setQuantity(funko.getQuantity() + orderLine.getQuantity());
@@ -181,13 +192,13 @@ public class OrderServiceImpl implements OrderService {
             throw new OrderNotItems(order.getId());
         }
         order.getOrderLineList().forEach(orderLine -> {
-            var funko = funkoRepository.findById(orderLine.getProductId())
-                    .orElseThrow(() -> new ProductNotFound(orderLine.getProductId().toString()));
+            var funko = funkoRepository.findById(UUID.fromString(orderLine.getProductId()))
+                    .orElseThrow(() -> new ProductNotFound(orderLine.getProductId()));
             if (funko.getQuantity() < orderLine.getQuantity() && orderLine.getQuantity() > 0) {
-                throw new ProductNotStock(orderLine.getProductId().toString());
+                throw new ProductNotStock(orderLine.getProductId());
             }
             if (!funko.getPrice().equals(orderLine.getProductPrice())) {
-                throw new ProductBadPrice(orderLine.getProductId().toString());
+                throw new ProductBadPrice(orderLine.getProductId());
             }
         });
     }

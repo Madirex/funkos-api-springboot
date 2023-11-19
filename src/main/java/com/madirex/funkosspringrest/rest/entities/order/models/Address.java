@@ -11,18 +11,22 @@ import org.hibernate.validator.constraints.Length;
 @Builder
 public record Address(
         @Length(min = 3, message = "La calle debe tener al menos 3 caracteres")
+        @NotBlank(message = "La calle no puede estar vacía")
         String street,
 
         @NotBlank(message = "El número no puede estar vacío")
         String number,
 
         @Length(min = 3, message = "La ciudad debe tener al menos 3 caracteres")
+        @NotBlank(message = "La ciudad no puede estar vacía")
         String city,
 
         @Length(min = 3, message = "La provincia debe tener al menos 3 caracteres")
+        @NotBlank(message = "La provincia no puede estar vacía")
         String province,
 
         @Length(min = 3, message = "El país debe tener al menos 3 caracteres")
+        @NotBlank(message = "El país no puede estar vacío")
         String country,
 
         @NotBlank(message = "El código postal no puede estar vacío")
