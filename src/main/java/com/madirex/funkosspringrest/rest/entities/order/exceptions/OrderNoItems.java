@@ -9,13 +9,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * Status 400
  */
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class OrderNotItems extends ResponseException {
+public class OrderNoItems extends ResponseException {
     /**
      * Constructor de la excepción
      *
      * @param id id del producto
      */
-    public OrderNotItems(String id) {
+    public OrderNoItems(String id) {
         super("Pedido con id " + id + " no contiene items para ser procesado");
     }
 

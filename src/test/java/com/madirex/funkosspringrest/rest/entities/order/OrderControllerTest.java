@@ -179,7 +179,7 @@ class OrderControllerTest {
      */
     @Test
     void createOrderNoItemsBadRequest() throws Exception {
-        when(orderService.save(any(CreateOrder.class))).thenThrow(new OrderNotItems("655a54c83f761d101f941f4e"));
+        when(orderService.save(any(CreateOrder.class))).thenThrow(new OrderNoItems("655a54c83f761d101f941f4e"));
         MockHttpServletResponse response = mockMvc.perform(
                         post(myEndpoint)
                                 .accept(MediaType.APPLICATION_JSON)

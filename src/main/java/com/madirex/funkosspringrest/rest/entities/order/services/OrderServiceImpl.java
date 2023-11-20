@@ -89,7 +89,7 @@ public class OrderServiceImpl implements OrderService {
         log.info("Guardando order: {}", createOrder);
         var order = orderMapper.createOrderToOrder(createOrder);
         checkValidOrder(order);
-        var orderToSave = reserveStockOrders(order);
+        var orderToSave = reserveStockOrder(order);
         orderToSave.setCreatedAt(LocalDateTime.now());
         orderToSave.setUpdatedAt(LocalDateTime.now());
         return orderRepository.save(orderToSave);
@@ -127,7 +127,7 @@ public class OrderServiceImpl implements OrderService {
         var updatedOrder = orderMapper.updateOrderToOrder(order, updateOrder);
         updateStockOrders(updatedOrder);
         checkValidOrder(updatedOrder);
-        var orderToSave = reserveStockOrders(updatedOrder);
+        var orderToSave = reserveStockOrder(updatedOrder);
         orderToSave.setUpdatedAt(LocalDateTime.now());
         return orderRepository.save(orderToSave);
     }
@@ -138,10 +138,10 @@ public class OrderServiceImpl implements OrderService {
      * @param order pedido
      * @return pedido
      */
-    private Order reserveStockOrders(Order order) {
+    public Order reserveStockOrder(Order order) {
         log.info("Reservando stock del order: {}", order);
         if (order.getOrderLineList() == null || order.getOrderLineList().isEmpty()) {
-            throw new OrderNotItems(order.getId());
+            throw new OrderNoItems(order.getId());
         }
         order.getOrderLineList().forEach(orderLine -> {
             try {
@@ -197,10 +197,10 @@ public class OrderServiceImpl implements OrderService {
      *
      * @param order pedido
      */
-    private void checkValidOrder(Order order) {
+    public Order checkValidOrder(Order order) {
         log.info("Comprobando order: {}", order);
         if (order.getOrderLineList() == null || order.getOrderLineList().isEmpty()) {
-            throw new OrderNotItems(order.getId());
+            throw new OrderNoItems(order.getId());
         }
         order.getOrderLineList().forEach(orderLine -> {
             try {
@@ -216,5 +216,6 @@ public class OrderServiceImpl implements OrderService {
                 throw new FunkoNotValidUUIDException(NOT_VALID_FORMAT_UUID_MSG);
             }
         });
+        return order;
     }
 }
