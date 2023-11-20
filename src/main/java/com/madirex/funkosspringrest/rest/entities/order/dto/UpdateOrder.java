@@ -18,7 +18,6 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-@ToString
 public class UpdateOrder {
     @NotNull(message = "El ID del usuario no puede ser nulo")
     private Long userId;

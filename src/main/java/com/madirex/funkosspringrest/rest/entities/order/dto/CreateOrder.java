@@ -16,7 +16,6 @@ import java.util.List;
  * CreateOrder
  */
 @Getter
-@Setter
 @Builder
 @ToString
 public class CreateOrder {
