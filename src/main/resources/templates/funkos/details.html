@@ -12,19 +12,19 @@
     <h1>Funko Details</h1>
     <dl class="row">
         <dt class="col-sm-2">ID:</dt>
-        <dd class="col-sm-10" th:text="${funkos.id}"></dd>
+        <dd class="col-sm-10" th:text="${funko.id}"></dd>
         <dt class="col-sm-2">Name:</dt>
-        <dd class="col-sm-10" th:text="${funkos.name}"></dd>
+        <dd class="col-sm-10" th:text="${funko.name}"></dd>
         <dt class="col-sm-2">Price:</dt>
-        <dd class="col-sm-10" th:text="${funkos.price}"></dd>
+        <dd class="col-sm-10" th:text="${funko.price}"></dd>
         <dt class="col-sm-2">Stock:</dt>
-        <dd class="col-sm-10" th:text="${funkos.quantity}"></dd>
+        <dd class="col-sm-10" th:text="${funko.quantity}"></dd>
         <dt class="col-sm-2">Image:</dt>
-        <dd class="col-sm-10"><img alt="Funko Image" class="img-fluid" th:src="${funkos.image}"></dd>
+        <dd class="col-sm-10"><img alt="Funko Image" class="img-fluid" th:src="${funko.image}"></dd>
         <dt class="col-sm-2">Category:</dt>
-        <dd class="col-sm-10" th:text="${funkos.category}"></dd>
+        <dd class="col-sm-10" th:text="${funko.category}"></dd>
     </dl>
-    <a class="btn btn-primary" href="/funkos">Volver</a>
+    <a class="btn btn-primary" href="/funkos">Back</a>
 </div>
 
 <div th:replace="~{funkos/footer.html :: footer}"></div>

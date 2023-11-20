@@ -254,7 +254,7 @@ public class FunkoWebController {
         var categories = categoryService.getAllCategory(Optional.empty(), Optional.empty(),
                         PageRequest.of(0, 1000))
                 .get()
-                .map(Category::getType);
+                .map(Category::getId);
         GetFunkoDTO funko = funkoService.getFunkoById(id);
         UpdateFunkoDTO funkoUpdateRequest = UpdateFunkoDTO.builder()
                 .name(funko.getName())
@@ -285,7 +285,7 @@ public class FunkoWebController {
             var categories = categoryService.getAllCategory(Optional.empty(), Optional.empty(),
                             PageRequest.of(0, 1000))
                     .get()
-                    .map(Category::getType);
+                    .map(Category::getId);
             model.addAttribute(CATEGORIES_NAME, categories);
             return "funkos/update";
         }
