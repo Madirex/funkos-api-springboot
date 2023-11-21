@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -64,6 +65,23 @@ public class GlobalExceptionHandler {
                 getCurrentHttpRequest().getRequestURI()
         );
         return ResponseEntity.status(ex.getHttpStatus()).body(errorResponse);
+    }
+
+    /**
+     * Método para manejar las excepciones de ResponseStatusException
+     *
+     * @param ex Excepción
+     * @return Error en ResponseEntity (mensaje y código de estado)
+     */
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<ErrorResponse> handleResponseStatusException(ResponseStatusException ex) {
+        HttpStatus httpStatus = HttpStatus.valueOf(ex.getStatusCode().value());
+        var errorResponse = new ErrorResponse(
+                httpStatus,
+                ex.getReason(),
+                getCurrentHttpRequest().getRequestURI()
+        );
+        return ResponseEntity.status(httpStatus).body(errorResponse);
     }
 
     /**
