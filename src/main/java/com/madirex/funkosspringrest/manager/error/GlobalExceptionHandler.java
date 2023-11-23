@@ -2,12 +2,15 @@ package com.madirex.funkosspringrest.manager.error;
 
 import com.madirex.funkosspringrest.manager.error.exceptions.ResponseException;
 import com.madirex.funkosspringrest.manager.error.model.ErrorResponse;
+import com.mongodb.MongoTimeoutException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.messaging.handler.annotation.support.MethodArgumentTypeMismatchException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -65,6 +68,54 @@ public class GlobalExceptionHandler {
                 getCurrentHttpRequest().getRequestURI()
         );
         return ResponseEntity.status(ex.getHttpStatus()).body(errorResponse);
+    }
+
+    /**
+     * Método para manejar las excepciones de tipo MethodArgumentTypeMismatchException
+     *
+     * @param ex Excepción
+     * @return ResponseEntity con el código de estado
+     */
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleException(MethodArgumentTypeMismatchException ex) {
+        var errorResponse = new ErrorResponse(
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage(),
+                getCurrentHttpRequest().getRequestURI()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    /**
+     * Manejar excepciones HttpMessageNotReadableException
+     *
+     * @param ex Excepción
+     * @return ResponseEntity con el código de estado
+     */
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> handleException(HttpMessageNotReadableException ex) {
+        var errorResponse = new ErrorResponse(
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage(),
+                getCurrentHttpRequest().getRequestURI()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    /**
+     * Timeout Mongo (puede sucede cuando MongoDB está deshabilitado)
+     *
+     * @param ex Excepción
+     * @return ResponseEntity con el código de estado
+     */
+    @ExceptionHandler(MongoTimeoutException.class)
+    public ResponseEntity<ErrorResponse> handleException(MongoTimeoutException ex) {
+        var errorResponse = new ErrorResponse(
+                HttpStatus.REQUEST_TIMEOUT,
+                ex.getMessage(),
+                getCurrentHttpRequest().getRequestURI()
+        );
+        return ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT).body(errorResponse);
     }
 
     /**

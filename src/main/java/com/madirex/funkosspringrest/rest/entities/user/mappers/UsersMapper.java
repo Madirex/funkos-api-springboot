@@ -22,6 +22,7 @@ public class UsersMapper {
      */
     public User toUser(UserRequest request) {
         return User.builder()
+                .id(UUID.randomUUID())
                 .name(request.getName())
                 .surname(request.getSurname())
                 .username(request.getUsername())

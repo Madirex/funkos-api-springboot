@@ -7,6 +7,9 @@ import com.madirex.funkosspringrest.rest.entities.order.services.OrderService;
 import com.madirex.funkosspringrest.rest.entities.user.dto.UserInfoResponse;
 import com.madirex.funkosspringrest.rest.entities.user.dto.UserRequest;
 import com.madirex.funkosspringrest.rest.entities.user.dto.UserResponse;
+import com.madirex.funkosspringrest.rest.entities.user.exceptions.UserNotFound;
+import com.madirex.funkosspringrest.rest.entities.user.exceptions.UserNotLogged;
+import com.madirex.funkosspringrest.rest.entities.user.exceptions.UserNotValidUUIDException;
 import com.madirex.funkosspringrest.rest.entities.user.models.User;
 import com.madirex.funkosspringrest.rest.entities.user.services.UsersService;
 import com.madirex.funkosspringrest.rest.pagination.model.PageResponse;
@@ -156,7 +159,7 @@ public class UsersRestController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserInfoResponse> me(@AuthenticationPrincipal User user) {
         log.info("Obteniendo usuario");
-        return ResponseEntity.ok(usersService.findById(user.getId().toString()));
+        return ResponseEntity.ok(usersService.findById(checkValidIdAndReturn(user)));
     }
 
     /**
@@ -171,7 +174,7 @@ public class UsersRestController {
     public ResponseEntity<UserResponse> updateMe(@AuthenticationPrincipal User user,
                                                  @Valid @RequestBody UserRequest userRequest) {
         log.info("updateMe: user: {}, userRequest: {}", user, userRequest);
-        return ResponseEntity.ok(usersService.update(user.getId().toString(), userRequest));
+        return ResponseEntity.ok(usersService.update(checkValidIdAndReturn(user), userRequest));
     }
 
     /**
@@ -184,8 +187,25 @@ public class UsersRestController {
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Void> deleteMe(@AuthenticationPrincipal User user) {
         log.info("deleteMe: user: {}", user);
-        usersService.deleteById(user.getId().toString());
+        usersService.deleteById(checkValidIdAndReturn(user));
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Comprueba que el ID del usuario es válido
+     *
+     * @param user Usuario autenticado
+     * @return ID del usuario
+     */
+    private String checkValidIdAndReturn(User user) {
+        try {
+            if (user == null) {
+                throw new UserNotLogged("Usuario no autenticado.");
+            }
+            return user.getId().toString();
+        } catch (IllegalArgumentException e) {
+            throw new UserNotValidUUIDException(user.getId().toString());
+        }
     }
 
     /**
@@ -211,7 +231,7 @@ public class UsersRestController {
         Sort sort = direction.equalsIgnoreCase(Sort.Direction.ASC.name()) ?
                 Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, size, sort);
-        return ResponseEntity.ok(PageResponse.of(orderService.findByUserId(user.getId().toString(), pageable)
+        return ResponseEntity.ok(PageResponse.of(orderService.findByUserId(checkValidIdAndReturn(user), pageable)
                 , sortBy, direction));
     }
 
@@ -246,7 +266,7 @@ public class UsersRestController {
             @Valid @RequestBody CreateOrder order
     ) {
         log.info("Creando pedido: " + order);
-        if (!order.getUserId().equals(user.getId().toString())) {
+        if (!order.getUserId().equals(checkValidIdAndReturn(user))) {
             throw new IllegalArgumentException("El usuario del pedido no coincide con el usuario autenticado");
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(orderService.save(order));
@@ -267,7 +287,7 @@ public class UsersRestController {
             @PathVariable("id") ObjectId idOrder,
             @Valid @RequestBody UpdateOrder order) {
         log.info("Actualizando pedido con ID: " + idOrder);
-        if (!order.getUserId().equals(user.getId().toString())) {
+        if (!order.getUserId().equals(checkValidIdAndReturn(user))) {
             throw new IllegalArgumentException("El usuario del pedido no coincide con el usuario autenticado");
         }
         return ResponseEntity.ok(orderService.update(idOrder, order));
