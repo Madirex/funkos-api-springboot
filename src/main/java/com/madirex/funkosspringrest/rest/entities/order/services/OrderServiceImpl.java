@@ -17,11 +17,13 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import static com.madirex.funkosspringrest.rest.entities.funko.services.FunkoServiceImpl.NOT_VALID_FORMAT_UUID_MSG;
@@ -130,6 +132,23 @@ public class OrderServiceImpl implements OrderService {
         var orderToSave = reserveStockOrder(updatedOrder);
         orderToSave.setUpdatedAt(LocalDateTime.now());
         return orderRepository.save(orderToSave);
+    }
+
+    /**
+     * Obtiene todos los pedidos de un usuario
+     *
+     * @param id       UUID
+     * @param pageable Pageable
+     * @return Page of orders
+     */
+    @Override
+    public Page<Order> findByUserId(String id, Pageable pageable) {
+        log.info("Obteniendo orders del usuario con ID: " + id);
+        List<Order> userOrders = orderRepository.findOrdersByUserId(id);
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), userOrders.size());
+        List<Order> paginatedOrders = userOrders.subList(start, end);
+        return new PageImpl<>(paginatedOrders, pageable, userOrders.size());
     }
 
     /**

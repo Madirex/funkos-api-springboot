@@ -7,6 +7,8 @@ import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.UUID;
+
 /**
  * OrderService
  */
@@ -50,4 +52,13 @@ public interface OrderService {
      * @return Order updated
      */
     Order update(ObjectId orderId, UpdateOrder order);
+
+    /**
+     * Find all orders by user id
+     *
+     * @param id       UUID
+     * @param pageable Pageable
+     * @return Page of orders
+     */
+    Page<Order> findByUserId(String id, Pageable pageable);
 }
