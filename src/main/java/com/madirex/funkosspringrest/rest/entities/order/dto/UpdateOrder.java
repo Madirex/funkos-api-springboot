@@ -8,7 +8,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 import java.util.List;
 
@@ -20,7 +19,7 @@ import java.util.List;
 @Builder
 public class UpdateOrder {
     @NotNull(message = "El ID del usuario no puede ser nulo")
-    private Long userId;
+    private String userId;
 
     @NotNull(message = "El cliente no puede ser nulo")
     @Valid

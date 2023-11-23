@@ -32,7 +32,7 @@ public class Order {
     private ObjectId id = new ObjectId();
 
     @NotNull(message = "El ID del usuario no puede ser nulo")
-    private Long userId;
+    private String userId;
 
     @NotNull(message = "El cliente no puede ser nulo")
     @Valid
