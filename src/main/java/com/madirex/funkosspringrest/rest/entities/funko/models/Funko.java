@@ -25,6 +25,7 @@ import java.util.UUID;
 @EntityListeners(AuditingEntityListener.class)
 public class Funko {
     public static final String IMAGE_DEFAULT = "https://www.madirex.com/favicon.ico";
+
     @NotNull
     @Id
     private UUID id;

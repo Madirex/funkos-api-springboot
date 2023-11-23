@@ -34,7 +34,7 @@ public interface FunkoService {
     /**
      * Obtiene un Funko por su UUID
      *
-     * @param id UUID del Funko a obtener
+     * @param id ID del Funko a obtener
      * @return Funko con el UUID indicado
      * @throws FunkoNotValidUUIDException Si el UUID no tiene un formato válido
      * @throws FunkoNotFoundException     Si no se ha encontrado el Funko con el UUID indicado
@@ -53,7 +53,7 @@ public interface FunkoService {
     /**
      * Actualiza un Funko
      *
-     * @param id    UUID del Funko a actualizar
+     * @param id    ID del Funko a actualizar
      * @param funko UpdateFunkoDTO con los datos a actualizar
      * @return Funko actualizado
      * @throws FunkoNotValidUUIDException Si el UUID no tiene un formato válido
@@ -65,7 +65,7 @@ public interface FunkoService {
     /**
      * Actualiza un Funko
      *
-     * @param id    UUID del Funko a actualizar
+     * @param id    ID del Funko a actualizar
      * @param funko Funko con los datos a actualizar
      * @return Funko actualizado
      * @throws FunkoNotValidUUIDException Si el UUID no tiene un formato válido
@@ -77,7 +77,7 @@ public interface FunkoService {
     /**
      * Elimina un Funko
      *
-     * @param id UUID del Funko a eliminar
+     * @param id ID del Funko a eliminar
      * @throws FunkoNotFoundException     Si no se ha encontrado el Funko con el UUID indicado
      * @throws FunkoNotValidUUIDException Si el UUID no tiene un formato válido
      * @throws JsonProcessingException    Si no se ha podido convertir el Funko a JSON
@@ -87,7 +87,7 @@ public interface FunkoService {
     /**
      * Actualiza la imagen de un Funko
      *
-     * @param id      UUID del Funko a actualizar
+     * @param id      ID del Funko a actualizar
      * @param image   Imagen a actualizar
      * @param withUrl Si se quiere devolver la URL de la imagen
      * @return Funko actualizado
