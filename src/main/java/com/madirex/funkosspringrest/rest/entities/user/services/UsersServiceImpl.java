@@ -136,7 +136,10 @@ public class UsersServiceImpl implements UsersService {
         } catch (IllegalArgumentException e) {
             throw new UserNotValidUUIDException(id);
         }
-        usersRepository.findById(uuid).orElseThrow(() -> new UserNotFound(id));
+        var user = usersRepository.findById(uuid);
+        if (user.isEmpty()) {
+            throw new UserNotFound(id);
+        }
         usersRepository.findByUsernameEqualsIgnoreCaseOrEmailEqualsIgnoreCase(userRequest.getUsername(), userRequest.getEmail())
                 .ifPresent(u -> {
                     if (!u.getId().toString().equals(id)) {
