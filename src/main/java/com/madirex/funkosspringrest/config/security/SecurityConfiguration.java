@@ -49,17 +49,26 @@ public class SecurityConfiguration {
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
+        http
+                .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
-                .authorizeHttpRequests(request -> request
+                .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
+                        //acceso a los recursos estáticos para todos los usuarios
                         .requestMatchers("/error/**").permitAll()
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/static/**").permitAll()
                         .requestMatchers("/images/**").permitAll()
                         .requestMatchers("/webjars/**").permitAll()
                         .requestMatchers("/storage/**").permitAll()
-                        .requestMatchers("/ws/**").permitAll()
-                        .requestMatchers("/api/**").permitAll()
+                        //WebSockets y Swagger solo para Admins
+                        .requestMatchers("/ws/**").hasRole("ADMIN")
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").hasRole("ADMIN")
+                        //acceso a autentificación para todos los usuarios
+                        .requestMatchers("/api/auth/**").permitAll()
+                        //TODO: ORDERS
+                        //TODO: USER
+                        //TODO: FUNKO
+                        //TODO: CATEGORY
+//                        .requestMatchers("/api/**").permitAll()
                         .anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider()).addFilterBefore(
                         jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
