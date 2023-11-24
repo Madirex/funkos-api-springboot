@@ -52,14 +52,14 @@ class CategoryServiceImplTest {
         list = new ArrayList<>();
         list.add(Category.builder()
                 .id(1L)
-                .type(Category.Type.MOVIE)
+                .type("MOVIE")
                 .active(true)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build());
         list.add(Category.builder()
                 .id(2L)
-                .type(Category.Type.DISNEY)
+                .type("DISNEY")
                 .active(true)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
@@ -122,7 +122,7 @@ class CategoryServiceImplTest {
     @Test
     void testPostCategory() {
         var insert = CreateCategoryDTO.builder()
-                .type(Category.Type.MOVIE)
+                .type("MOVIE")
                 .active(true)
                 .build();
         when(categoryMapperImpl.toCategory(insert)).thenReturn(list.get(0));
@@ -144,7 +144,7 @@ class CategoryServiceImplTest {
     @Test
     void testPutCategory() throws CategoryNotFoundException {
         var update = UpdateCategoryDTO.builder()
-                .type(Category.Type.MOVIE)
+                .type("MOVIE")
                 .active(true)
                 .build();
         when(categoryRepository.findById(list.get(0).getId())).thenReturn(Optional.of(list.get(0)));
@@ -167,7 +167,7 @@ class CategoryServiceImplTest {
     @Test
     void testPatchCategory() throws CategoryNotFoundException {
         var update = PatchCategoryDTO.builder()
-                .type(Category.Type.MOVIE)
+                .type("MOVIE")
                 .build();
         when(categoryRepository.findById(list.get(0).getId())).thenReturn(Optional.of(list.get(0)));
         when(categoryRepository.save(list.get(0))).thenReturn(list.get(0));
@@ -186,7 +186,7 @@ class CategoryServiceImplTest {
     @Test
     void testPatchCategoryNotFoundCategory() {
         var fp = PatchCategoryDTO.builder()
-                .type(Category.Type.MOVIE)
+                .type("MOVIE")
                 .build();
         assertThrows(CategoryNotFoundException.class, () -> categoryService.patchCategory(1L, fp));
     }
@@ -199,7 +199,7 @@ class CategoryServiceImplTest {
     @Test
     void testDeleteCategory() throws CategoryNotFoundException {
         var update = PatchCategoryDTO.builder()
-                .type(Category.Type.MOVIE)
+                .type("MOVIE")
                 .build();
         when(categoryRepository.findById(list.get(0).getId())).thenReturn(Optional.of(list.get(0)));
         when(categoryRepository.save(list.get(0))).thenReturn(list.get(0));

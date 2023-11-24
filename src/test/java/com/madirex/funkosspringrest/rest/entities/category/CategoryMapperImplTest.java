@@ -30,7 +30,7 @@ class CategoryMapperImplTest {
     @Test
     void testCreateCategoryDTOToCategory() {
         var category = CreateCategoryDTO.builder()
-                .type(Category.Type.MOVIE)
+                .type("MOVIE")
                 .active(true)
                 .build();
         var mapped = categoryMapperImpl.toCategory(category);
@@ -46,11 +46,11 @@ class CategoryMapperImplTest {
     @Test
     void testUpdateCategoryDTOToCategory() {
         var existingCategory = Category.builder()
-                .type(Category.Type.MOVIE)
+                .type("MOVIE")
                 .active(true)
                 .build();
         var category = UpdateCategoryDTO.builder()
-                .type(Category.Type.MOVIE)
+                .type("MOVIE")
                 .active(true)
                 .build();
         var mapped = categoryMapperImpl.toCategory(existingCategory, category);

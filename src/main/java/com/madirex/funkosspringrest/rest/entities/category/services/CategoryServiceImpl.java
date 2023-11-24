@@ -59,7 +59,7 @@ public class CategoryServiceImpl implements CategoryService {
         Specification<Category> specType = (root, query, criteriaBuilder) ->
                 type.map(m -> {
                     try {
-                        return criteriaBuilder.equal(root.get("type"), Category.Type.valueOf(m.toUpperCase()));
+                        return criteriaBuilder.equal(root.get("type"), m.toUpperCase());
                     } catch (IllegalArgumentException e) {
                         return criteriaBuilder.isTrue(criteriaBuilder.literal(false));
                     }

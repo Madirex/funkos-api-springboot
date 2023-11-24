@@ -25,7 +25,7 @@ public class Category {
     private Long id;
 
     @NonNull()
-    private Type type;
+    private String type;
 
     @CreatedDate
     private LocalDateTime createdAt;
@@ -33,13 +33,6 @@ public class Category {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    @NonNull
+    @NonNull()
     private Boolean active;
-
-    /**
-     * Enum Type
-     */
-    public enum Type {
-        SERIE, DISNEY, SUPERHEROS, MOVIE, OTHER
-    }
 }

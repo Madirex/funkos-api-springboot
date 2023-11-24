@@ -86,7 +86,7 @@ class FunkoServiceImplTest {
                 .price(2.2)
                 .quantity(2)
                 .image("https://tech.madirex.com/favicon.ico")
-                .category(Category.builder().id(1L).type(Category.Type.MOVIE).active(true).build())
+                .category(Category.builder().id(1L).type("MOVIE").active(true).build())
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build());
@@ -96,7 +96,7 @@ class FunkoServiceImplTest {
                 .price(42.42)
                 .quantity(42)
                 .image("https://www.madirex.com/favicon.ico")
-                .category(Category.builder().id(1L).type(Category.Type.MOVIE).active(true).build())
+                .category(Category.builder().id(1L).type("MOVIE").active(true).build())
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build());
@@ -114,7 +114,7 @@ class FunkoServiceImplTest {
                 .price(2.2)
                 .quantity(2)
                 .image("https://tech.madirex.com/favicon.ico")
-                .category(Category.builder().id(1L).type(Category.Type.MOVIE).active(true).build())
+                .category(Category.builder().id(1L).type("MOVIE").active(true).build())
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build());
@@ -124,7 +124,7 @@ class FunkoServiceImplTest {
                 .price(42.42)
                 .quantity(42)
                 .image("https://www.madirex.com/favicon.ico")
-                .category(Category.builder().id(1L).type(Category.Type.MOVIE).active(true).build())
+                .category(Category.builder().id(1L).type("MOVIE").active(true).build())
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build());
@@ -162,7 +162,7 @@ class FunkoServiceImplTest {
                 .price(2.2)
                 .quantity(2)
                 .image("https://tech.madirex.com/favicon.ico")
-                .category(Category.builder().id(1L).type(Category.Type.MOVIE).active(true).build())
+                .category(Category.builder().id(1L).type("MOVIE").active(true).build())
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build());
@@ -208,7 +208,7 @@ class FunkoServiceImplTest {
     void testPostFunko() throws CategoryNotFoundException, IOException {
         var insert = CreateFunkoDTO.builder()
                 .name("nombre").price(2.2).quantity(2).image("imagen").categoryId(1L).build();
-        var category = Category.builder().id(1L).type(Category.Type.MOVIE).active(true).createdAt(LocalDateTime.now())
+        var category = Category.builder().id(1L).type("MOVIE").active(true).createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now()).build();
         var inserted = new Funko();
         inserted = Funko.builder().name("nombre").price(2.2).quantity(2).image("imagen").category(category).build();
@@ -241,7 +241,7 @@ class FunkoServiceImplTest {
     void testPutFunko() throws CategoryNotFoundException, FunkoNotValidUUIDException, FunkoNotFoundException, IOException {
         var update = UpdateFunkoDTO.builder()
                 .name("nombre").price(2.2).quantity(2).image("imagen").categoryId(1L).build();
-        var category = Category.builder().id(1L).type(Category.Type.MOVIE).active(true).createdAt(LocalDateTime.now())
+        var category = Category.builder().id(1L).type("MOVIE").active(true).createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now()).build();
         when(funkoRepository.findById(list.get(0).getId())).thenReturn(Optional.of(list.get(0)));
         when(categoryService.getCategoryById(1L)).thenReturn(category);
@@ -285,7 +285,7 @@ class FunkoServiceImplTest {
     void testPatchFunko() throws CategoryNotFoundException, FunkoNotValidUUIDException, FunkoNotFoundException, IOException {
         var update = PatchFunkoDTO.builder()
                 .name("nombre").price(2.2).quantity(2).image("imagen").categoryId(1L).build();
-        var category = Category.builder().id(1L).type(Category.Type.MOVIE).active(true).createdAt(LocalDateTime.now())
+        var category = Category.builder().id(1L).type("MOVIE").active(true).createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now()).build();
         when(funkoRepository.findById(list.get(0).getId())).thenReturn(Optional.of(list.get(0)));
         when(funkoRepository.save(list.get(0))).thenReturn(list.get(0));
@@ -407,7 +407,7 @@ class FunkoServiceImplTest {
                 .price(2.2)
                 .quantity(2)
                 .image(imageUrl)
-                .category(Category.builder().id(1L).type(Category.Type.MOVIE).active(true).build())
+                .category(Category.builder().id(1L).type("MOVIE").active(true).build())
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();

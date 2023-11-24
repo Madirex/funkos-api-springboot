@@ -49,7 +49,7 @@ class OrderControllerTest {
     private final String productId = UUID.randomUUID().toString();
     private final Order order = Order.builder()
             .id(new ObjectId("655a54c83f761d101f941f4e"))
-            .userId(1L)
+            .userId(UUID.randomUUID().toString())
             .client(
                     new Client("Madirex", "contact@madirex.com", "1234",
                             new Address("Calle", "1", "Ciudad",

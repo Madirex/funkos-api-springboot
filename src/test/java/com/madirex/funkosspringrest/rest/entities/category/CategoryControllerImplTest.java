@@ -54,7 +54,7 @@ class CategoryControllerImplTest {
 
     Category category = Category.builder()
             .id(1L)
-            .type(Category.Type.MOVIE)
+            .type("MOVIE")
             .active(true)
             .createdAt(LocalDateTime.now())
             .updatedAt(LocalDateTime.now())
@@ -62,7 +62,7 @@ class CategoryControllerImplTest {
 
     Category category2 = Category.builder()
             .id(2L)
-            .type(Category.Type.SERIE)
+            .type("SERIE")
             .active(false)
             .createdAt(LocalDateTime.now())
             .updatedAt(LocalDateTime.now())
@@ -149,13 +149,13 @@ class CategoryControllerImplTest {
     @Test
     void testPostCategory() throws Exception {
         CreateCategoryDTO newCategory = CreateCategoryDTO.builder()
-                .type(Category.Type.MOVIE)
+                .type("MOVIE")
                 .active(true)
                 .build();
 
         Category createdCategory = Category.builder()
                 .id(1L)
-                .type(Category.Type.MOVIE)
+                .type("MOVIE")
                 .active(true)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
@@ -178,13 +178,13 @@ class CategoryControllerImplTest {
         long funkId = 1L;
 
         UpdateCategoryDTO patchedCategory = UpdateCategoryDTO.builder()
-                .type(Category.Type.MOVIE)
+                .type("MOVIE")
                 .active(true)
                 .build();
 
         Category patchedCategoryResponse = Category.builder()
                 .id(1L)
-                .type(Category.Type.MOVIE)
+                .type("MOVIE")
                 .active(true)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
@@ -208,13 +208,13 @@ class CategoryControllerImplTest {
         long funkId = 1L;
 
         PatchCategoryDTO patchedCategory = PatchCategoryDTO.builder()
-                .type(Category.Type.DISNEY)
+                .type("DISNEY")
                 .active(false)
                 .build();
 
         Category patchedCategoryResponse = Category.builder()
                 .id(1L)
-                .type(Category.Type.MOVIE)
+                .type("MOVIE")
                 .active(true)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())

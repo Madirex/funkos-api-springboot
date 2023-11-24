@@ -56,7 +56,7 @@ class FunkoControllerImplTest {
             .price(2.2)
             .quantity(2)
             .image("https://madirex.com/favicon.ico")
-            .category(Category.builder().id(1L).type(Category.Type.MOVIE).active(true).build())
+            .category(Category.builder().id(1L).type("MOVIE").active(true).build())
             .createdAt(LocalDateTime.now())
             .updatedAt(LocalDateTime.now())
             .build();
@@ -67,7 +67,7 @@ class FunkoControllerImplTest {
             .price(23.22)
             .quantity(42)
             .image("https://tech.madirex.com/favicon.ico")
-            .category(Category.builder().id(1L).type(Category.Type.MOVIE).active(true).build())
+            .category(Category.builder().id(1L).type("MOVIE").active(true).build())
             .createdAt(LocalDateTime.now())
             .updatedAt(LocalDateTime.now())
             .build();
@@ -227,7 +227,7 @@ class FunkoControllerImplTest {
                 .price(newFunko.getPrice())
                 .quantity(newFunko.getQuantity())
                 .image(newFunko.getImage())
-                .category(Category.builder().id(1L).type(Category.Type.MOVIE).active(true).build())
+                .category(Category.builder().id(1L).type("MOVIE").active(true).build())
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
@@ -263,7 +263,7 @@ class FunkoControllerImplTest {
                 .price(updatedFunko.getPrice())
                 .quantity(updatedFunko.getQuantity())
                 .image("Imagen existente del Funko")
-                .category(Category.builder().id(1L).type(Category.Type.MOVIE).active(true).build())
+                .category(Category.builder().id(1L).type("MOVIE").active(true).build())
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
@@ -318,7 +318,7 @@ class FunkoControllerImplTest {
                 .price(patchedFunko.getPrice())
                 .quantity(patchedFunko.getQuantity())
                 .image("Imagen existente del Funko")
-                .category(Category.builder().id(1L).type(Category.Type.MOVIE).active(true).build())
+                .category(Category.builder().id(1L).type("MOVIE").active(true).build())
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();

@@ -40,7 +40,7 @@ class FunkoNotificationMapperTest {
                 .image("imagen")
                 .category(Category.builder()
                         .id(1L)
-                        .type(Category.Type.MOVIE)
+                        .type("MOVIE")
                         .active(true)
                         .build())
                 .createdAt(LocalDateTime.now())

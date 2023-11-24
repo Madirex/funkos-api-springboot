@@ -41,7 +41,7 @@ class FunkoMapperImplTest {
                 .image("imagen")
                 .categoryId(1L)
                 .build();
-        var mapped = funkoMapperImpl.toFunko(funko, Category.builder().id(1L).type(Category.Type.MOVIE).active(true).build());
+        var mapped = funkoMapperImpl.toFunko(funko, Category.builder().id(1L).type("MOVIE").active(true).build());
         assertAll("Funko properties",
                 () -> assertNotNull(mapped.getId(), "El ID no debe ser nulo"),
                 () -> assertEquals(funko.getName(), mapped.getName(), "El nombre debe coincidir"),
@@ -63,7 +63,7 @@ class FunkoMapperImplTest {
                 .price(2.2)
                 .quantity(2)
                 .image("imagen")
-                .category(Category.builder().id(1L).type(Category.Type.MOVIE).active(true).build())
+                .category(Category.builder().id(1L).type("MOVIE").active(true).build())
                 .build();
         var funko = UpdateFunkoDTO.builder()
                 .name("nombre")
@@ -72,7 +72,7 @@ class FunkoMapperImplTest {
                 .image("imagen")
                 .categoryId(1L)
                 .build();
-        var mapped = funkoMapperImpl.toFunko(funkoToEdit, funko, Category.builder().id(1L).type(Category.Type.MOVIE).active(true).build());
+        var mapped = funkoMapperImpl.toFunko(funkoToEdit, funko, Category.builder().id(1L).type("MOVIE").active(true).build());
         assertAll("Funko properties",
                 () -> assertNotNull(mapped.getId(), "El ID no debe ser nulo"),
                 () -> assertEquals(funko.getName(), mapped.getName(), "El nombre debe coincidir"),
@@ -94,7 +94,7 @@ class FunkoMapperImplTest {
                 .price(2.2)
                 .quantity(2)
                 .image("imagen")
-                .category(Category.builder().id(1L).type(Category.Type.MOVIE).active(true).build())
+                .category(Category.builder().id(1L).type("MOVIE").active(true).build())
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
@@ -122,7 +122,7 @@ class FunkoMapperImplTest {
                 .price(2.2)
                 .quantity(2)
                 .image("imagen")
-                .category(Category.builder().id(1L).type(Category.Type.MOVIE).active(true).build())
+                .category(Category.builder().id(1L).type("MOVIE").active(true).build())
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build());

@@ -101,8 +101,7 @@ public class FunkoServiceImpl implements FunkoService {
         Specification<Funko> specType = (root, query, criteriaBuilder) ->
                 category.map(m -> {
                     try {
-                        return criteriaBuilder.equal(root.get("category").get("type"), Category.Type
-                                .valueOf(m.toUpperCase()));
+                        return criteriaBuilder.equal(root.get("category").get("type"), m.toUpperCase());
                     } catch (IllegalArgumentException e) {
                         return criteriaBuilder.isTrue(criteriaBuilder.literal(false));
                     }

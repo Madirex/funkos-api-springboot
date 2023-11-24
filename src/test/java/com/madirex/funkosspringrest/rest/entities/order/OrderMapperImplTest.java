@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -35,7 +36,7 @@ class OrderMapperImplTest {
     @Test
     void testCreateOrderToOrder() {
         var order = CreateOrder.builder()
-                .userId(23L)
+                .userId(UUID.randomUUID().toString())
                 .client(new Client("nombre", "mail@mail.com",
                         "34543534",
                         Address.builder().build()))
@@ -60,7 +61,7 @@ class OrderMapperImplTest {
     @Test
     void testUpdateOrderToOrder() {
         var order = Order.builder()
-                .userId(23L)
+                .userId(UUID.randomUUID().toString())
                 .client(new Client("nombre", "mail@mail.com",
                         "34543534",
                         Address.builder().build()))
@@ -69,7 +70,7 @@ class OrderMapperImplTest {
                 .total(2.2)
                 .build();
         var orderUpdated = UpdateOrder.builder()
-                .userId(23L)
+                .userId(UUID.randomUUID().toString())
                 .client(new Client("name", "mail2@mail2.com",
                         "34234543534",
                         Address.builder().build()))
