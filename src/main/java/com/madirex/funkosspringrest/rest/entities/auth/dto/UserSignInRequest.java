@@ -19,6 +19,5 @@ public class UserSignInRequest {
     private String username;
 
     @NotBlank(message = "Password no puede estar vacío")
-    @Length(min = 5, message = "Password debe tener al menos 5 caracteres")
     private String password;
 }
