@@ -17,8 +17,8 @@ VALUES
 
 INSERT INTO USERS (id, name, surname, username, email, password, created_at, updated_at, is_deleted)
 VALUES
-    ('a2bcb7b3-4c36-4073-9ab8-9d8f4a57301b', 'Madirex', 'Land', 'Madirex', 'contact@madirex.com', '123', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, false),
-    ('d4515840-8fe2-4107-8bde-0f1c545ef4c5', 'User', 'User', 'User', 'user@madirex.com', '123', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, false);
+    ('a2bcb7b3-4c36-4073-9ab8-9d8f4a57301b', 'Madirex', 'Land', 'Madirex', 'contact@madirex.com', '$2a$10$/iB5BY9exKMl6Soofb7EquzGHWm3vOPHBCBb6Cg3sWcfz9kHUyIpC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, false),
+    ('d4515840-8fe2-4107-8bde-0f1c545ef4c5', 'User', 'User', 'User', 'user@madirex.com', '$2a$10$/iB5BY9exKMl6Soofb7EquzGHWm3vOPHBCBb6Cg3sWcfz9kHUyIpC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, false);
 
 insert into USER_ROLES (user_id, roles)
 values ('a2bcb7b3-4c36-4073-9ab8-9d8f4a57301b', 'USER');
