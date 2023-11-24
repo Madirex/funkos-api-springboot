@@ -18,6 +18,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -60,6 +61,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         log.info("Creando usuario: {}", request);
         if (request.getPassword().contentEquals(request.getPasswordRepeat())) {
             User user = User.builder()
+                    .id(UUID.randomUUID())
                     .username(request.getUsername())
                     .password(passwordEncoder.encode(request.getPassword()))
                     .email(request.getEmail())
