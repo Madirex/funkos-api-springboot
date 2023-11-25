@@ -2,12 +2,12 @@ package com.madirex.funkosspringrest.rest.entities.funko;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.madirex.funkosspringrest.rest.entities.category.models.Category;
 import com.madirex.funkosspringrest.rest.entities.funko.dto.CreateFunkoDTO;
 import com.madirex.funkosspringrest.rest.entities.funko.dto.GetFunkoDTO;
 import com.madirex.funkosspringrest.rest.entities.funko.dto.PatchFunkoDTO;
 import com.madirex.funkosspringrest.rest.entities.funko.dto.UpdateFunkoDTO;
 import com.madirex.funkosspringrest.rest.entities.funko.exceptions.FunkoNotValidUUIDException;
-import com.madirex.funkosspringrest.rest.entities.category.models.Category;
 import com.madirex.funkosspringrest.rest.entities.funko.services.FunkoServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -120,8 +120,8 @@ class FunkoControllerImplTest {
     @Test
     void getAll_ShouldReturnErrorResponse_withInvalidPageParam() throws Exception {
         mockMvc.perform(get(endpoint)
-                .param("page", "-1")
-                .accept(MediaType.APPLICATION_JSON))
+                        .param("page", "-1")
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
@@ -134,8 +134,8 @@ class FunkoControllerImplTest {
     @Test
     void getAll_ShouldReturnErrorResponse_withInvalidSizeParam() throws Exception {
         mockMvc.perform(get(endpoint)
-                .param("size", "0")
-                .accept(MediaType.APPLICATION_JSON))
+                        .param("size", "0")
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
