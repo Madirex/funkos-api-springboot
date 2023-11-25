@@ -96,7 +96,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleException(HttpMessageNotReadableException ex) {
         var errorResponse = new ErrorResponse(
                 HttpStatus.BAD_REQUEST,
-                ex.getMessage(),
+                "El formato de la consulta enviada es incorrecta.",
                 getCurrentHttpRequest().getRequestURI()
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
