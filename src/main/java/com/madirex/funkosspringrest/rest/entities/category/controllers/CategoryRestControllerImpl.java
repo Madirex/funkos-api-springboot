@@ -18,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -58,6 +59,7 @@ public class CategoryRestControllerImpl implements CategoryRestController {
      * @return ResponseEntity con el código de estado
      */
     @GetMapping()
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<PageResponse<Category>> findAll(
             @RequestParam(required = false) Optional<String> type,
             @RequestParam(required = false) Optional<Boolean> isActive,
@@ -86,6 +88,7 @@ public class CategoryRestControllerImpl implements CategoryRestController {
      * @throws CategoryNotFoundException de la categoría
      */
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @Override
     public ResponseEntity<Category> findById(@Valid @PathVariable Long id) throws CategoryNotFoundException {
 
@@ -100,6 +103,7 @@ public class CategoryRestControllerImpl implements CategoryRestController {
      * @return ResponseEntity con el código de estado
      */
     @PostMapping()
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public ResponseEntity<Category> post(@Valid @RequestBody CreateCategoryDTO category) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.postCategory(category));
@@ -114,6 +118,7 @@ public class CategoryRestControllerImpl implements CategoryRestController {
      * @throws CategoryNotFoundException de la categoría
      */
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public ResponseEntity<Category> put(@Valid @PathVariable Long id, @Valid @RequestBody UpdateCategoryDTO funko) throws CategoryNotFoundException {
         Category updatedCategory = service.putCategory(id, funko);
@@ -130,6 +135,7 @@ public class CategoryRestControllerImpl implements CategoryRestController {
      * @throws CategoryNotFoundException de la categoría
      */
     @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public ResponseEntity<Category> patch(@Valid @PathVariable Long id, @Valid @RequestBody PatchCategoryDTO funko) throws CategoryNotFoundException {
         Category updatedCategory = service.patchCategory(id, funko);
@@ -145,6 +151,7 @@ public class CategoryRestControllerImpl implements CategoryRestController {
      * @throws CategoryNotFoundException de la categoría
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public ResponseEntity<String> delete(@Valid @PathVariable Long id) throws CategoryNotFoundException {
         try {

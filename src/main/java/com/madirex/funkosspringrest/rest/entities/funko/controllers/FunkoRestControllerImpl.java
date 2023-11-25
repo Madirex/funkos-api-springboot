@@ -21,6 +21,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -65,6 +66,7 @@ public class FunkoRestControllerImpl implements FunkoRestController {
      * @return ResponseEntity con el código de estado
      */
     @GetMapping()
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<PageResponse<GetFunkoDTO>> getAllFunko(
             @Valid @RequestParam(required = false) Optional<String> category,
             @RequestParam(required = false) Optional<Double> maxPrice,
@@ -96,6 +98,7 @@ public class FunkoRestControllerImpl implements FunkoRestController {
      * @throws FunkoNotFoundException Si no se ha encontrado el Funko con el UUID indicado
      */
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @Override
     public ResponseEntity<GetFunkoDTO> getFunkoById(@Valid @PathVariable String id) throws FunkoNotFoundException {
         return ResponseEntity.ok(service.getFunkoById(id));
@@ -110,6 +113,7 @@ public class FunkoRestControllerImpl implements FunkoRestController {
      * @throws CategoryNotFoundException Si no se ha encontrado la categoría
      */
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public ResponseEntity<GetFunkoDTO> postFunko(@Valid @RequestBody CreateFunkoDTO funko) throws JsonProcessingException,
             CategoryNotFoundException {
@@ -129,6 +133,7 @@ public class FunkoRestControllerImpl implements FunkoRestController {
      * @throws CategoryNotFoundException  de la categoría
      */
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public ResponseEntity<GetFunkoDTO> putFunko(@Valid @PathVariable String id, @Valid @RequestBody UpdateFunkoDTO funko)
             throws FunkoNotFoundException, FunkoNotValidUUIDException, JsonProcessingException,
@@ -148,6 +153,7 @@ public class FunkoRestControllerImpl implements FunkoRestController {
      * @throws CategoryNotFoundException  de la categoría
      */
     @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public ResponseEntity<GetFunkoDTO> patchFunko(@Valid @PathVariable String id, @Valid @RequestBody PatchFunkoDTO funko)
             throws FunkoNotFoundException, FunkoNotValidUUIDException, JsonProcessingException,
@@ -164,6 +170,7 @@ public class FunkoRestControllerImpl implements FunkoRestController {
      * @throws JsonProcessingException excepción Json
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public ResponseEntity<String> deleteFunko(@Valid @PathVariable String id) throws FunkoNotFoundException,
             JsonProcessingException {
@@ -183,6 +190,7 @@ public class FunkoRestControllerImpl implements FunkoRestController {
      * @throws IOException                excepción de entrada/salida
      */
     @PatchMapping(value = "/image/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<GetFunkoDTO> newFunkoImg(
             @PathVariable String id,
             @RequestPart("file") MultipartFile file) throws FunkoNotValidUUIDException, CategoryNotFoundException,

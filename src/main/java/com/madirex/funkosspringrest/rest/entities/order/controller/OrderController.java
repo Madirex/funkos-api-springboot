@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -46,6 +47,7 @@ public class OrderController {
      * @return Lista de pedidos paginada
      */
     @GetMapping()
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PageResponse<Order>> getAllOrders(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -70,6 +72,7 @@ public class OrderController {
      * @return Pedido
      */
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Order> getOrder(@PathVariable("id") ObjectId orderId) {
         log.info("Obteniendo pedido con id: " + orderId);
         return ResponseEntity.ok(orderService.findById(orderId));
@@ -82,6 +85,7 @@ public class OrderController {
      * @return Pedido creado
      */
     @PostMapping()
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Order> createOrder(@Valid @RequestBody CreateOrder order) {
         log.info("Creando pedido: " + order);
         return ResponseEntity.status(HttpStatus.CREATED).body(orderService.save(order));
@@ -95,6 +99,7 @@ public class OrderController {
      * @return Pedido actualizado
      */
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Order> updateOrder(@PathVariable("id") ObjectId orderId, @Valid @RequestBody UpdateOrder order) {
         log.info("Actualizando pedido con id: " + orderId);
         return ResponseEntity.ok(orderService.update(orderId, order));
@@ -107,6 +112,7 @@ public class OrderController {
      * @return Pedido borrado
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Order> deleteOrder(@PathVariable("id") ObjectId orderId) {
         log.info("Borrando pedido con id: " + orderId);
         orderService.delete(orderId);
