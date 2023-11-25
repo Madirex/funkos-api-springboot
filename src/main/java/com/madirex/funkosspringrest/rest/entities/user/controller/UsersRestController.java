@@ -7,7 +7,7 @@ import com.madirex.funkosspringrest.rest.entities.order.services.OrderService;
 import com.madirex.funkosspringrest.rest.entities.user.dto.UserInfoResponse;
 import com.madirex.funkosspringrest.rest.entities.user.dto.UserRequest;
 import com.madirex.funkosspringrest.rest.entities.user.dto.UserResponse;
-import com.madirex.funkosspringrest.rest.entities.user.exceptions.UserNotFound;
+import com.madirex.funkosspringrest.rest.entities.user.exceptions.UserDiffers;
 import com.madirex.funkosspringrest.rest.entities.user.exceptions.UserNotLogged;
 import com.madirex.funkosspringrest.rest.entities.user.exceptions.UserNotValidUUIDException;
 import com.madirex.funkosspringrest.rest.entities.user.models.User;
@@ -30,6 +30,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -204,7 +205,7 @@ public class UsersRestController {
             }
             return user.getId().toString();
         } catch (IllegalArgumentException e) {
-            throw new UserNotValidUUIDException(user.getId().toString());
+            throw new UserNotValidUUIDException(Objects.requireNonNull(user).getId().toString());
         }
     }
 
@@ -267,7 +268,7 @@ public class UsersRestController {
     ) {
         log.info("Creando pedido: " + order);
         if (!order.getUserId().equals(checkValidIdAndReturn(user))) {
-            throw new IllegalArgumentException("El usuario del pedido no coincide con el usuario autenticado");
+            throw new UserDiffers("El usuario del pedido no coincide con el usuario autenticado");
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(orderService.save(order));
     }
@@ -288,7 +289,7 @@ public class UsersRestController {
             @Valid @RequestBody UpdateOrder order) {
         log.info("Actualizando pedido con ID: " + idOrder);
         if (!order.getUserId().equals(checkValidIdAndReturn(user))) {
-            throw new IllegalArgumentException("El usuario del pedido no coincide con el usuario autenticado");
+            throw new UserDiffers("El usuario del pedido no coincide con el usuario autenticado");
         }
         return ResponseEntity.ok(orderService.update(idOrder, order));
     }
