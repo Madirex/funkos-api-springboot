@@ -14,6 +14,7 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.nio.file.Paths;
@@ -30,6 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest(properties = "spring.profiles.active=test")
+@WithMockUser(username = "madirex", password = "123", roles = {"ADMIN", "USER"})
 class StorageControllerTest {
 
     @Autowired
