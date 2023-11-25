@@ -96,13 +96,13 @@ public class CategoryRestControllerImpl implements CategoryRestController {
     /**
      * Método para crear un Category
      *
-     * @param funko Objeto CreateCategoryDTO con los campos a crear
+     * @param category Objeto CreateCategoryDTO con los campos a crear
      * @return ResponseEntity con el código de estado
      */
     @PostMapping()
     @Override
-    public ResponseEntity<Category> post(@Valid @RequestBody CreateCategoryDTO funko) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.postCategory(funko));
+    public ResponseEntity<Category> post(@Valid @RequestBody CreateCategoryDTO category) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.postCategory(category));
     }
 
     /**

@@ -3,6 +3,7 @@ package com.madirex.funkosspringrest.rest.entities.category.services;
 import com.madirex.funkosspringrest.rest.entities.category.dto.CreateCategoryDTO;
 import com.madirex.funkosspringrest.rest.entities.category.dto.PatchCategoryDTO;
 import com.madirex.funkosspringrest.rest.entities.category.dto.UpdateCategoryDTO;
+import com.madirex.funkosspringrest.rest.entities.category.exceptions.CategoryAlreadyExistsException;
 import com.madirex.funkosspringrest.rest.entities.category.exceptions.CategoryNotFoundException;
 import com.madirex.funkosspringrest.rest.entities.category.mappers.CategoryMapperImpl;
 import com.madirex.funkosspringrest.rest.entities.category.models.Category;
@@ -112,13 +113,17 @@ public class CategoryServiceImpl implements CategoryService {
     /**
      * Crea un Category
      *
-     * @param funko CreateCategoryDTO con los datos del Category a crear
+     * @param category CreateCategoryDTO con los datos del Category a crear
      * @return Category creado
      */
     @CachePut(key = "#result.id")
     @Override
-    public Category postCategory(CreateCategoryDTO funko) {
-        return categoryRepository.save(categoryMapperImpl.toCategory(funko));
+    public Category postCategory(CreateCategoryDTO category) {
+        categoryRepository.findByType(category.getType())
+                .ifPresent(c -> {
+                    throw new CategoryAlreadyExistsException("Ya existe una categoría con ese tipo");
+                });
+        return categoryRepository.save(categoryMapperImpl.toCategory(category));
     }
 
     /**

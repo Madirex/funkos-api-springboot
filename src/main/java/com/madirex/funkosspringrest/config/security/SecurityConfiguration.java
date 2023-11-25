@@ -64,6 +64,9 @@ public class SecurityConfiguration {
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").hasRole("ADMIN")
                         //acceso a autentificación para todos los usuarios
                         .requestMatchers("/api/auth/**").permitAll()
+                        //Acceso a los endpoints de la API solo para administradores
+                        .requestMatchers("/api/orders/**").hasRole("ADMIN")
+                        //Acceso al perfil para usuarios autenticados
                         //TODO: ORDERS
                         //TODO: USER
                         //TODO: FUNKO

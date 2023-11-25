@@ -7,6 +7,7 @@ import com.madirex.funkosspringrest.rest.entities.order.services.OrderService;
 import com.madirex.funkosspringrest.rest.entities.user.dto.UserInfoResponse;
 import com.madirex.funkosspringrest.rest.entities.user.dto.UserRequest;
 import com.madirex.funkosspringrest.rest.entities.user.dto.UserResponse;
+import com.madirex.funkosspringrest.rest.entities.user.dto.UserUpdate;
 import com.madirex.funkosspringrest.rest.entities.user.exceptions.UserDiffers;
 import com.madirex.funkosspringrest.rest.entities.user.exceptions.UserNotLogged;
 import com.madirex.funkosspringrest.rest.entities.user.exceptions.UserNotValidUUIDException;
@@ -39,7 +40,7 @@ import java.util.Optional;
 @RestController
 @Slf4j
 @RequestMapping("api/users")
-@PreAuthorize("hasRole('USER')")
+@PreAuthorize("hasAnyRole('USER','ADMIN')")
 public class UsersRestController {
     private final UsersService usersService;
     private final OrderService orderService;
@@ -125,15 +126,15 @@ public class UsersRestController {
     /**
      * Actualiza un usuario
      *
-     * @param id          ID del usuario
-     * @param userRequest Usuario a actualizar
+     * @param id         ID del usuario
+     * @param userUpdate Usuario a actualizar
      * @return Usuario actualizado
      */
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<UserResponse> updateUser(@PathVariable String id, @Valid @RequestBody UserRequest userRequest) {
-        log.info("update: id: {}, userRequest: {}", id, userRequest);
-        return ResponseEntity.ok(usersService.update(id, userRequest));
+    public ResponseEntity<UserResponse> updateUser(@PathVariable String id, @Valid @RequestBody UserUpdate userUpdate) {
+        log.info("update: id: {}, userRequest: {}", id, userUpdate);
+        return ResponseEntity.ok(usersService.update(id, userUpdate));
     }
 
     /**
@@ -157,7 +158,7 @@ public class UsersRestController {
      * @return Datos del usuario
      */
     @GetMapping("/me/profile")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<UserInfoResponse> me(@AuthenticationPrincipal User user) {
         log.info("Obteniendo usuario");
         return ResponseEntity.ok(usersService.findById(checkValidIdAndReturn(user)));
@@ -166,16 +167,16 @@ public class UsersRestController {
     /**
      * Actualiza el usuario actual
      *
-     * @param user        Usuario autenticado
-     * @param userRequest Usuario a actualizar
+     * @param user       Usuario autenticado
+     * @param userUpdate Usuario a actualizar
      * @return Usuario actualizado
      */
     @PutMapping("/me/profile")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<UserResponse> updateMe(@AuthenticationPrincipal User user,
-                                                 @Valid @RequestBody UserRequest userRequest) {
-        log.info("updateMe: user: {}, userRequest: {}", user, userRequest);
-        return ResponseEntity.ok(usersService.update(checkValidIdAndReturn(user), userRequest));
+                                                 @Valid @RequestBody UserUpdate userUpdate) {
+        log.info("updateMe: user: {}, userRequest: {}", user, userUpdate);
+        return ResponseEntity.ok(usersService.update(checkValidIdAndReturn(user), userUpdate));
     }
 
     /**
@@ -185,7 +186,7 @@ public class UsersRestController {
      * @return Respuesta vacía
      */
     @DeleteMapping("/me/profile")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<Void> deleteMe(@AuthenticationPrincipal User user) {
         log.info("deleteMe: user: {}", user);
         usersService.deleteById(checkValidIdAndReturn(user));
@@ -220,7 +221,7 @@ public class UsersRestController {
      * @return Respuesta con la página de pedidos
      */
     @GetMapping("/me/orders")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<PageResponse<Order>> getOrderByUser(
             @AuthenticationPrincipal User user,
             @RequestParam(defaultValue = "0") int page,
@@ -244,7 +245,7 @@ public class UsersRestController {
      * @return Pedido
      */
     @GetMapping("/me/orders/{id}")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<Order> getOrder(
             @AuthenticationPrincipal User user,
             @PathVariable("id") ObjectId idOrder
@@ -261,7 +262,7 @@ public class UsersRestController {
      * @return Pedido creado
      */
     @PostMapping("/me/orders")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<Order> saveOrder(
             @AuthenticationPrincipal User user,
             @Valid @RequestBody CreateOrder order
@@ -282,7 +283,7 @@ public class UsersRestController {
      * @return Pedido actualizado
      */
     @PutMapping("/me/orders/{id}")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<Order> updateOrder(
             @AuthenticationPrincipal User user,
             @PathVariable("id") ObjectId idOrder,
@@ -302,7 +303,7 @@ public class UsersRestController {
      * @return Pedido borrado
      */
     @DeleteMapping("/me/orders/{id}")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<Void> deleteOrder(
             @AuthenticationPrincipal User user,
             @PathVariable("id") ObjectId idOrder

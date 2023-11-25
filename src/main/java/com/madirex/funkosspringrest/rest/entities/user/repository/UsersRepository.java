@@ -31,7 +31,7 @@ public interface UsersRepository extends JpaRepository<User, UUID>, JpaSpecifica
      * @param email Email
      * @return Usuario
      */
-    Optional<User> findByEmail(String email);
+    Optional<User> findByEmailEqualsIgnoreCase(String email);
 
     /**
      * Método que busca un usuario por nombre de usuario
