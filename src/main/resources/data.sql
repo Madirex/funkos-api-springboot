@@ -1,9 +1,9 @@
-INSERT INTO Category (id, type, created_at, updated_at, active)
-VALUES (1, 'DISNEY', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, true),
-       (2, 'MOVIE', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, true),
-       (3, 'SERIES', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, true),
-       (4, 'SUPERHEROS', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, true),
-       (5, 'OTHER', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, true);
+INSERT INTO Category (type, created_at, updated_at, active)
+VALUES ('DISNEY', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, true),
+       ('MOVIE', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, true),
+       ('SERIES', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, true),
+       ('SUPERHEROS', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, true),
+       ('OTHER', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, true);
 
 INSERT INTO Funko (id, name, price, quantity, image, category_id, created_at, updated_at)
 VALUES
