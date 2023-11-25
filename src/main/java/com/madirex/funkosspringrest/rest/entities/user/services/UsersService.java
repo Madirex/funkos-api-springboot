@@ -3,6 +3,7 @@ package com.madirex.funkosspringrest.rest.entities.user.services;
 import com.madirex.funkosspringrest.rest.entities.user.dto.UserInfoResponse;
 import com.madirex.funkosspringrest.rest.entities.user.dto.UserRequest;
 import com.madirex.funkosspringrest.rest.entities.user.dto.UserResponse;
+import com.madirex.funkosspringrest.rest.entities.user.dto.UserUpdate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -44,10 +45,10 @@ public interface UsersService {
      * Método que actualiza un usuario
      *
      * @param id          ID del usuario
-     * @param userRequest Usuario
+     * @param userUpdate Usuario a actualizar
      * @return Usuario
      */
-    UserResponse update(String id, UserRequest userRequest);
+    UserResponse update(String id, UserUpdate userUpdate);
 
     /**
      * Método que borra un usuario

@@ -3,6 +3,7 @@ package com.madirex.funkosspringrest.rest.entities.user.mappers;
 import com.madirex.funkosspringrest.rest.entities.user.dto.UserInfoResponse;
 import com.madirex.funkosspringrest.rest.entities.user.dto.UserRequest;
 import com.madirex.funkosspringrest.rest.entities.user.dto.UserResponse;
+import com.madirex.funkosspringrest.rest.entities.user.dto.UserUpdate;
 import com.madirex.funkosspringrest.rest.entities.user.models.User;
 import org.springframework.stereotype.Component;
 
@@ -88,6 +89,27 @@ public class UsersMapper {
                 .roles(user.getRoles())
                 .isDeleted(user.getIsDeleted())
                 .orders(orders)
+                .build();
+    }
+
+    /**
+     * Método que convierte un objeto UserUpdate en un objeto User
+     *
+     * @param userUpdate UserUpdate
+     * @param uuid       UUID
+     * @param username   Nombre de usuario
+     * @return User
+     */
+    public User toUser(UserUpdate userUpdate, UUID uuid, String username) {
+        return User.builder()
+                .id(uuid)
+                .name(userUpdate.getName())
+                .surname(userUpdate.getSurname())
+                .username(username)
+                .email(userUpdate.getEmail())
+                .password(userUpdate.getPassword())
+                .roles(userUpdate.getRoles())
+                .isDeleted(userUpdate.getIsDeleted())
                 .build();
     }
 }

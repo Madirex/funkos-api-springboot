@@ -5,6 +5,7 @@ import com.madirex.funkosspringrest.rest.entities.order.repository.OrderReposito
 import com.madirex.funkosspringrest.rest.entities.user.dto.UserInfoResponse;
 import com.madirex.funkosspringrest.rest.entities.user.dto.UserRequest;
 import com.madirex.funkosspringrest.rest.entities.user.dto.UserResponse;
+import com.madirex.funkosspringrest.rest.entities.user.dto.UserUpdate;
 import com.madirex.funkosspringrest.rest.entities.user.exceptions.UserNotFound;
 import com.madirex.funkosspringrest.rest.entities.user.exceptions.UserNotValidUUIDException;
 import com.madirex.funkosspringrest.rest.entities.user.exceptions.UsernameOrEmailExists;
@@ -122,14 +123,14 @@ public class UsersServiceImpl implements UsersService {
     /**
      * Método que actualiza un usuario
      *
-     * @param id          ID del usuario
-     * @param userRequest Usuario
+     * @param id         ID del usuario
+     * @param userUpdate Usuario a actualizar
      * @return Usuario
      */
     @Override
     @CachePut(key = "#result.id")
-    public UserResponse update(String id, UserRequest userRequest) {
-        log.info("Actualizando usuario: " + userRequest);
+    public UserResponse update(String id, UserUpdate userUpdate) {
+        log.info("Actualizando usuario: " + userUpdate);
         UUID uuid;
         try {
             uuid = UUID.fromString(id);
@@ -140,14 +141,15 @@ public class UsersServiceImpl implements UsersService {
         if (user.isEmpty()) {
             throw new UserNotFound(id);
         }
-        usersRepository.findByUsernameEqualsIgnoreCaseOrEmailEqualsIgnoreCase(userRequest.getUsername(), userRequest.getEmail())
+        usersRepository.findByEmailEqualsIgnoreCase(userUpdate.getEmail())
                 .ifPresent(u -> {
                     if (!u.getId().toString().equals(id)) {
                         log.debug("usuario encontrado: " + u.getId() + " ID: " + id);
                         throw new UsernameOrEmailExists("Ya existe un usuario con ese username o email");
                     }
                 });
-        return usersMapper.toUserResponse(usersRepository.save(usersMapper.toUser(userRequest, uuid)));
+        return usersMapper.toUserResponse(usersRepository.save(usersMapper
+                .toUser(userUpdate, uuid, user.get().getUsername())));
     }
 
     /**
