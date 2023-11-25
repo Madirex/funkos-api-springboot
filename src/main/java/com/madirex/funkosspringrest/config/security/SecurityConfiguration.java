@@ -63,7 +63,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/storage/**").permitAll()
                         //WebSockets y Swagger solo para Admins
                         .requestMatchers("/ws/**").hasRole("ADMIN")
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").hasRole("ADMIN")
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         //acceso a autentificación para todos los usuarios
                         .requestMatchers("/api/auth/**").permitAll()
                         //Acceso a los endpoints de la API solo para administradores

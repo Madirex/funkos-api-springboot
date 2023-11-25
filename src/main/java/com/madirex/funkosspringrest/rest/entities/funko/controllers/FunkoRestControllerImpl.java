@@ -12,6 +12,10 @@ import com.madirex.funkosspringrest.rest.entities.funko.services.FunkoServiceImp
 import com.madirex.funkosspringrest.rest.pagination.exceptions.PageNotValidException;
 import com.madirex.funkosspringrest.rest.pagination.model.PageResponse;
 import com.madirex.funkosspringrest.rest.pagination.util.PaginationLinksUtils;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +57,20 @@ public class FunkoRestControllerImpl implements FunkoRestController {
     }
 
     /**
+     * Método para obtener un Funko por su UUID
+     *
+     * @param id UUID del Funko en formato String
+     * @return ResponseEntity con el código de estado
+     * @throws FunkoNotFoundException Si no se ha encontrado el Funko con el UUID indicado
+     */
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    @Override
+    public ResponseEntity<GetFunkoDTO> getFunkoById(@Valid @PathVariable String id) throws FunkoNotFoundException {
+        return ResponseEntity.ok(service.getFunkoById(id));
+    }
+
+    /**
      * Método para obtener todos los Funkos
      *
      * @param category    categoría
@@ -65,6 +83,17 @@ public class FunkoRestControllerImpl implements FunkoRestController {
      * @param request     petición
      * @return ResponseEntity con el código de estado
      */
+    @Operation(summary = "Obtiene todos los Funko", description = "Obtiene una lista de Funkos")
+    @Parameter(name = "category", description = "Categoría del Funko", example = "OTHER")
+    @Parameter(name = "maxPrice", description = "Precio máximo", example = "2.2")
+    @Parameter(name = "maxQuantity", description = "Cantidad máxima", example = "23")
+    @Parameter(name = "page", description = "Número de página", example = "0")
+    @Parameter(name = "size", description = "Tamaño de la página", example = "10")
+    @Parameter(name = "sortBy", description = "Campo de ordenación", example = "id")
+    @Parameter(name = "direction", description = "Dirección de ordenación", example = "asc")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Página de Funkos"),
+    })
     @GetMapping()
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<PageResponse<GetFunkoDTO>> getAllFunko(
@@ -91,20 +120,6 @@ public class FunkoRestControllerImpl implements FunkoRestController {
     }
 
     /**
-     * Método para obtener un Funko por su UUID
-     *
-     * @param id UUID del Funko en formato String
-     * @return ResponseEntity con el código de estado
-     * @throws FunkoNotFoundException Si no se ha encontrado el Funko con el UUID indicado
-     */
-    @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('USER','ADMIN')")
-    @Override
-    public ResponseEntity<GetFunkoDTO> getFunkoById(@Valid @PathVariable String id) throws FunkoNotFoundException {
-        return ResponseEntity.ok(service.getFunkoById(id));
-    }
-
-    /**
      * Método para crear un Funko
      *
      * @param funko Funko a crear
@@ -112,6 +127,11 @@ public class FunkoRestControllerImpl implements FunkoRestController {
      * @throws JsonProcessingException   Si no se ha podido convertir el objeto a JSON
      * @throws CategoryNotFoundException Si no se ha encontrado la categoría
      */
+    @Operation(summary = "Crea un Funko", description = "Crea un Funko")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Funko creado"),
+            @ApiResponse(responseCode = "400", description = "Funko no válido"),
+    })
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     @Override
@@ -132,6 +152,14 @@ public class FunkoRestControllerImpl implements FunkoRestController {
      * @throws JsonProcessingException    excepción Json
      * @throws CategoryNotFoundException  de la categoría
      */
+    @Operation(summary = "Actualiza un Funko", description = "Actualiza un Funko")
+    @Parameter(name = "id", description = "Identificador del Funko", example = "f7a3d5e0-9b9a-4c9a-8b1a-9a0a1a2b3b4c", required = true)
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, description = "Funko a actualizar")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Funko actualizado"),
+            @ApiResponse(responseCode = "400", description = "Funko no válido"),
+            @ApiResponse(responseCode = "404", description = "Funko no encontrado"),
+    })
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     @Override
@@ -152,6 +180,14 @@ public class FunkoRestControllerImpl implements FunkoRestController {
      * @throws JsonProcessingException    excepción Json
      * @throws CategoryNotFoundException  de la categoría
      */
+    @Operation(summary = "Actualiza un Funko parcialmente", description = "Actualiza un Funko parcialmente")
+    @Parameter(name = "id", description = "Identificador del Funko", example = "f7a3d5e0-9b9a-4c9a-8b1a-9a0a1a2b3b4c", required = true)
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, description = "Funko a actualizar parcialmente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Funko actualizado"),
+            @ApiResponse(responseCode = "400", description = "Funko no válido"),
+            @ApiResponse(responseCode = "404", description = "Funko no encontrado"),
+    })
     @PatchMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     @Override
@@ -169,6 +205,12 @@ public class FunkoRestControllerImpl implements FunkoRestController {
      * @throws FunkoNotFoundException  del Funko
      * @throws JsonProcessingException excepción Json
      */
+    @Operation(summary = "Borra un Funko", description = "Borra un Funko")
+    @Parameter(name = "id", description = "Identificador del Funko", example = "f7a3d5e0-9b9a-4c9a-8b1a-9a0a1a2b3b4c", required = true)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Funko borrado"),
+            @ApiResponse(responseCode = "404", description = "Funko no encontrado"),
+    })
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     @Override
@@ -189,6 +231,14 @@ public class FunkoRestControllerImpl implements FunkoRestController {
      * @throws FunkoNotFoundException     del Funko
      * @throws IOException                excepción de entrada/salida
      */
+    @Operation(summary = "Actualiza la imagen de un Funko", description = "Actualiza la imagen de un Funko")
+    @Parameter(name = "file", description = "Fichero a subir", required = true)
+    @Parameter(name = "id", description = "Identificador del Funko", example = "f7a3d5e0-9b9a-4c9a-8b1a-9a0a1a2b3b4c", required = true)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Funko actualizado"),
+            @ApiResponse(responseCode = "400", description = "Funko no válido"),
+            @ApiResponse(responseCode = "404", description = "Funko no encontrado"),
+    })
     @PatchMapping(value = "/image/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<GetFunkoDTO> newFunkoImg(
