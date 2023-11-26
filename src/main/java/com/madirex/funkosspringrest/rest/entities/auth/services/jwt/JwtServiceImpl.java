@@ -85,7 +85,6 @@ public class JwtServiceImpl implements JwtService {
      * @return token
      */
     private String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
-        // Preparamos el token
         Algorithm algorithm = Algorithm.HMAC512(getSigningKey());
         Date now = new Date();
         Date expirationDate = new Date(now.getTime() + (1000 * jwtExpiration));

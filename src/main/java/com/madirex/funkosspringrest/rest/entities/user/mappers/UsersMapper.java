@@ -35,26 +35,6 @@ public class UsersMapper {
     }
 
     /**
-     * Método que convierte un objeto UserRequest y un UUID en un objeto User
-     *
-     * @param request UserRequest
-     * @param id      ID del usuario
-     * @return User
-     */
-    public User toUser(UserRequest request, UUID id) {
-        return User.builder()
-                .id(id)
-                .name(request.getName())
-                .surname(request.getSurname())
-                .username(request.getUsername())
-                .email(request.getEmail())
-                .password(request.getPassword())
-                .roles(request.getRoles())
-                .isDeleted(request.getIsDeleted())
-                .build();
-    }
-
-    /**
      * Método que convierte un objeto User en un objeto UserResponse
      *
      * @param user usuario
