@@ -63,22 +63,12 @@ public class UsersServiceImpl implements UsersService {
     @Override
     public Page<UserResponse> findAll(Optional<String> username, Optional<String> email, Optional<Boolean> isDeleted, Pageable pageable) {
         log.info("Buscando todos los usuarios con username: " + username + " y borrados: " + isDeleted);
-        Specification<User> specUsernameUser = (root, query, criteriaBuilder) ->
-                username.map(m -> criteriaBuilder.like(criteriaBuilder.lower(root.get("username")), "%" + m.toLowerCase() + "%"))
-                        .orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
-
-        Specification<User> specEmailUser = (root, query, criteriaBuilder) ->
-                email.map(m -> criteriaBuilder.like(criteriaBuilder.lower(root.get("email")), "%" + m.toLowerCase() + "%"))
-                        .orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
-
-        Specification<User> specIsDeleted = (root, query, criteriaBuilder) ->
-                isDeleted.map(m -> criteriaBuilder.equal(root.get("isDeleted"), m))
-                        .orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
-
+        Specification<User> specUsernameUser = (root, query, criteriaBuilder) -> username.map(m -> criteriaBuilder.like(criteriaBuilder.lower(root.get("username")), "%" + m.toLowerCase() + "%")).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
+        Specification<User> specEmailUser = (root, query, criteriaBuilder) -> email.map(m -> criteriaBuilder.like(criteriaBuilder.lower(root.get("email")), "%" + m.toLowerCase() + "%")).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
+        Specification<User> specIsDeleted = (root, query, criteriaBuilder) -> isDeleted.map(m -> criteriaBuilder.equal(root.get("isDeleted"), m)).orElseGet(() -> criteriaBuilder.isTrue(criteriaBuilder.literal(true)));
         Specification<User> criterion = Specification.where(specUsernameUser)
                 .and(specEmailUser)
                 .and(specIsDeleted);
-
         return usersRepository.findAll(criterion, pageable).map(usersMapper::toUserResponse);
     }
 
@@ -93,11 +83,7 @@ public class UsersServiceImpl implements UsersService {
     public UserInfoResponse findById(String id) {
         log.info("Buscando usuario por ID: " + id);
         UUID uuid;
-        try {
-            uuid = UUID.fromString(id);
-        } catch (IllegalArgumentException e) {
-            throw new UserNotValidUUIDException(id);
-        }
+        try {uuid = UUID.fromString(id);} catch (IllegalArgumentException e) {throw new UserNotValidUUIDException(id);}
         var user = usersRepository.findById(uuid).orElseThrow(() -> new UserNotFound(id));
         var orders = orderRepository.findOrdersByUserId(id).stream().map(Order::getId).toList();
         return usersMapper.toUserInfoResponse(user, orders);
@@ -114,9 +100,7 @@ public class UsersServiceImpl implements UsersService {
     public UserResponse save(UserRequest userRequest) {
         log.info("Guardando usuario: " + userRequest);
         usersRepository.findByUsernameEqualsIgnoreCaseOrEmailEqualsIgnoreCase(userRequest.getUsername(), userRequest.getEmail())
-                .ifPresent(u -> {
-                    throw new UsernameOrEmailExists("Ya existe un usuario con ese username o email");
-                });
+                .ifPresent(u -> {throw new UsernameOrEmailExists("Ya existe un usuario con ese username o email");});
         return usersMapper.toUserResponse(usersRepository.save(usersMapper.toUser(userRequest)));
     }
 
@@ -132,11 +116,7 @@ public class UsersServiceImpl implements UsersService {
     public UserResponse update(String id, UserUpdate userUpdate) {
         log.info("Actualizando usuario: " + userUpdate);
         UUID uuid;
-        try {
-            uuid = UUID.fromString(id);
-        } catch (IllegalArgumentException e) {
-            throw new UserNotValidUUIDException(id);
-        }
+        try {uuid = UUID.fromString(id);} catch (IllegalArgumentException e) {throw new UserNotValidUUIDException(id);}
         var user = usersRepository.findById(uuid);
         if (user.isEmpty()) {
             throw new UserNotFound(id);
@@ -146,8 +126,7 @@ public class UsersServiceImpl implements UsersService {
                     if (!u.getId().toString().equals(id)) {
                         log.debug("usuario encontrado: " + u.getId() + " ID: " + id);
                         throw new UsernameOrEmailExists("Ya existe un usuario con ese username o email");
-                    }
-                });
+                    }});
         return usersMapper.toUserResponse(usersRepository.save(usersMapper
                 .toUser(userUpdate, uuid, user.get().getUsername())));
     }
@@ -164,11 +143,7 @@ public class UsersServiceImpl implements UsersService {
     public void deleteById(String id) {
         log.info("Borrando usuario por ID: " + id);
         UUID uuid;
-        try {
-            uuid = UUID.fromString(id);
-        } catch (IllegalArgumentException e) {
-            throw new UserNotValidUUIDException(id);
-        }
+        try {uuid = UUID.fromString(id);} catch (IllegalArgumentException e) {throw new UserNotValidUUIDException(id);}
         User user = usersRepository.findById(uuid).orElseThrow(() -> new UserNotFound(id));
         if (orderRepository.existsByUserId(id)) {
             log.info("Borrado lógico de usuario por ID: " + id);

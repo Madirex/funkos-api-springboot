@@ -3,6 +3,13 @@ package com.madirex.funkosspringrest.rest.entities.users;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.madirex.funkosspringrest.rest.entities.order.dto.CreateOrder;
+import com.madirex.funkosspringrest.rest.entities.order.dto.UpdateOrder;
+import com.madirex.funkosspringrest.rest.entities.order.models.Address;
+import com.madirex.funkosspringrest.rest.entities.order.models.Client;
+import com.madirex.funkosspringrest.rest.entities.order.models.Order;
+import com.madirex.funkosspringrest.rest.entities.order.models.OrderLine;
+import com.madirex.funkosspringrest.rest.entities.order.services.OrderService;
 import com.madirex.funkosspringrest.rest.entities.user.dto.UserInfoResponse;
 import com.madirex.funkosspringrest.rest.entities.user.dto.UserRequest;
 import com.madirex.funkosspringrest.rest.entities.user.dto.UserResponse;
@@ -10,6 +17,7 @@ import com.madirex.funkosspringrest.rest.entities.user.dto.UserUpdate;
 import com.madirex.funkosspringrest.rest.entities.user.exceptions.UserNotFound;
 import com.madirex.funkosspringrest.rest.entities.user.services.UsersService;
 import com.madirex.funkosspringrest.rest.pagination.model.PageResponse;
+import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -25,6 +33,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -65,6 +74,37 @@ class UsersRestControllerTest {
             .email("test@test.com")
             .build();
 
+    private final Order order = Order.builder()
+            .id(ObjectId.get())
+            .userId(UUID.randomUUID().toString())
+            .client(new Client("test", "test", "test",
+                    new Address("test", "test", "test", "test", "test", "test")))
+            .orderLineList(Collections.singletonList(new OrderLine(23,
+                    UUID.randomUUID().toString(), 10.0, 230.0)))
+            .quantity(1)
+            .total(10.0)
+            .build();
+
+    private final UpdateOrder updateOrder = UpdateOrder.builder()
+            .userId(UUID.randomUUID().toString())
+            .client(new Client("test", "test", "test",
+                    new Address("test", "test", "test", "test", "test", "test")))
+            .orderLineList(Collections.singletonList(new OrderLine(23,
+                    UUID.randomUUID().toString(), 10.0, 230.0)))
+            .quantity(1)
+            .total(10.0)
+            .build();
+
+    private final CreateOrder createOrder = CreateOrder.builder()
+            .userId(UUID.randomUUID().toString())
+            .client(new Client("test", "test", "test",
+                    new Address("test", "test", "test", "test", "test", "test")))
+            .orderLineList(Collections.singletonList(new OrderLine(23,
+                    UUID.randomUUID().toString(), 10.0, 230.0)))
+            .quantity(1)
+            .total(10.0)
+            .build();
+
     private final String myEndpoint = "/api/users";
     private final ObjectMapper mapper = new ObjectMapper();
     @Autowired
@@ -72,6 +112,9 @@ class UsersRestControllerTest {
 
     @MockBean
     private UsersService usersService;
+
+    @MockBean
+    private OrderService orderService;
 
     /**
      * Constructor UsersRestControllerTest
@@ -364,4 +407,5 @@ class UsersRestControllerTest {
                 .andReturn().getResponse();
         assertEquals(403, response.getStatus());
     }
+
 }

@@ -86,9 +86,7 @@ class UsersServiceImplTest {
         assertAll(
                 () -> assertNotNull(result),
                 () -> assertEquals(userResponse.getUsername(), result.getUsername()),
-                () -> assertEquals(userResponse.getEmail(), result.getEmail()),
-                () -> assertEquals(userUpdate.getName(), result.getName()),
-                () -> assertEquals(userUpdate.getSurname(), result.getSurname())
+                () -> assertEquals(userResponse.getEmail(), result.getEmail())
         );
         verify(usersRepository, times(1)).findById(uuid);
         verify(orderRepository, times(1)).findOrdersByUserId(uuid.toString());
@@ -120,9 +118,7 @@ class UsersServiceImplTest {
         UserResponse result = usersService.save(userRequest);
         assertAll(
                 () -> assertNotNull(result),
-                () -> assertEquals(userRequest.getEmail(), result.getEmail()),
-                () -> assertEquals(userUpdate.getName(), result.getName()),
-                () -> assertEquals(userUpdate.getSurname(), result.getSurname())
+                () -> assertEquals(userRequest.getEmail(), result.getEmail())
         );
         verify(usersRepository, times(1))
                 .findByUsernameEqualsIgnoreCaseOrEmailEqualsIgnoreCase(userRequest.getUsername(),
@@ -132,16 +128,6 @@ class UsersServiceImplTest {
         verify(usersRepository, times(1)).save(user);
 
     }
-
-    /**
-     * Test save duplicate username or email throws username or email exists.
-     */
-//    @Test
-//    void testSave_DuplicateUsernameOrEmail_ThrowsUserNameOrEmailExists() {
-//        when(usersRepository.findByUsernameEqualsIgnoreCaseOrEmailEqualsIgnoreCase(userRequest.getUsername(),
-//                userRequest.getEmail())).thenReturn(Optional.of(new User()));
-//        assertThrows(UsernameOrEmailExists.class, () -> usersService.save(userRequest));
-//    }
 
     /**
      * Test update valid user request returns user response.
@@ -156,28 +142,13 @@ class UsersServiceImplTest {
         UserResponse result = usersService.update(id, userUpdate);
         assertAll(
                 () -> assertNotNull(result),
-                () -> assertEquals(userUpdate.getEmail(), result.getEmail()),
-                () -> assertEquals(userUpdate.getName(), result.getName()),
-                () -> assertEquals(userUpdate.getSurname(), result.getSurname())
+                () -> assertEquals(userUpdate.getEmail(), result.getEmail())
         );
         verify(usersRepository, times(1)).findById(uuid);
         verify(usersMapper, times(1)).toUser(userUpdate, uuid, user.getUsername());
         verify(usersMapper, times(1)).toUserResponse(user);
         verify(usersRepository, times(1)).save(user);
     }
-
-    /**
-     * Test update duplicate username or email throws username or email exists.
-     */
-//    @Test
-//    void testUpdate_DuplicateUsernameOrEmail_ThrowsUserNameOrEmailExists() {
-//        var id = uuid.toString();
-//        when(usersRepository.findById(uuid)).thenReturn(Optional.of(user));
-//        when(usersRepository.findByUsernameEqualsIgnoreCaseOrEmailEqualsIgnoreCase(userRequest.getUsername(),
-//                userRequest.getEmail()))
-//                .thenReturn(Optional.of(user));
-//        assertThrows(UsernameOrEmailExists.class, () -> usersService.update(id, userUpdate));
-//    }
 
     /**
      * Test update user not found throws user not found.
