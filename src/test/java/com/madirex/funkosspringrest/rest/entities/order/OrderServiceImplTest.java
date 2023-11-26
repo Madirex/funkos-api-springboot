@@ -426,4 +426,22 @@ class OrderServiceImplTest {
         assertThrows(ProductBadPrice.class, () -> orderService.checkValidOrder(order));
         verify(funkoRepository, times(1)).findById(id);
     }
+
+    /**
+     * Test para comprobar que se obtienen los pedidos de un usuario por su ID
+     */
+    @Test
+    void testFindByUserIdReturnsPageOfOrder() {
+        String userId = "exampleUserId";
+        List<Order> userOrders = List.of(new Order(), new Order());
+        Page<Order> expectedPage = new PageImpl<>(userOrders);
+        Pageable pageable = PageRequest.of(0, 10);
+        when(orderRepository.findOrdersByUserId(userId)).thenReturn(userOrders);
+        Page<Order> result = orderService.findByUserId(userId, pageable);
+        assertAll(
+                () -> assertEquals(expectedPage.getContent(), result.getContent()),
+                () -> assertEquals(expectedPage.getTotalElements(), result.getTotalElements())
+        );
+        verify(orderRepository, times(1)).findOrdersByUserId(userId);
+    }
 }
