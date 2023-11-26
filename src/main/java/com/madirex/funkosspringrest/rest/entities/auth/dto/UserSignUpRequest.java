@@ -14,7 +14,6 @@ import org.hibernate.validator.constraints.Length;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class UserSignUpRequest {
     @NotBlank(message = "Name no puede estar vacío")
     private String name;
