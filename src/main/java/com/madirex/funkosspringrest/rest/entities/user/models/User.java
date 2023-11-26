@@ -23,8 +23,6 @@ import java.util.stream.Collectors;
  * Clase User
  */
 @Getter
-@Setter
-@ToString
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

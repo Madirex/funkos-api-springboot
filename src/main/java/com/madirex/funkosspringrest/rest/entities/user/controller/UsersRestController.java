@@ -10,7 +10,6 @@ import com.madirex.funkosspringrest.rest.entities.user.dto.UserResponse;
 import com.madirex.funkosspringrest.rest.entities.user.dto.UserUpdate;
 import com.madirex.funkosspringrest.rest.entities.user.exceptions.UserDiffers;
 import com.madirex.funkosspringrest.rest.entities.user.exceptions.UserNotLogged;
-import com.madirex.funkosspringrest.rest.entities.user.exceptions.UserNotValidUUIDException;
 import com.madirex.funkosspringrest.rest.entities.user.models.User;
 import com.madirex.funkosspringrest.rest.entities.user.services.UsersService;
 import com.madirex.funkosspringrest.rest.pagination.model.PageResponse;
@@ -31,7 +30,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -200,14 +198,7 @@ public class UsersRestController {
      * @return ID del usuario
      */
     private String checkValidIdAndReturn(User user) {
-        try {
-            if (user == null) {
-                throw new UserNotLogged("Usuario no autenticado.");
-            }
-            return user.getId().toString();
-        } catch (IllegalArgumentException e) {
-            throw new UserNotValidUUIDException(Objects.requireNonNull(user).getId().toString());
-        }
+        return user.getId().toString();
     }
 
     /**

@@ -120,9 +120,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Category postCategory(CreateCategoryDTO category) {
         categoryRepository.findByType(category.getType())
-                .ifPresent(c -> {
-                    throw new CategoryAlreadyExistsException("Ya existe una categoría con ese tipo");
-                });
+                .ifPresent(c -> {throw new CategoryAlreadyExistsException("Ya existe una categoría con ese tipo");});
         return categoryRepository.save(categoryMapperImpl.toCategory(category));
     }
 

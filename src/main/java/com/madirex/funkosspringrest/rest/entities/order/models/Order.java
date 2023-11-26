@@ -69,9 +69,7 @@ public class Order {
      */
     @JsonProperty("id")
     public String getId() {
-        if (id == null) {
-            id = new ObjectId();
-        }
+        if (id == null) {id = new ObjectId();}
         return id.toHexString();
     }
 
