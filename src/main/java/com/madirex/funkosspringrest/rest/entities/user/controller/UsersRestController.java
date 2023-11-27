@@ -266,9 +266,7 @@ public class UsersRestController {
             @Valid @RequestBody CreateOrder order
     ) {
         log.info("Creando pedido: " + order);
-        if (!order.getUserId().equals(checkValidIdAndReturn(user))) {
-            throw new UserDiffers("El usuario del pedido no coincide con el usuario autenticado");
-        }
+        checkValidUser(order.getUserId(), user);
         return ResponseEntity.status(HttpStatus.CREATED).body(orderService.save(order));
     }
 
@@ -287,9 +285,7 @@ public class UsersRestController {
             @PathVariable("id") ObjectId idOrder,
             @Valid @RequestBody UpdateOrder order) {
         log.info("Actualizando pedido con ID: " + idOrder);
-        if (!order.getUserId().equals(checkValidIdAndReturn(user))) {
-            throw new UserDiffers("El usuario del pedido no coincide con el usuario autenticado");
-        }
+        checkValidUser(order.getUserId(), user);
         return ResponseEntity.ok(orderService.update(idOrder, order));
     }
 
@@ -309,5 +305,17 @@ public class UsersRestController {
         log.info("Borrando pedido con ID: " + idOrder);
         orderService.delete(idOrder);
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Comprueba que el usuario del pedido coincide con el usuario autenticado
+     *
+     * @param order id del usuario del pedido
+     * @param user  usuario autenticado
+     */
+    private void checkValidUser(String order, User user) {
+        if (!order.equals(checkValidIdAndReturn(user))) {
+            throw new UserDiffers("El usuario del pedido no coincide con el usuario autenticado");
+        }
     }
 }
