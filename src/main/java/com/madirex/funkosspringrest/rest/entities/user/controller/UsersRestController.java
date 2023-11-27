@@ -9,7 +9,6 @@ import com.madirex.funkosspringrest.rest.entities.user.dto.UserRequest;
 import com.madirex.funkosspringrest.rest.entities.user.dto.UserResponse;
 import com.madirex.funkosspringrest.rest.entities.user.dto.UserUpdate;
 import com.madirex.funkosspringrest.rest.entities.user.exceptions.UserDiffers;
-import com.madirex.funkosspringrest.rest.entities.user.exceptions.UserNotLogged;
 import com.madirex.funkosspringrest.rest.entities.user.models.User;
 import com.madirex.funkosspringrest.rest.entities.user.services.UsersService;
 import com.madirex.funkosspringrest.rest.pagination.model.PageResponse;
@@ -27,6 +26,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -41,6 +41,7 @@ import java.util.Optional;
 @PreAuthorize("hasAnyRole('USER','ADMIN')")
 public class UsersRestController {
     private final UsersService usersService;
+    private final PasswordEncoder passwordEncoder;
     private final OrderService orderService;
     private final PaginationLinksUtils paginationLinksUtils;
 
@@ -48,12 +49,15 @@ public class UsersRestController {
      * Controlador
      *
      * @param usersService         Servicio de usuarios
+     * @param passwordEncoder      Encoder de contraseñas
      * @param orderService         Servicio de orders
      * @param paginationLinksUtils Utilidades de PaginationLinks
      */
     @Autowired
-    public UsersRestController(UsersService usersService, OrderService orderService, PaginationLinksUtils paginationLinksUtils) {
+    public UsersRestController(UsersService usersService, PasswordEncoder passwordEncoder, OrderService orderService,
+                               PaginationLinksUtils paginationLinksUtils) {
         this.usersService = usersService;
+        this.passwordEncoder = passwordEncoder;
         this.orderService = orderService;
         this.paginationLinksUtils = paginationLinksUtils;
     }
@@ -118,6 +122,7 @@ public class UsersRestController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponse> createUser(@Valid @RequestBody UserRequest userRequest) {
         log.info("save: userRequest: {}", userRequest);
+        userRequest.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         return ResponseEntity.status(HttpStatus.CREATED).body(usersService.save(userRequest));
     }
 
@@ -132,6 +137,7 @@ public class UsersRestController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponse> updateUser(@PathVariable String id, @Valid @RequestBody UserUpdate userUpdate) {
         log.info("update: id: {}, userRequest: {}", id, userUpdate);
+        userUpdate.setPassword(passwordEncoder.encode(userUpdate.getPassword()));
         return ResponseEntity.ok(usersService.update(id, userUpdate));
     }
 
@@ -174,6 +180,7 @@ public class UsersRestController {
     public ResponseEntity<UserResponse> updateMe(@AuthenticationPrincipal User user,
                                                  @Valid @RequestBody UserUpdate userUpdate) {
         log.info("updateMe: user: {}, userRequest: {}", user, userUpdate);
+        userUpdate.setPassword(passwordEncoder.encode(user.getPassword()));
         return ResponseEntity.ok(usersService.update(checkValidIdAndReturn(user), userUpdate));
     }
 
