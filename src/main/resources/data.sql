@@ -38,7 +38,6 @@ UNION ALL
 SELECT '7a47f728-e959-4c81-a45d-921f39f343bb', 'Random Funko', 34.99, 7, 'https://www.madirex.com/funko/random', 5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
     WHERE NOT EXISTS (SELECT 1 FROM Funko WHERE id = '7a47f728-e959-4c81-a45d-921f39f343bb');
 
--- Users
 INSERT INTO USERS (id, name, surname, username, email, password, created_at, updated_at, is_deleted)
 SELECT 'a2bcb7b3-4c36-4073-9ab8-9d8f4a57301b', 'Madirex', 'Land', 'Madirex', 'contact@madirex.com', '$2a$10$/iB5BY9exKMl6Soofb7EquzGHWm3vOPHBCBb6Cg3sWcfz9kHUyIpC', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, false
     WHERE NOT EXISTS (SELECT 1 FROM USERS WHERE id = 'a2bcb7b3-4c36-4073-9ab8-9d8f4a57301b');

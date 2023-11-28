@@ -1,20 +1,19 @@
-# Desarrollo
 services:
-#  postgres-db:
-#    container_name: shop-db_postgres
-#    image: postgres:12-alpine
-#    restart: always
-#    env_file: .env
-#    environment:
-#      POSTGRES_USER: ${DATABASE_USER}
-#      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-#      POSTGRES_DB: ${POSTGRES_DATABASE}
-#    ports:
-#      - ${POSTGRES_PORT}:5432
-##    volumes:
-##      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
-#    networks:
-#      - shop-network
+  postgres-db:
+    container_name: shop-db_postgres
+    image: postgres:12-alpine
+    restart: always
+    env_file: .env
+    environment:
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DATABASE}
+    ports:
+      - ${POSTGRES_PORT}:5432
+    volumes:
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - shop-network
 
   # MongoDB
   mongo-db:
@@ -33,38 +32,28 @@ services:
     networks:
       - shop-network
 
-#  # Adminer para conectarse a la base de datos
-#  # Quitar en despliegue final
-#  adminer-postgres-db:
-#    container_name: shop-db_adminer-postgres-db
-#    image: adminer
-#    restart: always
-#    env_file: .env
-#    ports:
-#      - 8080:8080
-#    depends_on:
-#      - postgres-db
-#    networks:
-#      - shop-network
-
-  # Mongo Express para conectarse a la base de datos
-  # Quitar en despliegue final
-  mongo-express-db:
-    container_name: shop-db_mongo-express-db
-    image: mongo-express
+# Servicio de la API REST
+  shop-api-rest:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: shop-api-rest
     restart: always
     env_file: .env
     ports:
-      - 8081:8081
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: ${DATABASE_USER}
-      ME_CONFIG_MONGODB_ADMINPASSWORD: ${DATABASE_PASSWORD}
-      ME_CONFIG_MONGODB_SERVER: mongo-db
-    depends_on:
-      - mongo-db
+      - ${API_PORT}:3000
+    volumes:
+      - storage-dir:/app/storage-dir
     networks:
       - shop-network
+    depends_on:
+      - postgres-db
+      - mongo-db
 
+volumes:
+  storage-dir:
+
+# Red para conectar los contenedores
 networks:
   shop-network:
     driver: bridge

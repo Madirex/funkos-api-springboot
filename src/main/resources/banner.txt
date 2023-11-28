@@ -8,5 +8,5 @@ ${application.title} ${application.version}
 Powered by Spring Boot ${spring-boot.version}
 Created by ${AnsiColor.BRIGHT_RED}Madirex
 
-${AnsiColor.BRIGHT_WHITE}http://www.madirex.com
+${AnsiColor.BRIGHT_WHITE}https://www.madirex.com
 
