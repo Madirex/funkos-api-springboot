@@ -3,8 +3,6 @@ package com.madirex.funkosspringrest.rest.entities.users;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.madirex.funkosspringrest.rest.entities.order.dto.CreateOrder;
-import com.madirex.funkosspringrest.rest.entities.order.dto.UpdateOrder;
 import com.madirex.funkosspringrest.rest.entities.order.models.Address;
 import com.madirex.funkosspringrest.rest.entities.order.models.Client;
 import com.madirex.funkosspringrest.rest.entities.order.models.Order;
@@ -76,26 +74,6 @@ class UsersRestControllerTest {
 
     private final Order order = Order.builder()
             .id(ObjectId.get())
-            .userId(UUID.randomUUID().toString())
-            .client(new Client("test", "test", "test",
-                    new Address("test", "test", "test", "test", "test", "test")))
-            .orderLineList(Collections.singletonList(new OrderLine(23,
-                    UUID.randomUUID().toString(), 10.0, 230.0)))
-            .quantity(1)
-            .total(10.0)
-            .build();
-
-    private final UpdateOrder updateOrder = UpdateOrder.builder()
-            .userId(UUID.randomUUID().toString())
-            .client(new Client("test", "test", "test",
-                    new Address("test", "test", "test", "test", "test", "test")))
-            .orderLineList(Collections.singletonList(new OrderLine(23,
-                    UUID.randomUUID().toString(), 10.0, 230.0)))
-            .quantity(1)
-            .total(10.0)
-            .build();
-
-    private final CreateOrder createOrder = CreateOrder.builder()
             .userId(UUID.randomUUID().toString())
             .client(new Client("test", "test", "test",
                     new Address("test", "test", "test", "test", "test", "test")))
@@ -392,6 +370,52 @@ class UsersRestControllerTest {
     }
 
     /**
+     * Test Update Me
+     *
+     * @throws Exception exception
+     */
+    @Test
+    @WithUserDetails("Madirex")
+    void testUpdateMe() throws Exception {
+        var myLocalEndpoint = myEndpoint + "/me/profile";
+        when(usersService.update(any(), any())).thenReturn(userResponse);
+        MockHttpServletResponse response = mockMvc.perform(
+                        put(myLocalEndpoint)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .content("""
+                                        {
+                                            "name": "Madirex",
+                                            "surname": "Madirex",
+                                            "username": "Madiland",
+                                            "email": "contact2@madirex.com",
+                                            "password": "4'9fj04g03h0asdasd",
+                                            "roles": [0,1],
+                                            "isDeleted": 0
+                                        }""")
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+        assertEquals(200, response.getStatus());
+    }
+
+    /**
+     * Test Delete Me
+     *
+     * @throws Exception exception
+     */
+    @Test
+    @WithUserDetails("Madirex")
+    void testDeleteMe() throws Exception {
+        var myLocalEndpoint = myEndpoint + "/me/profile";
+        doNothing().when(usersService).deleteById(any());
+        MockHttpServletResponse response = mockMvc.perform(
+                        delete(myLocalEndpoint)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+        assertEquals(204, response.getStatus());
+    }
+
+    /**
      * Test me AnonymousUser
      *
      * @throws Exception exception
@@ -408,4 +432,226 @@ class UsersRestControllerTest {
         assertEquals(403, response.getStatus());
     }
 
+    /**
+     * Test me Get Oder By User
+     *
+     * @throws Exception exception
+     */
+    @Test
+    @WithUserDetails("Madirex")
+    void testGetOrderByUser() throws Exception {
+        var myLocalEndpoint = myEndpoint + "/me/orders";
+        var list = List.of(order);
+        Page<Order> order = new PageImpl<>(list);
+        when(orderService.findByUserId(any(), any())).thenReturn(order);
+        MockHttpServletResponse response = mockMvc.perform(
+                        get(myLocalEndpoint)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+        assertEquals(200, response.getStatus());
+    }
+
+    /**
+     * Test me Get Oder By User
+     *
+     * @throws Exception exception
+     */
+    @Test
+    @WithUserDetails("Madirex")
+    void testGetOrder() throws Exception {
+        var myLocalEndpoint = myEndpoint + "/me/orders/{id}";
+        when(orderService.findById(any())).thenReturn(order);
+        MockHttpServletResponse response = mockMvc.perform(
+                        get(myLocalEndpoint, "6561d787fa4e216b1c4ded1f")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+        assertEquals(200, response.getStatus());
+    }
+
+    /**
+     * Test me Save Order
+     *
+     * @throws Exception exception
+     */
+    @Test
+    @WithUserDetails("Madirex")
+    void testSaveOrder() throws Exception {
+        var myLocalEndpoint = myEndpoint + "/me/orders";
+        when(orderService.save(any())).thenReturn(order);
+        MockHttpServletResponse response = mockMvc.perform(
+                        post(myLocalEndpoint)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .content("""
+                                        {
+                                            "userId":"a2bcb7b3-4c36-4073-9ab8-9d8f4a57301b",
+                                            "client":{
+                                                "phone": 234324,
+                                                "address": {
+                                                    "country": -234,
+                                                    "province": -23,
+                                                    "cp": "45345",
+                                                    "street": -23,
+                                                    "city": -23,
+                                                    "number": "dfgdfgfdg-0"
+                                                },
+                                                "email": "client@madirex.com",
+                                                "fullName": -342
+                                            },
+                                            "orderLineList":[
+                                                {
+                                                    "productId": "8919f2e4-193b-4928-b4d4-5e5fb88653e7",
+                                                    "productPrice": 29.99,
+                                                    "quantity": 1
+                                                }
+                                            ]
+                                        }""")
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+        assertEquals(201, response.getStatus());
+    }
+
+    /**
+     * Test me Update Order
+     *
+     * @throws Exception exception
+     */
+    @Test
+    @WithUserDetails("Madirex")
+    void testUpdateOrder() throws Exception {
+        var myLocalEndpoint = myEndpoint + "/me/orders/{id}";
+        when(orderService.update(any(), any())).thenReturn(order);
+        MockHttpServletResponse response = mockMvc.perform(
+                        put(myLocalEndpoint, "6561d787fa4e216b1c4ded1f")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .content("""
+                                        {
+                                            "userId":"a2bcb7b3-4c36-4073-9ab8-9d8f4a57301b",
+                                            "client":{
+                                                "phone": 234324,
+                                                "address": {
+                                                    "country": -234,
+                                                    "province": -23,
+                                                    "cp": "45345",
+                                                    "street": -23,
+                                                    "city": -23,
+                                                    "number": "dfgdfgfdg-0"
+                                                },
+                                                "email": "client@madirex.com",
+                                                "fullName": -342
+                                            },
+                                            "orderLineList":[
+                                                {
+                                                    "productId": "8919f2e4-193b-4928-b4d4-5e5fb88653e7",
+                                                    "productPrice": 29.99,
+                                                    "quantity": 1
+                                                }
+                                            ]
+                                        }""")
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+        assertEquals(200, response.getStatus());
+    }
+
+    /**
+     * Test me Save Order (USER DIFFERS)
+     *
+     * @throws Exception exception
+     */
+    @Test
+    @WithUserDetails("Madirex")
+    void testSaveOrderUserDiffers() throws Exception {
+        var myLocalEndpoint = myEndpoint + "/me/orders";
+        when(orderService.save(any())).thenReturn(order);
+        MockHttpServletResponse response = mockMvc.perform(
+                        post(myLocalEndpoint)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .content("""
+                                        {
+                                            "userId":"d4515840-8fe2-4107-8bde-0f1c545ef4c5",
+                                            "client":{
+                                                "phone": 234324,
+                                                "address": {
+                                                    "country": -234,
+                                                    "province": -23,
+                                                    "cp": "45345",
+                                                    "street": -23,
+                                                    "city": -23,
+                                                    "number": "dfgdfgfdg-0"
+                                                },
+                                                "email": "client@madirex.com",
+                                                "fullName": -342
+                                            },
+                                            "orderLineList":[
+                                                {
+                                                    "productId": "8919f2e4-193b-4928-b4d4-5e5fb88653e7",
+                                                    "productPrice": 29.99,
+                                                    "quantity": 1
+                                                }
+                                            ]
+                                        }""")
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+        assertEquals(401, response.getStatus());
+    }
+
+    /**
+     * Test me Update Order (USER DIFFERS)
+     *
+     * @throws Exception exception
+     */
+    @Test
+    @WithUserDetails("Madirex")
+    void testUpdateOrderUserDiffers() throws Exception {
+        var myLocalEndpoint = myEndpoint + "/me/orders/{id}";
+        when(orderService.update(any(), any())).thenReturn(order);
+        MockHttpServletResponse response = mockMvc.perform(
+                        put(myLocalEndpoint, "6561d787fa4e216b1c4ded1f")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .content("""
+                                        {
+                                            "userId":"d4515840-8fe2-4107-8bde-0f1c545ef4c5",
+                                            "client":{
+                                                "phone": 234324,
+                                                "address": {
+                                                    "country": -234,
+                                                    "province": -23,
+                                                    "cp": "45345",
+                                                    "street": -23,
+                                                    "city": -23,
+                                                    "number": "dfgdfgfdg-0"
+                                                },
+                                                "email": "client@madirex.com",
+                                                "fullName": -342
+                                            },
+                                            "orderLineList":[
+                                                {
+                                                    "productId": "8919f2e4-193b-4928-b4d4-5e5fb88653e7",
+                                                    "productPrice": 29.99,
+                                                    "quantity": 1
+                                                }
+                                            ]
+                                        }""")
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+        assertEquals(401, response.getStatus());
+    }
+
+    /**
+     * Test Delete Order
+     *
+     * @throws Exception exception
+     */
+    @Test
+    @WithUserDetails("Madirex")
+    void testDeleteOrder() throws Exception {
+        var myLocalEndpoint = myEndpoint + "/me/orders/{id}";
+        MockHttpServletResponse response = mockMvc.perform(
+                        delete(myLocalEndpoint, "6561d787fa4e216b1c4ded1f")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+        assertEquals(204, response.getStatus());
+    }
 }
