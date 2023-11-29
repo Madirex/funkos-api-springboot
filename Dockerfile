@@ -2,10 +2,10 @@
 FROM gradle:jdk17-alpine AS build
 WORKDIR /app
 COPY build.gradle.kts .
-COPY settings.gradle.kts .
+COPY gradlew .
 COPY gradle gradle
 COPY src src
-RUN gradle build
+RUN ./gradlew build
 
 # Etapa de ejecución
 FROM eclipse-temurin:17-jre-alpine AS run
