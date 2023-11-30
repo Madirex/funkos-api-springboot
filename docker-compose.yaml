@@ -32,7 +32,7 @@ services:
     networks:
       - shop-network
 
-# Servicio de la API REST
+  # Servicio de la API REST
   shop-api-rest:
     build:
       context: .
