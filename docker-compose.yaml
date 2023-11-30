@@ -1,4 +1,7 @@
+# Lo necesario para ejecutar la aplicación en local
 services:
+
+  # PostgresSQL
   postgres-db:
     container_name: shop-db_postgres
     image: postgres:12-alpine
@@ -41,7 +44,7 @@ services:
     restart: always
     env_file: .env
     ports:
-      - ${API_PORT}:3000
+      - ${API_PORT}:8080
     volumes:
       - storage-dir:/app/storage-dir
     networks:
@@ -50,10 +53,11 @@ services:
       - postgres-db
       - mongo-db
 
+# Volume para guardar los datos de la api rest, como las imágenes
 volumes:
   storage-dir:
 
-# Red para conectar los contenedores
+# Red para conectar los contenedores (opcional)
 networks:
   shop-network:
     driver: bridge
