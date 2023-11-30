@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Crear Funko</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.2/css/bootstrap.min.css}">
+    <link href="/images/favicon.ico" rel="icon" type="image/x-icon">
+</head>
+<body>
+<div class="container">
+    <div th:replace="~{funkos/header.html :: header}"></div>
+
+    <h1>Create Funko</h1>
+    <form action="/funkos/create" method="post" th:object="${funko}">
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input class="form-control" id="name" name="name" th:field="*{name}" type="text">
+            <small class="text-danger" th:errors="*{name}" th:if="${#fields.hasErrors('name')}"></small>
+        </div>
+        <div class="form-group">
+            <label for="price">Price:</label>
+            <input class="form-control" id="price" min="0.0" name="price" step="0.01" th:field="*{price}"
+                   type="number">
+            <small class="text-danger" th:errors="*{price}" th:if="${#fields.hasErrors('price')}"></small>
+        </div>
+        <div class="form-group">
+            <label for="quantity">Stock:</label>
+            <input class="form-control" id="quantity" min="0" name="quantity" th:field="*{quantity}" type="number">
+            <small class="text-danger" th:errors="*{quantity}" th:if="${#fields.hasErrors('quantity')}"></small>
+        </div>
+        <div class="form-group">
+            <label for="image">Image:</label>
+            <input class="form-control" id="image" name="image" readonly th:field="*{image}" type="text">
+            <small class="text-danger" th:errors="*{image}"></small>
+        </div>
+        <div class="form-group">
+            <label for="categoryId">Category:</label>
+            <select class="form-control" id="categoryId" name="categoryId" th:field="*{categoryId}">
+                <option value="">Select a category</option>
+                <option th:each="cat : ${categories}" th:selected="${cat == categoryId}"
+                        th:text="${cat}" th:value="${cat}"></option>
+            </select>
+            <small class="text-danger" th:errors="*{categoryId}" th:if="${#fields.hasErrors('categoryId')}"></small>
+        </div>
+        <button class="btn btn-primary" type="submit">Create</button>
+        <a class="btn btn-secondary mx-2" href="/funkos">Back</a>
+    </form>
+</div>
+
+<div th:replace="~{funkos/footer.html :: footer}"></div>
+
+<script th:src="@{/webjars/bootstrap/4.6.2/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>
