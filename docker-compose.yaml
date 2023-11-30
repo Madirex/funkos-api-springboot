@@ -46,7 +46,7 @@ services:
     ports:
       - ${API_PORT}:8080
     volumes:
-      - storage-dir:/app/storage-dir
+      - storage-dir:/app/funkos-images
     networks:
       - shop-network
     depends_on:

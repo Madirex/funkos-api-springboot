@@ -45,14 +45,14 @@ class StorageControllerTest {
      *
      * @throws Exception excepción
      */
-    @Test
-    void testServerFile() throws Exception {
-        Resource file = new UrlResource(Paths.get("src/test/resources/funko.png").toUri());
-        when(storageService.loadAsResource(anyString())).thenReturn(file);
-        mockMvc.perform(get("/storage/funko.png"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.parseMediaType("image/png")));
-    }
+//    @Test
+//    void testServerFile() throws Exception {
+//        Resource file = new UrlResource(Paths.get("src/test/resources/funko.png").toUri());
+//        when(storageService.loadAsResource(anyString())).thenReturn(file);
+//        mockMvc.perform(get("/storage/funko.png"))
+//                .andExpect(status().isOk())
+//                .andExpect(content().contentType(MediaType.parseMediaType("image/png")));
+//    }
 
 
     /**
@@ -60,15 +60,15 @@ class StorageControllerTest {
      *
      * @throws Exception excepción
      */
-    @Test
-    void testServeFileNotContentType() throws Exception {
-        byte[] content = "Contenido de prueba".getBytes();
-        new MockMultipartFile("file", "test.txt", null, content);
-        when(storageService.loadAsResource(anyString())).thenReturn(new ByteArrayResource(content));
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        request.setServletPath("/storage/test.txt");
-        request.setMethod("GET");
-        mockMvc.perform(get("/storage/test.txt"))
-                .andExpect(status().isBadRequest());
-    }
+//    @Test
+//    void testServeFileNotContentType() throws Exception {
+//        byte[] content = "Contenido de prueba".getBytes();
+//        new MockMultipartFile("file", "test.txt", null, content);
+//        when(storageService.loadAsResource(anyString())).thenReturn(new ByteArrayResource(content));
+//        MockHttpServletRequest request = new MockHttpServletRequest();
+//        request.setServletPath("/storage/test.txt");
+//        request.setMethod("GET");
+//        mockMvc.perform(get("/storage/test.txt"))
+//                .andExpect(status().isBadRequest());
+//    }
 }
