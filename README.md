@@ -8,6 +8,8 @@
 
 API Rest de Funkos desarrollada en Java 17 con Spring Boot.
 
+Colección de Postman incluida para probar las consultas.
+
 ## 💡 Instrucciones de uso
 
 - ⚠ **.env:** Este fichero se deberá de crear en la carpeta raíz con los siguientes datos:
