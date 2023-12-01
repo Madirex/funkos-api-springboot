@@ -1,0 +1,2907 @@
+{
+	"info": {
+		"_postman_id": "b5965dea-d0c3-4b30-80c4-7f87138ff4e5",
+		"name": "API Funkos",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "11601885"
+	},
+	"item": [
+		{
+			"name": "Funkos",
+			"item": [
+				{
+					"name": "Casos incorrectos",
+					"item": [
+						{
+							"name": "Body no válido",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"quantity\": \"-24353\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/funkos",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"funkos"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Id de categoría en formato incorrecto",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"quantity\": 24353,\r\n    \"name\": \"Ejemplo\",\r\n    \"categoryId\": \"sfsdfsdfdfs\",\r\n    \"image\": \"https://madirex.com/favicon.ico\",\r\n    \"price\": 23\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/funkos",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"funkos"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "BAD REQUEST findById",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:8080/api/funkos/2",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"funkos",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "check not 500 findAll",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:8080/api/funkos?page=0&size=2&sortBy=category&direction=desc&maxPrice=300&maxQuantity=24353&category=sd23t34tgfdg-dfg",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"funkos"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "0"
+										},
+										{
+											"key": "size",
+											"value": "2"
+										},
+										{
+											"key": "sortBy",
+											"value": "category"
+										},
+										{
+											"key": "direction",
+											"value": "desc"
+										},
+										{
+											"key": "maxPrice",
+											"value": "300"
+										},
+										{
+											"key": "maxQuantity",
+											"value": "24353"
+										},
+										{
+											"key": "category",
+											"value": "sd23t34tgfdg-dfg"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "BAD REQUEST Funko",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"quantity\": 24353,\r\n    \"name\": \"Modificado\",\r\n    \"categoryId\": \"Category23\",\r\n    \"image\": \"https://tech.madirex.com/favicon.ico\",\r\n    \"price\": 42\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/funkos/fre",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"funkos",
+										"fre"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "BAD REQUEST Funko",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"price\": 42\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/funkos/F",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"funkos",
+										"F"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "BAD REQUEST Funko",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/funkos/234",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"funkos",
+										"234"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "BAD REQUEST ADD IMAGE",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": "sdf",
+											"type": "text"
+										},
+										{
+											"key": "file",
+											"type": "file",
+											"src": "/C:/Users/madir/Pictures/Abre la mente, piensa diferente portada Google.png"
+										}
+									]
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/funkos/image/1",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"funkos",
+										"image",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NO IMAGE ADD IMAGE",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"type": "file",
+											"src": []
+										}
+									]
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/funkos/image/eb9b23f1-c890-4d41-8abc-eec35d76154d",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"funkos",
+										"image",
+										"eb9b23f1-c890-4d41-8abc-eec35d76154d"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Imagen excede tamaño",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"type": "file",
+											"src": "/C:/Users/madir/Pictures/Perfil Madirex sin esqueleto.psd"
+										}
+									]
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/funkos/image/4e9e87d7-0c6f-4d46-9851-0dcef5e5bf26",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"funkos",
+										"image",
+										"4e9e87d7-0c6f-4d46-9851-0dcef5e5bf26"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Funkos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8080/api/funkos?page=0&size=10&sortBy=category&direction=desc&maxPrice=300&maxQuantity=24353",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"funkos"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								},
+								{
+									"key": "sortBy",
+									"value": "category"
+								},
+								{
+									"key": "direction",
+									"value": "desc"
+								},
+								{
+									"key": "maxPrice",
+									"value": "300"
+								},
+								{
+									"key": "maxQuantity",
+									"value": "24353"
+								},
+								{
+									"key": "category",
+									"value": "OthEr",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Funkos Filtered By Category",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8080/api/funkos?category=OTher",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"funkos"
+							],
+							"query": [
+								{
+									"key": "category",
+									"value": "OTher"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "findById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8080/api/funkos/874f872f-c30e-4089-ab33-16fd1c4d4344",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"funkos",
+								"874f872f-c30e-4089-ab33-16fd1c4d4344"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Funkos",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"quantity\": 1,\r\n    \"name\": \"Ejemplo\",\r\n    \"categoryId\": 1,\r\n    \"image\": \"https://madirex.com/favicon.ico\",\r\n    \"price\": 23\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/funkos",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"funkos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Funko",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"quantity\": 24353,\r\n    \"name\": \"Modificado\",\r\n    \"categoryId\": 2,\r\n    \"image\": \"https://tech.madirex.com/favicon.ico\",\r\n    \"price\": 42\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/funkos/874f872f-c30e-4089-ab33-16fd1c4d4344",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"funkos",
+								"874f872f-c30e-4089-ab33-16fd1c4d4344"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Funko",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"price\": 422,\r\n    \"categoryId\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/funkos/874f872f-c30e-4089-ab33-16fd1c4d4344",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"funkos",
+								"874f872f-c30e-4089-ab33-16fd1c4d4344"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CHANGE IMAGE FUNKO",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/funkos/image/874f872f-c30e-4089-ab33-16fd1c4d4344",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"funkos",
+								"image",
+								"874f872f-c30e-4089-ab33-16fd1c4d4344"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Funko",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/funkos/874f872f-c30e-4089-ab33-16fd1c4d4344",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"funkos",
+								"874f872f-c30e-4089-ab33-16fd1c4d4344"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Category",
+			"item": [
+				{
+					"name": "Casos incorrectos",
+					"item": [
+						{
+							"name": "BAD REQUEST Category",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"quantity\": \"-24353\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/category",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"category"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "BAD REQUEST Category",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/xml",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "https://localhost:8080/api/category?page=0&size=2&sortBy=T234&direction=desc",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"category"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "0"
+										},
+										{
+											"key": "size",
+											"value": "2"
+										},
+										{
+											"key": "sortBy",
+											"value": "T234"
+										},
+										{
+											"key": "direction",
+											"value": "desc"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "BAD REQUEST findById",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:8080/api/category/sadd",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"category",
+										"sadd"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "BAD REQUEST Category",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"type\": \"OTHER\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/category/1",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"category",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "BAD REQUEST Category",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"active\": \"true\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/category/asd",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"category",
+										"asd"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "BAD REQUEST Category",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/category/asagsgs",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"category",
+										"asagsgs"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Category already exists",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"type\": \"OTHER\",\r\n    \"active\": \"true\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/category",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"category"
+									],
+									"query": [
+										{
+											"key": "format",
+											"value": "xml",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Category (XML at URL)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"type\": \"OTHER24\",\r\n    \"active\": \"true\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/category?format=xml",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"category"
+							],
+							"query": [
+								{
+									"key": "format",
+									"value": "xml"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Category",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/xml",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "https://localhost:8080/api/category?page=0&size=10&sortBy=Type&direction=desc&isActive=true",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"category"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								},
+								{
+									"key": "sortBy",
+									"value": "Type"
+								},
+								{
+									"key": "direction",
+									"value": "desc"
+								},
+								{
+									"key": "isActive",
+									"value": "true"
+								},
+								{
+									"key": "type",
+									"value": "OthEr",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "findById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8080/api/category/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"category",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Category",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"type\": \"OTHER\",\r\n    \"active\": \"false\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/category/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"category",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Category",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"active\": \"true\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/category/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"category",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Category",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/category/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"category",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Order",
+			"item": [
+				{
+					"name": "Casos incorrectos",
+					"item": [
+						{
+							"name": "Sin elementos para procesar",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "admin",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"quantity\": 2,\r\n    \"client\": {\r\n    },\r\n    \"orderLineList\":[\r\n    ],\r\n    \"userId\": 1\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/orders",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"orders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Errores nulos",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "admin",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/orders",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"orders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Datos del cliente nulos",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "admin",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"quantity\": 2,\r\n    \"client\": {\r\n    },\r\n    \"orderLineList\":[\r\n        {\r\n            \r\n        }\r\n    ],\r\n    \"userId\": 1\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/orders",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"orders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Producto con ID no válida",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "admin",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"quantity\": 1,\r\n    \"client\": {\r\n        \"phone\" : \"asd\",\r\n        \"address\":{\r\n            \"number\": \"sad\",\r\n            \"cp\": \"13434\",\r\n            \"country\": \"dsfsd\",\r\n            \"province\": \"3asd2\",\r\n            \"street\": 234,\r\n            \"city\": 234\r\n        },\r\n        \"email\": \"madirexland@gmail.com\",\r\n        \"fullName\": 234\r\n    },\r\n    \"orderLineList\":[\r\n        {\r\n            \"productId\": 234,\r\n            \"productPrice\": 23\r\n        }\r\n    ],\r\n    \"userId\": 1,\r\n    \"total\": 23\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/orders",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"orders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Producto con ID no válida Copy",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "admin",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"quantity\": 1,\r\n    \"client\": {\r\n        \"phone\" : \"asd\",\r\n        \"address\":{\r\n            \"number\": \"sad\",\r\n            \"cp\": \"13434\",\r\n            \"country\": \"dsfsd\",\r\n            \"province\": \"3asd2\",\r\n            \"street\": 234,\r\n            \"city\": 234\r\n        },\r\n        \"email\": \"madirexland@gmail.com\",\r\n        \"fullName\": 234\r\n    },\r\n    \"orderLineList\":[\r\n        {\r\n            \"productId\": 234,\r\n            \"productPrice\": 23\r\n        }\r\n    ],\r\n    \"userId\": 1,\r\n    \"total\": 23\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/orders",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"orders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Producto no tiene precio válido o no coincide",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "admin",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"quantity\": 1,\r\n    \"client\": {\r\n        \"phone\" : \"asd\",\r\n        \"address\":{\r\n            \"number\": \"sad\",\r\n            \"cp\": \"13434\"\r\n        }\r\n    },\r\n    \"orderLineList\":[\r\n        {\r\n            \"productId\": \"9882a6d0-0d85-41c4-a464-219418174edc\"\r\n        }\r\n    ],\r\n    \"userId\": 1\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/orders",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"orders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Email no válido y country y province caracteres",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "admin",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"quantity\": 1,\r\n    \"client\": {\r\n        \"phone\" : \"asd\",\r\n        \"address\":{\r\n            \"number\": \"sad\",\r\n            \"cp\": \"13434\",\r\n            \"country\": 34,\r\n            \"province\": 32,\r\n            \"street\": 234,\r\n            \"city\": 234\r\n        },\r\n        \"email\": \"34\",\r\n        \"fullName\": 234\r\n    },\r\n    \"orderLineList\":[\r\n        {\r\n            \"productId\": \"01e71601-e3fe-4ca9-b151-6ff94c3fe8e3\",\r\n            \"productPrice\": 23\r\n        }\r\n    ],\r\n    \"userId\": 1,\r\n    \"total\": 23\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/orders",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"orders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Empty values",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "admin",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"quantity\": 1,\r\n    \"client\": {\r\n        \"address\":{\r\n        }\r\n    },\r\n    \"orderLineList\":[\r\n        {\r\n        }\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/orders/655a54c83f761d101f941f4e",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"orders",
+										"655a54c83f761d101f941f4e"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Producto con ID no válida",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"quantity\": 1,\r\n    \"client\": {\r\n        \"phone\" : \"asd\",\r\n        \"address\":{\r\n            \"number\": \"sad\",\r\n            \"cp\": \"13434\",\r\n            \"country\": \"dsfsd\",\r\n            \"province\": \"3asd2\",\r\n            \"street\": 234,\r\n            \"city\": 234\r\n        },\r\n        \"email\": \"madirexland@gmail.com\",\r\n        \"fullName\": 234\r\n    },\r\n    \"orderLineList\":[\r\n        {\r\n            \"productId\": 234,\r\n            \"productPrice\": 23\r\n        }\r\n    ],\r\n    \"userId\": 1,\r\n    \"total\": 23\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/orders/655a59d28d33633b5d2be7c8",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"orders",
+										"655a59d28d33633b5d2be7c8"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Get All Orders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8080/api/orders?page=0&size=5&sortBy=id&direction=desc",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"orders"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "5"
+								},
+								{
+									"key": "sortBy",
+									"value": "id"
+								},
+								{
+									"key": "direction",
+									"value": "desc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Order By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8080/api/orders/655a54c83f761d101f941f4e",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"orders",
+								"655a54c83f761d101f941f4e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post Order",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"client\": {\r\n        \"phone\" : \"asd\",\r\n        \"address\":{\r\n            \"number\": \"sad\",\r\n            \"cp\": \"13434\",\r\n            \"country\": \"dsfsd\",\r\n            \"province\": \"3asd2\",\r\n            \"street\": 234,\r\n            \"city\": 234\r\n        },\r\n        \"email\": \"madirexland@gmail.com\",\r\n        \"fullName\": 234\r\n    },\r\n    \"orderLineList\":[\r\n        {\r\n            \"productId\": \"1783830d-1832-466e-a444-9510cecd06c2\",\r\n            \"productPrice\": 14.99,\r\n            \"quantity\": 1\r\n        }\r\n    ],\r\n    \"userId\": 1,\r\n    \"total\": 23\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/orders",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Order",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"quantity\": 1,\r\n    \"client\": {\r\n        \"phone\" : \"asd\",\r\n        \"address\":{\r\n            \"number\": \"sad\",\r\n            \"cp\": \"13434\",\r\n            \"country\": \"dsfsd\",\r\n            \"province\": \"3asd2\",\r\n            \"street\": 234,\r\n            \"city\": 234\r\n        },\r\n        \"email\": \"madirexland@gmail.com\",\r\n        \"fullName\": 234\r\n    },\r\n    \"orderLineList\":[\r\n        {\r\n            \"productId\": \"51fde372-8afa-4863-9b4b-9211202c926f\",\r\n            \"productPrice\": 23\r\n        }\r\n    ],\r\n    \"userId\": 1,\r\n    \"total\": 23\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/orders/655a54c83f761d101f941f4e",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"orders",
+								"655a54c83f761d101f941f4e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Order",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/orders/655a552a3f761d101f941f4f",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"orders",
+								"655a552a3f761d101f941f4f"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Casos incorrectos",
+					"item": [
+						{
+							"name": "FindAll",
+							"item": [
+								{
+									"name": "FindAll BadRequest",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "https://localhost:8080/api/users?page=0&size=4&sortBy=category&direction=desc&isDeleted=300&email=24353&username=OthEr",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"users"
+											],
+											"query": [
+												{
+													"key": "page",
+													"value": "0"
+												},
+												{
+													"key": "size",
+													"value": "4"
+												},
+												{
+													"key": "sortBy",
+													"value": "category"
+												},
+												{
+													"key": "direction",
+													"value": "desc"
+												},
+												{
+													"key": "isDeleted",
+													"value": "300"
+												},
+												{
+													"key": "email",
+													"value": "24353"
+												},
+												{
+													"key": "username",
+													"value": "OthEr"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "FindAll Bad SortBy",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "https://localhost:8080/api/users?page=0&size=4&sortBy=dfgssdfsdf&direction=asc&isDeleted=false&email=fsdfsdfsd.com&username=OthEr",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"users"
+											],
+											"query": [
+												{
+													"key": "page",
+													"value": "0"
+												},
+												{
+													"key": "size",
+													"value": "4"
+												},
+												{
+													"key": "sortBy",
+													"value": "dfgssdfsdf"
+												},
+												{
+													"key": "direction",
+													"value": "asc"
+												},
+												{
+													"key": "isDeleted",
+													"value": "false"
+												},
+												{
+													"key": "email",
+													"value": "fsdfsdfsd.com"
+												},
+												{
+													"key": "username",
+													"value": "OthEr"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Post",
+							"item": [
+								{
+									"name": "Unsupported Media Type",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \r\n}"
+										},
+										"url": {
+											"raw": "https://localhost:8080/api/users",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"users"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Bad Request Json parse Roles",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": -223432,\r\n    \"surname\": -23424,\r\n    \"username\": -2342324,\r\n    \"email\": -234,\r\n    \"password\": -1,\r\n    \"roles\": -1,\r\n    \"isDeleted\": -1\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://localhost:8080/api/users",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"users"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Bad email and password",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": -223432,\r\n    \"surname\": -23424,\r\n    \"username\": -2342324,\r\n    \"email\": -234,\r\n    \"password\": -1,\r\n    \"roles\": [0],\r\n    \"isDeleted\": -1\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://localhost:8080/api/users",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"users"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Put",
+							"item": [
+								{
+									"name": "Unsupported Media Type",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \r\n}"
+										},
+										"url": {
+											"raw": "https://localhost:8080/api/users/sadsa",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"users",
+												"sadsa"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Bad Request Json parse Roles",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": -223432,\r\n    \"surname\": -23424,\r\n    \"username\": -2342324,\r\n    \"email\": -234,\r\n    \"password\": -1,\r\n    \"roles\": -1,\r\n    \"isDeleted\": -1\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://localhost:8080/api/users/asd",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"users",
+												"asd"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Bad email and password",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": -223432,\r\n    \"surname\": -23424,\r\n    \"username\": -2342324,\r\n    \"email\": -234,\r\n    \"password\": -1,\r\n    \"roles\": [0],\r\n    \"isDeleted\": -1\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://localhost:8080/api/users/dfs",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"users",
+												"dfs"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "FindById",
+							"item": [
+								{
+									"name": "FindById ID no válido",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "https://localhost:8080/api/users/-234",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"users",
+												"-234"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "User Not Found",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "https://localhost:8080/api/users/4e2ec5a1-2de9-4194-aa8c-18e8400c145a",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"users",
+												"4e2ec5a1-2de9-4194-aa8c-18e8400c145a"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Delete",
+							"item": [
+								{
+									"name": "DELETE Not Found User",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"Madirex\",\r\n    \"surname\": \"Madirex\",\r\n    \"username\": \"Land\",\r\n    \"email\": \"contact@madirex.com\",\r\n    \"password\": \"4'9fj04g03h0\",\r\n    \"roles\": [0,1],\r\n    \"isDeleted\": 0\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://localhost:8080/api/users/7b0cc542-c14a-443d-811c-94cc8acc7c40",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"users",
+												"7b0cc542-c14a-443d-811c-94cc8acc7c40"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "DELETE Bad ID",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"Madirex\",\r\n    \"surname\": \"Madirex\",\r\n    \"username\": \"Land\",\r\n    \"email\": \"contact@madirex.com\",\r\n    \"password\": \"4'9fj04g03h0\",\r\n    \"roles\": [0,1],\r\n    \"isDeleted\": 0\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://localhost:8080/api/users/asdad",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"users",
+												"asdad"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "/me/profile",
+							"item": [
+								{
+									"name": "Usuario NULL (Not Logged)",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"Madirex\",\r\n    \"surname\": \"Madirex\",\r\n    \"username\": \"Land\",\r\n    \"email\": \"contact@madirex.com\",\r\n    \"password\": \"4'9fj04g03h0\",\r\n    \"roles\": [0,1],\r\n    \"isDeleted\": 0\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://localhost:8080/api/users/me/profile",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"users",
+												"me",
+												"profile"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "User already exists",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"Madirex\",\r\n    \"surname\": \"Madirex\",\r\n    \"username\": \"Land\",\r\n    \"email\": \"contact@madirex.com\",\r\n    \"password\": \"4'9fj04g03h0\",\r\n    \"roles\": [0,1],\r\n    \"isDeleted\": 0\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://localhost:8080/api/users/me/profile",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"users",
+												"me",
+												"profile"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "/me/orders",
+							"item": [
+								{
+									"name": "Formato consulta incorrecta",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "https://localhost:8080/api/users/me/orders",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"users",
+												"me",
+												"orders"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Unsupported Media Type",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \r\n}"
+										},
+										"url": {
+											"raw": "https://localhost:8080/api/users/me/orders",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"users",
+												"me",
+												"orders"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "empty data",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://localhost:8080/api/users/me/orders",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"users",
+												"me",
+												"orders"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "fails when user tries to modify another user",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"userId\":\"a2bcb7b3-4c36-4073-9ab8-9d8f4a57301b\",\r\n    \"client\":{\r\n        \"phone\": 234324,\r\n        \"address\": {\r\n            \"country\": -234,\r\n            \"province\": -23,\r\n            \"cp\": \"45345\",\r\n            \"street\": -23,\r\n            \"city\": -23,\r\n            \"number\": \"dfgdfgfdg-0\"\r\n        },\r\n        \"email\": \"client@madirex.com\",\r\n        \"fullName\": -342\r\n    },\r\n    \"orderLineList\":[\r\n        \r\n    ]\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://localhost:8080/api/users/me/orders",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"users",
+												"me",
+												"orders"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "without items to process",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"userId\":\"d4515840-8fe2-4107-8bde-0f1c545ef4c5\",\r\n    \"client\":{\r\n        \"phone\": 234324,\r\n        \"address\": {\r\n            \"country\": -234,\r\n            \"province\": -23,\r\n            \"cp\": \"45345\",\r\n            \"street\": -23,\r\n            \"city\": -23,\r\n            \"number\": \"dfgdfgfdg-0\"\r\n        },\r\n        \"email\": \"client@madirex.com\",\r\n        \"fullName\": -342\r\n    },\r\n    \"orderLineList\":[\r\n        \r\n    ]\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://localhost:8080/api/users/me/orders",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"users",
+												"me",
+												"orders"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "fails when user tries to modify another user",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"userId\":\"d4515840-8fe2-4107-8bde-0f1c545ef4c2\",\r\n    \"client\":{\r\n        \"phone\": 234324,\r\n        \"address\": {\r\n            \"country\": -234,\r\n            \"province\": -23,\r\n            \"cp\": \"45345\",\r\n            \"street\": -23,\r\n            \"city\": -23,\r\n            \"number\": \"dfgdfgfdg-0\"\r\n        },\r\n        \"email\": \"client@madirex.com\",\r\n        \"fullName\": -342\r\n    },\r\n    \"orderLineList\":[\r\n        {\r\n            \"productId\": \"8919f2e4-193b-4928-b4d4-5e5fb88653e7\",\r\n            \"productPrice\": 29.99,\r\n            \"quantity\": 1\r\n        }\r\n    ]\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://localhost:8080/api/users/me/orders/6561d787fa4e216b1c4ded1f",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"users",
+												"me",
+												"orders",
+												"6561d787fa4e216b1c4ded1f"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "me/profile",
+					"item": [
+						{
+							"name": "My profile",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:8080/api/users/me/profile",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"users",
+										"me",
+										"profile"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "My profile",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Madirex\",\r\n    \"surname\": \"Madirex\",\r\n    \"username\": \"Madiland\",\r\n    \"email\": \"contact2@madirex.com\",\r\n    \"password\": \"4'9fj04g03h0asdasd\",\r\n    \"roles\": [0,1],\r\n    \"isDeleted\": 0\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/users/me/profile",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"users",
+										"me",
+										"profile"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "My profile",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Madirex\",\r\n    \"surname\": \"Madirex\",\r\n    \"email\": \"contact2@madirex.com\",\r\n    \"password\": \"4'9fj04g03h0\",\r\n    \"roles\": [0,1],\r\n    \"isDeleted\": 0\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/users/me/profile",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"users",
+										"me",
+										"profile"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "me/orders",
+					"item": [
+						{
+							"name": "My orders",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:8080/api/users/me/orders",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"users",
+										"me",
+										"orders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "findById",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:8080/api/users/me/orders/6561d787fa4e216b1c4ded1f",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"users",
+										"me",
+										"orders",
+										"6561d787fa4e216b1c4ded1f"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Order",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"userId\":\"d4515840-8fe2-4107-8bde-0f1c545ef4c5\",\r\n    \"client\":{\r\n        \"phone\": 234324,\r\n        \"address\": {\r\n            \"country\": -234,\r\n            \"province\": -23,\r\n            \"cp\": \"45345\",\r\n            \"street\": -23,\r\n            \"city\": -23,\r\n            \"number\": \"dfgdfgfdg-0\"\r\n        },\r\n        \"email\": \"client@madirex.com\",\r\n        \"fullName\": -342\r\n    },\r\n    \"orderLineList\":[\r\n        {\r\n            \"productId\": \"8919f2e4-193b-4928-b4d4-5e5fb88653e7\",\r\n            \"productPrice\": 29.99,\r\n            \"quantity\": 1\r\n        }\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/users/me/orders",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"users",
+										"me",
+										"orders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Order",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"userId\":\"d4515840-8fe2-4107-8bde-0f1c545ef4c5\",\r\n    \"client\":{\r\n        \"phone\": \"23423 4234 24\",\r\n        \"address\": {\r\n            \"country\": \"-234 234\",\r\n            \"province\": \"-234 234\",\r\n            \"cp\": \"23424\",\r\n            \"street\": \"-sdfsd ffs 234\",\r\n            \"city\": \"-sdfsdf  sdf423\",\r\n            \"number\": \"dfgdfgfghfhfghfdg-0\"\r\n        },\r\n        \"email\": \"client@madirex.com\",\r\n        \"fullName\": \"sd fdsfsdf -34 sdf2\"\r\n    },\r\n    \"orderLineList\":[\r\n        {\r\n            \"productId\": \"8919f2e4-193b-4928-b4d4-5e5fb88653e7\",\r\n            \"productPrice\": 29.99,\r\n            \"quantity\": 2\r\n        }\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/users/me/orders/6561d787fa4e216b1c4ded1f",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"users",
+										"me",
+										"orders",
+										"6561d787fa4e216b1c4ded1f"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Order",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:8080/api/users/me/orders/6561d787fa4e216b1c4ded1f",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"users",
+										"me",
+										"orders",
+										"6561d787fa4e216b1c4ded1f"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "FindAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8080/api/users?page=0&size=4&sortBy=id&direction=asc&isDeleted=false",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"users"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "4"
+								},
+								{
+									"key": "sortBy",
+									"value": "id"
+								},
+								{
+									"key": "direction",
+									"value": "asc"
+								},
+								{
+									"key": "isDeleted",
+									"value": "false"
+								},
+								{
+									"key": "email",
+									"value": "contact@madirex.com",
+									"disabled": true
+								},
+								{
+									"key": "username",
+									"value": "Madirex",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "FindById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8080/api/users/7b0cc542-c14a-443d-811c-94cc8acc7c40",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"users",
+								"7b0cc542-c14a-443d-811c-94cc8acc7c40"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Madirex2\",\r\n    \"surname\": \"Madirex2\",\r\n    \"username\": \"Land2\",\r\n    \"email\": \"contact23@madirex.com\",\r\n    \"password\": \"4'9fj04g03h0\",\r\n    \"roles\": [0,1],\r\n    \"isDeleted\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/users",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Put",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Madirex\",\r\n    \"surname\": \"Madirex\",\r\n    \"username\": \"Land\",\r\n    \"email\": \"contact33@madirex.com\",\r\n    \"password\": \"4'9fj0ggg4g03h0\",\r\n    \"roles\": [0,1],\r\n    \"isDeleted\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/users/a2bcb7b3-4c36-4073-9ab8-9d8f4a57301b",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"users",
+								"a2bcb7b3-4c36-4073-9ab8-9d8f4a57301b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Madirex\",\r\n    \"surname\": \"Madirex\",\r\n    \"username\": \"Land\",\r\n    \"email\": \"contact@madirex.com\",\r\n    \"password\": \"4'9fj04g03h0\",\r\n    \"roles\": [0,1],\r\n    \"isDeleted\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/users/7b0cc542-c14a-443d-811c-94cc8acc7c40",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"users",
+								"7b0cc542-c14a-443d-811c-94cc8acc7c40"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Casos incorrectos",
+					"item": [
+						{
+							"name": "SignIn Empty Data",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/auth/signin",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"auth",
+										"signin"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "SignIn - User Not Found",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"User\",\r\n    \"password\": \"123\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/auth/signin",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"auth",
+										"signin"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "SignUp - User Already Exists",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"Madirex\",\r\n    \"surname\": \"García\",\r\n    \"name\": \"Manolo\",\r\n    \"email\": \"manolillogarsia52@madirex.com\",\r\n    \"password\": \"manolo54\",\r\n    \"passwordRepeat\": \"manolo54\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/auth/signup",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"auth",
+										"signup"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "SignUp - Email Already Exists Copy",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"fg345ghghrth\",\r\n    \"surname\": \"García\",\r\n    \"name\": \"Manolo\",\r\n    \"email\": \"contact@madirex.com\",\r\n    \"password\": \"manolo54\",\r\n    \"passwordRepeat\": \"manolo54\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/auth/signup",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"auth",
+										"signup"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "SignUp - Invalid Email",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": -45764574574574,\r\n    \"surname\": -45764574574574,\r\n    \"name\": -45764574574574,\r\n    \"email\": -45764574574574,\r\n    \"password\": -45764574574574,\r\n    \"passwordRepeat\": -45764574574574\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/auth/signup",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"auth",
+										"signup"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "SignUp - Empty",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8080/api/auth/signup",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"auth",
+										"signup"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "SignIn User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"User\",\r\n    \"password\": \"123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/auth/signin",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"auth",
+								"signin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SignIn Admin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"Madirex\",\r\n    \"password\": \"123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/auth/signin",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"auth",
+								"signin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SignUp",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"Manolo54\",\r\n    \"surname\": \"García\",\r\n    \"name\": \"Manolo\",\r\n    \"email\": \"manolillogarsia52@madirex.com\",\r\n    \"password\": \"manolo54\",\r\n    \"passwordRepeat\": \"manolo54\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:8080/api/auth/signup",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJNYWRpcmV4IiwiaWF0IjoxNzAxMzY2MjkwLCJleHAiOjE3MDE0NTI2OTAsImV4dHJhQ2xhaW1zIjp7fX0.pLJwOPUDveViHoMat5L8CiV420POiB8mAKdNymG6-0G0nP8HwDzp2t3-FwWJTG-dQtlDHSuYIIv_MG8reNSwnw",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
