@@ -14,14 +14,23 @@ API Rest de Funkos desarrollada en Java 17 con Spring Boot.
  
 
     API_PORT=8080
+  
     DATABASE_USER=admin
+  
     DATABASE_PASSWORD=123456
+  
     POSTGRES_HOST=postgres-db
+  
     POSTGRES_PORT=5432
+  
     POSTGRES_DATABASE=shop
+  
     MONGO_HOST=mongo-db
+  
     MONGO_PORT=27017
+  
     MONGO_DATABASE=shop
+  
     PROFILE=prod
 
 
